@@ -1,0 +1,26 @@
+{
+    "name": "akilimo/agwise",
+    "description": "AgWise wordpress iste",
+    "type": "project",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Akilimo\\Agwise\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Akilimo Machine",
+            "email": "s.barasa@cgiar.org"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {
+        "devuri/wp-env-config": "^3.3"
+    },
+    "config": {
+        "allow-plugins": {
+            "johnpbloch/wordpress-core-installer": true
+        }
+    }
+}
