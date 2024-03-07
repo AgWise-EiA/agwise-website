@@ -1,4 +1,3 @@
 *.gz
-wp-config.php
 .env
 /vendor/
