@@ -17,6 +17,13 @@
 			"title": "Archive Product"
 		},
 		{
+			"name": "woocommerce-greeni",
+			"postTypes": [
+				"page"
+			],
+			"title": "Greeni"
+		},
+		{
 			"name": "blog-blank",
 			"postTypes": [
 				"page"
@@ -28,21 +35,63 @@
 			"postTypes": [
 				"page"
 			],
-			"title": "Blog 1"
+			"title": "Blog 5"
 		},
 		{
 			"name": "blog-island-two",
 			"postTypes": [
 				"page"
 			],
-			"title": "Blog 2"
+			"title": "Blog 6"
 		},
 		{
 			"name": "blog-island-three",
 			"postTypes": [
 				"page"
 			],
+			"title": "Blog 7"
+		},
+		{
+			"name": "blog-island-four",
+			"postTypes": [
+				"page"
+			],
+			"title": "Blog 1"
+		},
+		{
+			"name": "blog-island-five",
+			"postTypes": [
+				"page"
+			],
+			"title": "Blog 2"
+		},
+		{
+			"name": "blog-island-six",
+			"postTypes": [
+				"page"
+			],
 			"title": "Blog 3"
+		},
+		{
+			"name": "blog-island-seven",
+			"postTypes": [
+				"page"
+			],
+			"title": "Blog 4"
+		},		
+		{
+			"name": "blog-surf-one",
+			"postTypes": [
+				"page"
+			],
+			"title": "Blog Surf 1"
+		},
+		{
+			"name": "websites-blog",
+			"postTypes": [
+				"page"
+			],
+			"title": "Header/Footer: Blog"
 		},
 		{
 			"name": "websites-island",
@@ -50,258 +99,13 @@
 				"page"
 			],
 			"title": "Header/Footer: Island"
-		},
-		{
-			"name": "websites-cube",
-			"postTypes": [
-				"page"
-			],
-			"title": "Header/Footer: Cube"
-		},
+		},		
 		{
 			"name": "websites-love-nature",
 			"postTypes": [
 				"page"
 			],
 			"title": "Header/Footer: Love Nature"			
-		},
-		{
-			"name": "websites-coral",
-			"postTypes": [
-				"page"
-			],
-			"title": "Header/Footer: Coral"
-		},
-		{
-			"name": "websites-tasty",
-			"postTypes": [
-				"page"
-			],
-			"title": "Header/Footer: Tasty"
-		},
-		{
-			"name": "websites-summer",
-			"postTypes": [
-				"page"
-			],
-			"title": "Header/Footer: Summer"
-		},
-		{
-			"name": "websites-fresh",
-			"postTypes": [
-				"page"
-			],
-			"title": "Header/Footer: Fresh"
-		},
-		{
-			"name": "websites-stream",
-			"postTypes": [
-				"page"
-			],
-			"title": "Header/Footer: Stream"
-		},
-		{
-			"name": "websites-ocean",
-			"postTypes": [
-				"page"
-			],
-			"title": "Header/Footer: Ocean"
-		},
-		{
-			"name": "websites-lush",
-			"postTypes": [
-				"page"
-			],
-			"title": "Header/Footer: Lush"
-		},
-		{
-			"name": "websites-dolphin",
-			"postTypes": [
-				"page"
-			],
-			"title": "Header/Footer: Dolphin"
-		},
-		{
-			"name": "websites-fiber",
-			"postTypes": [
-				"page"
-			],
-			"title": "Header/Footer: Fiber"
-		},
-		{
-			"name": "websites-habitat",
-			"postTypes": [
-				"page"
-			],
-			"title": "Header/Footer: Habitat"
-		},
-		{
-			"name": "websites-hike",
-			"postTypes": [
-				"page"
-			],
-			"title": "Header/Footer: Hike"
-		},
-		{
-			"name": "websites-spring",
-			"postTypes": [
-				"page"
-			],
-			"title": "Header/Footer: Spring"
-		},
-		{
-			"name": "websites-harvest",
-			"postTypes": [
-				"page"
-			],
-			"title": "Header/Footer: Harvest"
-		},
-		{
-			"name": "websites-marble",
-			"postTypes": [
-				"page"
-			],
-			"title": "Header/Footer: Marble"
-		},
-		{
-			"name": "websites-river",
-			"postTypes": [
-				"page"
-			],
-			"title": "Header/Footer: River"
-		},
-		{
-			"name": "websites-marsh",
-			"postTypes": [
-				"page"
-			],
-			"title": "Header/Footer: Marsh"
-		},
-		{
-			"name": "websites-pebble",
-			"postTypes": [
-				"page"
-			],
-			"title": "Header/Footer: Pebble"
-		},
-		{
-			"name": "websites-peak",
-			"postTypes": [
-				"page"
-			],
-			"title": "Header/Footer: Peak"
-		},
-		{
-			"name": "websites-stone",
-			"postTypes": [
-				"page"
-			],
-			"title": "Header/Footer: Stone"
-		},
-		{
-			"name": "websites-coast",
-			"postTypes": [
-				"page"
-			],
-			"title": "Header/Footer: Coast"
-		},
-		{
-			"name": "websites-surf",
-			"postTypes": [
-				"page"
-			],
-			"title": "Header/Footer: Surf"
-		},
-		{
-			"name": "websites-view",
-			"postTypes": [
-				"page"
-			],
-			"title": "Header/Footer: View"
-		},
-		{
-			"name": "websites-aurora",
-			"postTypes": [
-				"page"
-			],
-			"title": "Header/Footer: Aurora"
-		},
-		{
-			"name": "websites-traveling",
-			"postTypes": [
-				"page"
-			],
-			"title": "Header/Footer: Traveling"
-		},
-		{
-			"name": "websites-green",
-			"postTypes": [
-				"page"
-			],
-			"title": "Header/Footer: Green"
-		},
-		{
-			"name": "websites-sky",
-			"postTypes": [
-				"page"
-			],
-			"title": "Header/Footer: Sky"
-		},
-		{
-			"name": "websites-nest",
-			"postTypes": [
-				"page"
-			],
-			"title": "Header/Footer: Nest"
-		},
-		{
-			"name": "websites-mind",
-			"postTypes": [
-				"page"
-			],
-			"title": "Header/Footer: Mind"
-		},
-		{
-			"name": "websites-sunshine",
-			"postTypes": [
-				"page"
-			],
-			"title": "Header/Footer: Sunshine"
-		},
-		{
-			"name": "websites-style",
-			"postTypes": [
-				"page"
-			],
-			"title": "Header/Footer: Style"
-		},
-		{
-			"name": "websites-photography",
-			"postTypes": [
-				"page"
-			],
-			"title": "Header/Footer: Photography"
-		},	
-		{
-			"name": "websites-pine",
-			"postTypes": [
-				"page"
-			],
-			"title": "Header/Footer: Pine"
-		},
-		{
-			"name": "websites-clay",
-			"postTypes": [
-				"page"
-			],
-			"title": "Header/Footer: Clay"
-		},
-		{
-			"name": "websites-wood",
-			"postTypes": [
-				"page"
-			],
-			"title": "Header/Footer: Wood"
 		},
 		{
 			"name": "websites-earth",
@@ -485,6 +289,34 @@
 								"file:./assets/fonts/inter/inter_normal_100-900.ttf",
 								"file:./assets/fonts/inter/Inter-Regular.woff",
 								"file:./assets/fonts/inter/Inter-Regular.woff2"
+							]
+						}
+					]
+				},
+				{
+					"fontFamily": "Hedvig Letters Serif",
+					"slug": "hedvig-letters-serif-regular",
+					"fontFace": [
+						{
+							"fontFamily": "Hedvig Letters Serif",
+							"fontWeight": "400",
+							"fontStyle": "normal",
+							"src": [
+								"file:./assets/fonts/hedvig-letters-serif/hedvig-letters-serif-regular.ttf"
+							]
+						}
+					]
+				},
+				{
+					"fontFamily": "Young Serif",
+					"slug": "young-serif-regular",
+					"fontFace": [
+						{
+							"fontFamily": "Young Serif",
+							"fontWeight": "400",
+							"fontStyle": "normal",
+							"src": [
+								"file:./assets/fonts/young-serif/young-serif.ttf"
 							]
 						}
 					]

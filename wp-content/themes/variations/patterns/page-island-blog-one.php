@@ -1,8 +1,8 @@
 <?php
  /**
- * Title: Blog 1
+ * Title: Blog 5
  * Slug: variations/page-island-blog-one
- * Description: Add Blog 1 Template
+ * Description: Add Blog 5 Template
  * Categories: posts
  * Keywords: blog, news, posts, grid
  * Block Types: core/query
@@ -33,14 +33,14 @@
 <!-- /wp:group --></div></div>
 <!-- /wp:cover -->
 
-<!-- wp:group {"style":{"spacing":{"padding":{"left":"20px","right":"20px","top":"80px","bottom":"80px"}}},"layout":{"type":"constrained","contentSize":"1140px"}} -->
-<div class="wp-block-group" style="padding-top:80px;padding-right:20px;padding-bottom:80px;padding-left:20px"><!-- wp:heading {"style":{"spacing":{"padding":{"bottom":"30px"}},"color":{"text":"#07277c"},"elements":{"link":{"color":{"text":"#07277c"}}}},"fontFamily":"prata-regular"} -->
+<!-- wp:group {"align":"full","style":{"spacing":{"padding":{"left":"20px","right":"20px","top":"80px","bottom":"80px"}}},"layout":{"type":"constrained","contentSize":"1140px"}} -->
+<div class="wp-block-group alignfull" style="padding-top:80px;padding-right:20px;padding-bottom:80px;padding-left:20px"><!-- wp:heading {"style":{"spacing":{"padding":{"bottom":"30px"}},"color":{"text":"#07277c"},"elements":{"link":{"color":{"text":"#07277c"}}}},"fontFamily":"prata-regular"} -->
 <h2 class="wp-block-heading has-text-color has-link-color has-prata-regular-font-family" style="color:#07277c;padding-bottom:30px">Latest Articles</h2>
 <!-- /wp:heading -->
 
 <!-- wp:query {"queryId":12,"query":{"perPage":"9","pages":0,"offset":0,"postType":"post","order":"desc","orderBy":"date","author":"","search":"","exclude":[],"sticky":"","inherit":false}} -->
 <div class="wp-block-query"><!-- wp:post-template {"style":{"spacing":{"blockGap":"70px"}},"layout":{"type":"grid","columnCount":3}} -->
-<!-- wp:post-featured-image {"isLink":true,"style":{"border":{"radius":"10px"}}} /-->
+<!-- wp:post-featured-image {"isLink":true,"aspectRatio":"4/3","style":{"border":{"radius":"10px"}}} /-->
 
 <!-- wp:post-date {"style":{"spacing":{"margin":{"top":"0px"}},"color":{"text":"#898989"},"elements":{"link":{"color":{"text":"#898989"}}},"typography":{"fontSize":"14px"}}} /-->
 

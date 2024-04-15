@@ -73,16 +73,6 @@ if (!function_exists('variations_editor_assets')) {
             );
 
             /**
-             *  Woocommerce Styles.
-             * */
-            wp_enqueue_style(
-                'variations-woocommerce-style',
-                get_template_directory_uri() . '/assets/css/woocommerce.css',
-                array('woocommerce-blocktheme', 'woocommerce-smallscreen', 'woocommerce-general'),
-                VARIATIONS_THEME_VERSION
-            );
-
-            /**
              * Editor Scripts.
              * */
             wp_enqueue_script(
@@ -90,7 +80,33 @@ if (!function_exists('variations_editor_assets')) {
                 get_template_directory_uri() . '/assets/js/editor.js',
                 array('wp-blocks'),
                 VARIATIONS_THEME_VERSION
-            );            
+            );
+
+            /**
+             *  If WooCommerce is activated.
+             * */
+            if ( class_exists( 'WooCommerce' ) ) {
+
+                /**
+                 *  WooCommerce Styles.
+                 * */
+                wp_enqueue_style(
+                    'variations-woocommerce-style',
+                    get_template_directory_uri() . '/assets/css/woocommerce.css',
+                    array('woocommerce-blocktheme', 'woocommerce-smallscreen', 'woocommerce-general'),
+                    VARIATIONS_THEME_VERSION
+                );
+
+                /**
+                 * WooCommerce Editor Scripts.
+                 * */
+                wp_enqueue_script(
+                    'variations-woocommerce-editor-script',
+                    get_template_directory_uri() . '/assets/js/woocommerce-editor.js',
+                    array('wp-blocks'),
+                    VARIATIONS_THEME_VERSION
+                );
+            }
         }
     }
 }

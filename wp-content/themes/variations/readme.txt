@@ -1,9 +1,9 @@
 === Variations ===
 Contributors: Tyler Moore
 Requires at least: 6.0
-Tested up to: 6.4
+Tested up to: 6.5
 Requires PHP: 5.7
-Stable tag: 3.0.1
+Stable tag: 4.1.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -17,6 +17,24 @@ With Variations you can control your header, footer and every other part of your
 Variations is compatible with wordpress.org/patterns, giving you the ability to mix and match patterns to create millions of different websites. 
 
 == Changelog ==
+
+= 4.1.0 =
+* - Added YoungSerif-Regular font.
+  - Removed unnecessary templates.
+  - Improved blog templates.
+  - Added more WooCommerce changes.
+
+= 4.0.3 =
+* - Fixed Global header.
+
+= 4.0.2 =
+* - Fixed Island header.
+
+= 4.0.1 =
+* - Fixed bugs for blog templates. Fixed bug for sticky header.
+
+= 4.0.0 =
+* - More blog templates added (four new templates, single post template, archive template). Search template modified. WooCommerce style issue fixed.
 
 = 3.0.1 =
 * - Fixed fixed header issue on mobile.

@@ -82,6 +82,13 @@ body header.wp-block-template-part:has(+ main .wp-block-cover) .is-style-header-
     z-index: 10;
 }
 
+body header.wp-block-template-part:has(+ div .wp-block-cover:first-child) .is-position-sticky,
+body header.wp-block-template-part:has(+ .wp-block-cover) .is-position-sticky,
+body header.wp-block-template-part:has(+ main .wp-block-cover) .is-position-sticky {
+    position: absolute;
+    width: 100%;
+}
+
 @media (min-width: 767.5px) {
 
     body header.wp-block-template-part:has(+ div .wp-block-cover:first-child) .is-position-sticky,

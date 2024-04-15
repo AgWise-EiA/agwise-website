@@ -1,15 +1,14 @@
 <?php
  /**
- * Title: Blog 3
+ * Title: Blog 7
  * Slug: variations/page-island-blog-three
- * Description: Add Blog 3 Template
+ * Description: Add Blog 7 Template
  * Categories: posts
  * Keywords: blog, news, posts, grid
  * Block Types: core/query
  */
 
 ?>
-
 <!-- wp:cover {"url":"<?php echo esc_url( get_template_directory_uri() ); ?>/assets/images/island/island-banner-about.jpg","id":2333,"dimRatio":0,"focalPoint":{"x":0.5,"y":1},"minHeight":40,"minHeightUnit":"rem","contentPosition":"center center","isDark":false,"align":"full","style":{"spacing":{"padding":{"top":"2%"}}},"layout":{"type":"constrained","contentSize":"1140px"}} -->
 <div class="wp-block-cover alignfull is-light" style="padding-top:2%;min-height:40rem"><span aria-hidden="true" class="wp-block-cover__background has-background-dim-0 has-background-dim"></span><img class="wp-block-cover__image-background wp-image-2333" alt="" src="<?php echo esc_url( get_template_directory_uri() ); ?>/assets/images/island/island-banner-about.jpg" style="object-position:50% 100%" data-object-fit="cover" data-object-position="50% 100%"/><div class="wp-block-cover__inner-container"><!-- wp:group {"align":"wide","style":{"dimensions":{"minHeight":"8rem"},"spacing":{"blockGap":""}},"layout":{"type":"flex","orientation":"vertical","justifyContent":"center","verticalAlignment":"top"}} -->
 <div class="wp-block-group alignwide" style="min-height:8rem"><!-- wp:group {"layout":{"type":"constrained"}} -->
@@ -34,19 +33,19 @@
 <!-- /wp:group --></div></div>
 <!-- /wp:cover -->
 
-<!-- wp:group {"style":{"spacing":{"padding":{"top":"80px","bottom":"100px","right":"20px","left":"20px"}}},"layout":{"type":"constrained","contentSize":"1140px"}} -->
-<div class="wp-block-group" style="padding-top:80px;padding-right:20px;padding-bottom:100px;padding-left:20px"><!-- wp:columns {"style":{"spacing":{"padding":{"top":"0px","bottom":"0px","right":"0px","left":"0px"}}}} -->
+<!-- wp:group {"align":"full","style":{"spacing":{"padding":{"top":"80px","bottom":"100px","right":"20px","left":"20px"}}},"layout":{"type":"constrained","contentSize":"1140px"}} -->
+<div class="wp-block-group alignfull" style="padding-top:80px;padding-right:20px;padding-bottom:100px;padding-left:20px"><!-- wp:columns {"style":{"spacing":{"padding":{"top":"0px","bottom":"0px","right":"0px","left":"0px"}}}} -->
 <div class="wp-block-columns" style="padding-top:0px;padding-right:0px;padding-bottom:0px;padding-left:0px"><!-- wp:column {"width":""} -->
 <div class="wp-block-column"><!-- wp:group {"style":{"spacing":{"padding":{"top":"0px","right":"0px","bottom":"0px","left":"0px"}}},"layout":{"type":"constrained","contentSize":"1140px"}} -->
 <div class="wp-block-group" style="padding-top:0px;padding-right:0px;padding-bottom:0px;padding-left:0px"><!-- wp:heading {"level":3,"style":{"spacing":{"padding":{"bottom":"30px"}},"color":{"text":"#07277c"},"elements":{"link":{"color":{"text":"#07277c"}}},"typography":{"textTransform":"capitalize"}},"fontFamily":"prata-regular"} -->
 <h3 class="wp-block-heading has-text-color has-link-color has-prata-regular-font-family" style="color:#07277c;padding-bottom:30px;text-transform:capitalize">Latest Articles</h3>
 <!-- /wp:heading -->
 
-<!-- wp:query {"queryId":12,"query":{"perPage":"9","pages":0,"offset":0,"postType":"post","order":"desc","orderBy":"date","author":"","search":"","exclude":[],"sticky":"","inherit":false,"taxQuery":{"category":[]}},"layout":{"type":"default"}} -->
+<!-- wp:query {"queryId":12,"query":{"perPage":"7","pages":0,"offset":0,"postType":"post","order":"desc","orderBy":"date","author":"","search":"","exclude":[],"sticky":"","inherit":false,"taxQuery":{"category":[]}},"layout":{"type":"default"}} -->
 <div class="wp-block-query"><!-- wp:post-template {"style":{"spacing":{"blockGap":"0px"}},"layout":{"type":"grid","columnCount":1}} -->
 <!-- wp:columns {"style":{"spacing":{"blockGap":{"top":"40px","left":"40px"}}}} -->
 <div class="wp-block-columns"><!-- wp:column {"width":"30%"} -->
-<div class="wp-block-column" style="flex-basis:30%"><!-- wp:post-featured-image {"isLink":true,"style":{"border":{"radius":"10px"}}} /--></div>
+<div class="wp-block-column" style="flex-basis:30%"><!-- wp:post-featured-image {"isLink":true,"aspectRatio":"4/3","style":{"border":{"radius":"10px"}}} /--></div>
 <!-- /wp:column -->
 
 <!-- wp:column {"width":"66.66%","style":{"spacing":{"blockGap":"10px","padding":{"top":"0px"}}}} -->
