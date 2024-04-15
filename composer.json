@@ -1,23 +1,32 @@
 {
-  "name": "akilimo/agwise",
-  "description": "AgWise wordpress iste",
-  "type": "project",
-  "license": "MIT",
+  "name": "johnpbloch/wordpress-core",
+  "description": "WordPress is open source software you can use to create a beautiful website, blog, or app.",
+  "keywords": [
+    "wordpress",
+    "blog",
+    "cms"
+  ],
+  "type": "wordpress-core",
+  "homepage": "https://wordpress.org/",
+  "license": "GPL-2.0-or-later",
   "authors": [
     {
-      "name": "Akilimo Machine",
-      "email": "s.barasa@cgiar.org"
+      "name": "WordPress Community",
+      "homepage": "https://wordpress.org/about/"
     }
   ],
-  "minimum-stability": "stable",
+  "support": {
+    "issues": "https://core.trac.wordpress.org/",
+    "forum": "https://wordpress.org/support/",
+    "wiki": "https://codex.wordpress.org/",
+    "irc": "irc://irc.freenode.net/wordpress",
+    "source": "https://core.trac.wordpress.org/browser"
+  },
   "require": {
-    "vlucas/phpdotenv": "^5.6"
+    "php": ">=7.0.0",
+    "ext-json": "*"
   },
-  "autoload": {
-    "psr-4": {
-      "Akilimo\\Agwise\\": "src/"
-    }
-  },
-  "config": {
+  "provide": {
+    "wordpress/core-implementation": "6.4.3"
   }
 }
