@@ -1,23 +1,20 @@
 {
-  "name": "akilimo/agwise",
-  "description": "AgWise wordpress iste",
-  "type": "project",
-  "license": "MIT",
-  "authors": [
-    {
-      "name": "Akilimo Machine",
-      "email": "s.barasa@cgiar.org"
+    "name": "akilimo/agwise",
+    "description": "AgWise website",
+    "type": "project",
+    "autoload": {
+        "psr-4": {
+            "Akilimo\\Agwise\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Akilimo Machine",
+            "email": "s.barasa@cgiar.org"
+        }
+    ],
+    "require": {
+        "php": "^8.0",
+        "vlucas/phpdotenv": "^5.6"
     }
-  ],
-  "minimum-stability": "stable",
-  "require": {
-    "vlucas/phpdotenv": "^5.6"
-  },
-  "autoload": {
-    "psr-4": {
-      "Akilimo\\Agwise\\": "src/"
-    }
-  },
-  "config": {
-  }
 }

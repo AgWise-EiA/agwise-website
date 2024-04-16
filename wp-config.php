@@ -46,6 +46,10 @@ define('DB_CHARSET', 'utf8mb4');
 /** The database collate type. Don't change this if in doubt. */
 define('DB_COLLATE', '');
 
+/** enables caching for WordPress sites **/
+define( 'WP_CACHE', true );
+define( 'CONCATENATE_SCRIPTS', true );
+
 /**#@+
  * Authentication unique keys and salts.
  *
