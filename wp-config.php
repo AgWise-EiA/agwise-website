@@ -48,6 +48,8 @@ define('DB_COLLATE', '');
 
 /** enables caching for WordPress sites **/
 define( 'WP_CACHE', true );
+define( 'CONCATENATE_SCRIPTS', true );
+
 /**#@+
  * Authentication unique keys and salts.
  *
