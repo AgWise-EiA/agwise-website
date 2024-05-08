@@ -90,7 +90,7 @@ if ( ! class_exists( 'Kenta_Search_Element' ) ) {
 				( new Text( $this->getSlug( 'placeholder' ) ) )
 					->setLabel( __( 'Search Placeholder Text', 'kenta' ) )
 					->selectiveRefresh( ...$this->selectiveRefresh() )
-					->setDefaultValue( __( 'Type & Hint Enter', 'kenta' ) )
+					->setDefaultValue( __( 'Type & Hit Enter', 'kenta' ) )
 				,
 				( new Condition() )
 					->setCondition( [ $this->getSlug( 'style' ) => 'modal' ] )

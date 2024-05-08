@@ -84,7 +84,7 @@ if ( ! class_exists( 'Kenta_Widgets_Element' ) ) {
 
 		protected function beforeRender( $attrs = [] ) {
 			$attrs['class'] = Utils::clsx( [
-				'prose kenta-prose',
+				'prose prose-kenta',
 				'prose-no-underline' => ! CZ::checked( $this->getSlug( 'link-underline' ) ),
 				'kenta-heading',
 				'kenta-heading-' . CZ::get( $this->getSlug( 'title-style' ) ),

@@ -1084,7 +1084,9 @@ function kenta_dynamic_css() {
 		'.kenta-article-content .wp-block-button',
 		'.kenta-article-content button',
 		'.kenta-prose .wp-block-button',
-		'.kenta-prose button'
+		'.kenta-prose button',
+		'.prose-kenta .wp-block-button',
+		'.prose-kenta button'
 	];
 	$css[ implode( ',', $button_selectors ) ] = kenta_content_buttons_css();
 
