@@ -8,6 +8,7 @@ $dotenv->load();
 
 $dotenv->required(['DB_HOST', 'DB_NAME', 'DB_USER', 'DB_PASSWORD']);
 
+$dotenv->ifPresent('DEBUG')->isBoolean();
 /**
  * The base configuration for WordPress
  *
@@ -92,9 +93,9 @@ $table_prefix = 'wp_';
  *
  * @link https://wordpress.org/documentation/article/debugging-in-wordpress/
  */
-define('WP_DEBUG', false);
-define('WP_DEBUG_LOG', true);
-define('WP_DEBUG_DISPLAY', false);
+define('WP_DEBUG', $_ENV['DEBUG']);
+define('WP_DEBUG_LOG', $_ENV['DEBUG']);
+define('WP_DEBUG_DISPLAY', $_ENV['DEBUG']);
 /* Add any custom values between this line and the "stop editing" line. */
 define('FS_METHOD', 'direct');
 define('FS_CHMOD_DIR', 0755);
