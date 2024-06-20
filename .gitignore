@@ -3,5 +3,5 @@
 /vendor/
 .idea
 *.log
-#wp-content/wflogs/attack-data.php
+wp-content/wflogs/*
 #wp-content/wflogs/config-livewaf.php
