@@ -1,18 +1,18 @@
-=== Kenta Gutenberg Blocks – Responsive Blocks and block templates library for Gutenberg Editor ===
+=== Kenta Blocks – Responsive Blocks and block templates library ===
 Contributors: ibllex, wpmoose
-Tags: gutenberg, gutenberg blocks, block editor, blocks, block, editor, page builder
-Stable tag: 1.3.9
+Tags: gutenberg blocks, block editor, page builder
+Stable tag: 1.4.0
 Requires at least: 5.6
-Tested up to: 6.4
+Tested up to: 6.5
 Requires PHP: 7.2
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
-The Swiss Army knife of Gutenberg page builders. Use Section / Column blocks to create any site layout. We also have unlimited colors, backgrounds, typography and more. All blocks are responsive. Always display perfectly and fully customize, whether desktop or mobile.
+Kenta Blocks is a set of responsive blocks with powerful options and pre-designed templates library.
 
 == Description ==
 
-Kenta Blocks has a set of responsive blocks with powerful options and pre-designed templates library. It takes full advantage of the WordPress editor's features. With the simple and easy-to-use interface, you can visually design any post and page, whether you are a beginner or a professional designer.
+Kenta Blocks is a set of responsive blocks with powerful options and pre-designed templates library.  It display perfectly and fully customize, whether desktop or mobile. It takes full advantage of the WordPress editor's features. With the simple and easy-to-use interface, you can visually design any post and page, whether you are a beginner or a professional designer.
 
 ### The Awesome Gutenberg blocks we have
 
@@ -38,21 +38,11 @@ Kenta Blocks has a set of responsive blocks with powerful options and pre-design
 * [**Posts Metas**](https://kentatheme.com/docs/kenta-blocks/blocks-guide/post-metas-block-kb/) Displays the author, date, comments information of a post or page.
 * [**Posts Excerpt**](https://kentatheme.com/docs/kenta-blocks/blocks-guide/post-excerpt-block-kb/) Display a post's excerpt.
 
-== Frequently Asked Questions ==
-
-= Does it work with any WordPress theme?
-
-Yes! It works with any theme that has been created following the WordPress coding standards. But we made additional optimizations to the [**Kenta theme**](https://kentatheme.com/). If you are looking for a new theme then we strongly recommend you to try it.
-
-= Do I need coding skills to create a website using it?
-
-No! You can create amazing websites without touching a single line of code.
-
-= Do I need Gutenberg Editor to use Kenta Blocks?
-
-Absolutely Yes! Kenta Blocks has been created using the Gutenberg editor. So, it does not go well with classic editor or other page builder plugins.
-
 == Changelog ==
+
+= 1.4.0 =
+
+* Fix: Security fix
 
 = 1.3.9 =
 

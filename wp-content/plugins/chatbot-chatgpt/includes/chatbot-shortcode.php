@@ -308,13 +308,48 @@ function chatbot_chatgpt_shortcode( $atts = [], $content = null, $tag = '' ) {
     if (!empty($chatbot_chatgpt_hot_bot_prompt)) {
         wp_add_inline_script('chatbot-chatgpt', 'document.getElementById("chatbot-chatgpt-message").placeholder = "' . $chatbot_chatgpt_hot_bot_prompt . '";');
     }
-    
-    $chatbot_chatgpt_allow_file_uploads = esc_attr(get_option('chatbot_chatgpt_allow_file_uploads', 'No'));
 
-    // If assistant is set to 'original' then do not allow file uploads - Ver 1.7.9
+    // Allow File Uploads - Ver 1.9.0
+    $chatbot_chatgpt_allow_file_uploads = 'No';
+    $chatbot_chatgpt_allow_mp3_uploads = 'No';
+
     if ($chatbot_chatgpt_assistant_alias == 'original') {
         $chatbot_chatgpt_allow_file_uploads = 'No';
+        $chatbot_chatgpt_allow_mp3_uploads = 'No';
     }
+
+    if (strpos($chatbot_chatgpt_assistant_alias,'asst_') !== false) {
+        $chatbot_chatgpt_allow_file_uploads = esc_attr(get_option('chatbot_chatgpt_allow_file_uploads', 'No'));
+        $chatbot_chatgpt_allow_mp3_uploads = 'No';
+    }
+
+    if (strpos($model, 'whisper') !== false) {
+        $chatbot_chatgpt_allow_file_uploads = 'No';
+        $chatbot_chatgpt_allow_mp3_uploads = 'Yes';
+    }
+
+    if (strpos($model, 'gpt-4o') !== false && strpos($chatbot_chatgpt_assistant_alias, 'asst_') === false && $chatbot_chatgpt_assistant_alias !== 'original') {
+        // $chatbot_chatgpt_allow_file_uploads = esc_attr(get_option('chatbot_chatgpt_allow_file_uploads', 'No'));
+        $chatbot_chatgpt_allow_file_uploads = 'No';
+        $chatbot_chatgpt_allow_mp3_uploads = 'No';
+    }
+
+    if (strpos($model, 'gpt-4o') !== false) {
+        $chatbot_chatgpt_allow_file_uploads = esc_attr(get_option('chatbot_chatgpt_allow_file_uploads', 'No'));
+        $chatbot_chatgpt_allow_mp3_uploads = 'No';
+    }
+
+    if (strpos($chatbot_chatgpt_assistant_alias, 'asst_') !== false) {
+        $chatbot_chatgpt_allow_file_uploads = esc_attr(get_option('chatbot_chatgpt_allow_file_uploads', 'No'));
+        $chatbot_chatgpt_allow_mp3_uploads = 'No';
+    }
+
+
+    // Allow Read Aloud - Ver 1.9.0
+    $chatbot_chatgpt_read_aloud_option = esc_attr(get_option('chatbot_chatgpt_read_aloud_option', 'yes'));
+
+    // Allo Download Transcript - Ver 2.0.3
+    $chatbot_chatgpt_allow_download_transcript = esc_attr(get_option('chatbot_chatgpt_allow_download_transcript', 'Yes'));
 
     // Assume that the chatbot is NOT using KFlow - Ver 1.9.5
     $use_flow = 'No';
@@ -500,15 +535,30 @@ function chatbot_chatgpt_shortcode( $atts = [], $content = null, $tag = '' ) {
                     });
                 </script>
             <?php endif; ?>
+            <?php if ($chatbot_chatgpt_allow_mp3_uploads == 'Yes'): ?>
+                <input type="file" id="chatbot-chatgpt-upload-mp3-input" name="file[]" style="display: none;" />
+                <button id="chatbot-chatgpt-upload-mp3" title="Upload an Audio/Video">
+                    <img src="<?php echo plugins_url('../assets/icons/attach_file_FILL0_wght400_GRAD0_opsz24.png', __FILE__); ?>" alt="Upload MP3">
+                </button>
+                <script type="text/javascript">
+                    document.getElementById('chatbot-chatgpt-upload-mp3').addEventListener('click', function() {
+                        document.getElementById('chatbot-chatgpt-upload-mp3-input').click();
+                    });
+                </script>
+            <?php endif; ?>
             <button id="chatbot-chatgpt-erase-btn" title="Clear Conversation">
                 <img src="<?php echo plugins_url('../assets/icons/delete_FILL0_wght400_GRAD0_opsz24.png', __FILE__); ?>" alt="Erase Conversation">
             </button>
-            <button id="chatbot-chatgpt-text-to-speech-btn" title="Read Aloud">
-                <img src="<?php echo plugins_url('../assets/icons/text_to_speech_FILL0_wght400_GRAD0_opsz24.png', __FILE__); ?>" alt="Read Out Loud">
-            </button>
-            <button id="chatbot-chatgpt-download-transcript-btn" title="Download Transcript">
-                <img src="<?php echo plugins_url('../assets/icons/download_FILL0_wght400_GRAD0_opsz24.png', __FILE__); ?>" alt="Download Transcript">
-            </button>
+            <?php if ($chatbot_chatgpt_read_aloud_option == 'yes'): ?>
+                <button id="chatbot-chatgpt-text-to-speech-btn" title="Read Aloud">
+                    <img src="<?php echo plugins_url('../assets/icons/text_to_speech_FILL0_wght400_GRAD0_opsz24.png', __FILE__); ?>" alt="Read Out Loud">
+                </button>
+            <?php endif; ?>
+            <?php if ($chatbot_chatgpt_allow_download_transcript == 'Yes'): ?>
+                <button id="chatbot-chatgpt-download-transcript-btn" title="Download Transcript">
+                    <img src="<?php echo plugins_url('../assets/icons/download_FILL0_wght400_GRAD0_opsz24.png', __FILE__); ?>" alt="Download Transcript">
+                </button>
+            <?php endif; ?>
         </div>
         <button id="chatgpt-open-btn" style="display: none;">
         <!-- <i class="dashicons dashicons-format-chat"></i> -->
@@ -605,15 +655,30 @@ function chatbot_chatgpt_shortcode( $atts = [], $content = null, $tag = '' ) {
                         });
                     </script>
                 <?php endif; ?>
+                <?php if ($chatbot_chatgpt_allow_mp3_uploads == 'Yes'): ?>
+                    <input type="file" id="chatbot-chatgpt-upload-mp3-input" name="file[]" style="display: none;" />
+                    <button id="chatbot-chatgpt-upload-mp3" title="Upload MP3">
+                        <img src="<?php echo plugins_url('../assets/icons/attach_file_FILL0_wght400_GRAD0_opsz24.png', __FILE__); ?>" alt="Upload MP3">
+                    </button>
+                    <script type="text/javascript">
+                        document.getElementById('chatbot-chatgpt-upload-mp3').addEventListener('click', function() {
+                            document.getElementById('chatbot-chatgpt-upload-mp3-input').click();
+                        });
+                    </script>
+                <?php endif; ?>
                 <button id="chatbot-chatgpt-erase-btn" title="Clear Conversation">
                     <img src="<?php echo plugins_url('../assets/icons/delete_FILL0_wght400_GRAD0_opsz24.png', __FILE__); ?>" alt="Erase Conversation">
                 </button>
-                <button id="chatbot-chatgpt-text-to-speech-btn" title="Read Aloud">
-                    <img src="<?php echo plugins_url('../assets/icons/text_to_speech_FILL0_wght400_GRAD0_opsz24.png', __FILE__); ?>" alt="Read Out Loud">
-                </button>
-                <button id="chatbot-chatgpt-download-transcript-btn" title="Download Transcript">
-                    <img src="<?php echo plugins_url('../assets/icons/download_FILL0_wght400_GRAD0_opsz24.png', __FILE__); ?>" alt="Download Transcript">
-                </button>
+                <?php if ($chatbot_chatgpt_read_aloud_option == 'yes'): ?>
+                    <button id="chatbot-chatgpt-text-to-speech-btn" title="Read Aloud">
+                        <img src="<?php echo plugins_url('../assets/icons/text_to_speech_FILL0_wght400_GRAD0_opsz24.png', __FILE__); ?>" alt="Read Out Loud">
+                    </button>
+                <?php endif; ?>
+                <?php if ($chatbot_chatgpt_allow_download_transcript == 'Yes'): ?>
+                    <button id="chatbot-chatgpt-download-transcript-btn" title="Download Transcript">
+                        <img src="<?php echo plugins_url('../assets/icons/download_FILL0_wght400_GRAD0_opsz24.png', __FILE__); ?>" alt="Download Transcript">
+                    </button>
+                <?php endif; ?>
             </div>
             <!-- Custom buttons - Ver 1.6.5 -->
             <?php
@@ -709,6 +774,10 @@ function chatbot_chatgpt_shortcode_enqueue_script() {
     $style = $chatbot_chatgpt_display_style ?? '';
     $assistant = $chatbot_chatgpt_assistant_alias ?? '';
 
+    // Preload avatar - Ver 2.0.3
+    $avatar_icon_setting = esc_attr(get_option('chatbot_chatgpt_avatar_icon_setting', ''));
+    $custom_avartar_icon_setting = esc_attr(get_option('chatbot_chatgpt_custom_avatar_icon_setting', ''));
+
     // DIAG - Diagnostics - Ver 1.9.3
     // back_trace( 'NOTICE', 'chatbot_chatgpt_shortcode_enqueue_script - at the beginning of the function');
     // back_trace( 'NOTICE', 'get_the_id(): ' . get_the_id() );
@@ -728,6 +797,14 @@ function chatbot_chatgpt_shortcode_enqueue_script() {
         }
         if ('<?php echo $assistant; ?>' !== '') {
             localStorage.setItem('chatbot_chatgpt_assistant_alias', '<?php echo $assistant; ?>');
+        }
+        
+        // Preload avatar - Ver 2.0.3
+        if ('<?php echo $avatar_icon_setting; ?>' !== '') {
+            localStorage.setItem('chatbot_chatgpt_avatar_icon_setting', '<?php echo $avatar_icon_setting; ?>');
+        }
+        if ('<?php echo $custom_avartar_icon_setting; ?>' !== '') {
+            localStorage.setItem('chatbot_chatgpt_custom_avatar_icon_setting', '<?php echo $custom_avartar_icon_setting; ?>');
         }
     </script>
     <?php

@@ -137,7 +137,7 @@ function chatbot_kn_initialization() {
     update_option('chatbot_chatgpt_kn_document_count', 0);
 
     // Reset the number of items analyzed
-    update_option('no_of_items_analyzed', 0);
+    update_option('chatbot_chatgpt_no_of_items_analyzed', 0);
 
     // Get teh number of posts, pages, products and comments
     chatbot_kn_count_documents();
@@ -232,12 +232,12 @@ function chatbot_kn_run_phase_1() {
     $offset = get_option('chatbot_chatgpt_kn_item_count', 0); // Default offset set to 0 if not specified
     // FIXME - This should be set in the settings and default to 100
     $batch_size = get_option('chatbot_chatgpt_kn_items_per_batch', 100); // Fetching 100 items at a time
-    $no_of_items_analyzed = get_option('no_of_items_analyzed', 0);
+    $chatbot_chatgpt_no_of_items_analyzed = get_option('chatbot_chatgpt_no_of_items_analyzed', 0);
 
     // DIAG - Diagnostics - Ver 1.9.6
     // back_trace( 'NOTICE', '$offset: ' . $offset );
     // back_trace( 'NOTICE', '$batch_size: ' . $batch_size );
-    // back_trace( 'NOTICE', '$no_of_items_analyzed: ' . $no_of_items_analyzed );
+    // back_trace( 'NOTICE', '$chatbot_chatgpt_no_of_items_analyzed: ' . $chatbot_chatgpt_no_of_items_analyzed );
 
     // Set the next starting point
     update_option( 'chatbot_chatgpt_kn_item_count', $offset + $batch_size );
@@ -307,12 +307,12 @@ function chatbot_kn_run_phase_1() {
         }
 
         // Increment the number of items analyzed by one
-        $no_of_items_analyzed++;
+        $chatbot_chatgpt_no_of_items_analyzed++;
     
     }
 
     // Update the number of items analyzed
-    update_option('no_of_items_analyzed', $no_of_items_analyzed);
+    update_option('chatbot_chatgpt_no_of_items_analyzed', $chatbot_chatgpt_no_of_items_analyzed);
 
     // chatbot_kn_schedule_batch_acquisition();
     update_option( 'chatbot_chatgpt_kn_action', 'phase 1' );
@@ -337,12 +337,12 @@ function chatbot_kn_run_phase_3() {
     $offset = get_option('chatbot_chatgpt_kn_item_count', 0); // Default offset set to 0 if not specified
     // FIXME - This should be set in the settings and default to 100
     $batch_size = get_option('chatbot_chatgpt_kn_items_per_batch', 100); // Fetching 100 items at a time
-    $no_of_items_analyzed = get_option('no_of_items_analyzed', 0);
+    $chatbot_chatgpt_no_of_items_analyzed = get_option('chatbot_chatgpt_no_of_items_analyzed', 0);
 
     // DIAG - Diagnostics - Ver 1.9.6
     // back_trace( 'NOTICE', '$offset: ' . $offset );
     // back_trace( 'NOTICE', '$batch_size: ' . $batch_size );
-    // back_trace( 'NOTICE', '$no_of_items_analyzed: ' . $no_of_items_analyzed );
+    // back_trace( 'NOTICE', '$chatbot_chatgpt_no_of_items_analyzed: ' . $chatbot_chatgpt_no_of_items_analyzed );
 
     // Set the next starting point
     update_option( 'chatbot_chatgpt_kn_item_count', $offset + $batch_size );
@@ -425,12 +425,12 @@ function chatbot_kn_run_phase_3() {
         }
 
         // Increment the number of items analyzed by one
-        $no_of_items_analyzed++;
+        $chatbot_chatgpt_no_of_items_analyzed++;
     
     }
 
     // Update the number of items analyzed
-    update_option('no_of_items_analyzed', $no_of_items_analyzed);
+    update_option('chatbot_chatgpt_no_of_items_analyzed', $chatbot_chatgpt_no_of_items_analyzed);
 
     // chatbot_kn_schedule_batch_acquisition();
     update_option( 'chatbot_chatgpt_kn_action', 'phase 3' );
@@ -542,12 +542,12 @@ function chatbot_kn_run_phase_6 () {
     $offset = get_option('chatbot_chatgpt_kn_item_count', 0); // Default offset set to 0 if not specified
     // FIXME - This should be set in the settings and default to 100
     $batch_size = get_option('chatbot_chatgpt_kn_items_per_batch', 100); // Fetching 100 items at a time
-    $no_of_items_analyzed = get_option('no_of_items_analyzed', 0);
+    $chatbot_chatgpt_no_of_items_analyzed = get_option('chatbot_chatgpt_no_of_items_analyzed', 0);
 
     // DIAG - Diagnostics - Ver 1.9.6
     // back_trace( 'NOTICE', '$offset: ' . $offset );
     // back_trace( 'NOTICE', '$batch_size: ' . $batch_size );
-    // back_trace( 'NOTICE', '$no_of_items_analyzed: ' . $no_of_items_analyzed );
+    // back_trace( 'NOTICE', '$chatbot_chatgpt_no_of_items_analyzed: ' . $chatbot_chatgpt_no_of_items_analyzed );
 
     // Set the next starting point
     update_option( 'chatbot_chatgpt_kn_item_count', $offset + $batch_size );
@@ -667,12 +667,12 @@ function chatbot_kn_run_phase_6 () {
         }
 
         // Increment the number of items analyzed by one
-        // $no_of_items_analyzed++;
+        // $chatbot_chatgpt_no_of_items_analyzed++;
     
     }
 
     // Update the number of items analyzed
-    // update_option('no_of_items_analyzed', $no_of_items_analyzed);
+    // update_option('chatbot_chatgpt_no_of_items_analyzed', $chatbot_chatgpt_no_of_items_analyzed);
 
     // chatbot_kn_schedule_batch_acquisition();
     update_option( 'chatbot_chatgpt_kn_action', 'phase 6' );
@@ -690,14 +690,15 @@ function chatbot_kn_output_the_results() {
 
     global $wpdb;
 
-
     // Generate directory path
     $results_dir_path = CHATBOT_CHATGPT_PLUGIN_DIR_PATH . 'results/';
     // back_trace( 'NOTICE', 'results_dir_path: ' . $results_dir_path);
 
-    // Create directory if it doesn't exist
-    if (!file_exists($results_dir_path)) {
-        mkdir($results_dir_path, 0755, true);
+    // Ensure the directory exists or attempt to create it
+    if (!create_directory_and_index_file($results_dir_path)) {
+        // Error handling, e.g., log the error or handle the failure appropriately
+        // back_trace ( 'ERROR', 'Failed to create directory.');
+        return;
     }
 
     // DIAG - Log directory path for debugging
@@ -759,6 +760,25 @@ function chatbot_kn_output_the_results() {
 
     // Close the files
     $f = null;
+
+    // Retrieve the list of words and the score for each word ordered by score descending in the TF-IDF table
+    $results = $wpdb->get_results(
+        "SELECT word, score FROM {$wpdb->prefix}chatbot_chatgpt_knowledge_base_tfidf ORDER BY score DESC"
+    );
+
+    // Store the top words for context
+    $chatbot_chatgpt_kn_conversation_context = "This site includes references to and information about the following topics: ";
+
+    foreach ($results as $result) {
+        $chatbot_chatgpt_kn_conversation_context .= $result->word . ", ";
+    }
+    
+    $chatbot_chatgpt_kn_conversation_context .= "and more.";
+
+    // back_trace( 'NOTICE', 'chatbot_chatgpt_kn_conversation_context: ' . $chatbot_chatgpt_kn_conversation_context);
+    
+    // Save the results in the option for later use
+    update_option('chatbot_chatgpt_kn_conversation_context', $chatbot_chatgpt_kn_conversation_context);
 
     // Unset large variables to free memory
     unset($results);

@@ -14094,6 +14094,9 @@ function HeadingSave(_ref) {
     markup = attributes.markup,
     displayAsBlock = attributes.displayAsBlock,
     backgroundClip = attributes.backgroundClip;
+  if (!['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'span'].includes(markup)) {
+    markup = 'h1';
+  }
   var TagName = markup;
   var className = (0,clsx__WEBPACK_IMPORTED_MODULE_0__["default"])((_clsx = {
     'kb-heading': true

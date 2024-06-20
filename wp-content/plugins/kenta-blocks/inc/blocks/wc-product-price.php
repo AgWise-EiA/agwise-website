@@ -50,16 +50,16 @@ $metadata = array(
 			if ( $product ) {
 
 				$wrapper_attributes = get_block_wrapper_attributes( array(
-					'class' => kb_clsx( [
+					'class' => esc_attr( kb_clsx( [
 						'kb-product-price',
 						'kb-product-price-' . $attrs['blockID']
-					] ),
+					] ) ),
 				) );
 
 				return sprintf(
 					'<div %1$s>%2$s</div>',
 					$wrapper_attributes,
-					$product->get_price_html()
+					wp_kses_post( $product->get_price_html() )
 				);
 			}
 		}

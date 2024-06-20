@@ -17,7 +17,7 @@ if ( ! defined( 'WPINC' ) ) {
 }
 
 // Set the chatbot width
-function chatbot_chatgpt_appearance_width_wide_callback(): void {
+function chatbot_chatgpt_appearance_width_wide_callback() {
     // Get the value of the setting we've registered with register_setting()
     $chatbot_chatgpt_appearance_width_wide = esc_attr(get_option('chatbot_chatgpt_appearance_width_wide', '500px'));
     ?>
@@ -27,7 +27,7 @@ function chatbot_chatgpt_appearance_width_wide_callback(): void {
     />
     <?php
     // check to make sure that the value ends with either 'px' or '%'
-    if (substr($chatbot_chatgpt_appearance_width_wide, -2) !== 'px' && substr($chatbot_chatgpt_appearance_width_wide, -1) !== '%') {
+    if (!str_ends_with($chatbot_chatgpt_appearance_width_wide, 'px') && !str_ends_with($chatbot_chatgpt_appearance_width_wide, '%')) {
         chatbot_chatgpt_general_admin_notice( 'Wide width must end with either "px" or "%".');
         update_option('chatbot_chatgpt_appearance_width_wide', '500px');
     } elseif (empty($chatbot_chatgpt_appearance_width_wide)) {
@@ -41,7 +41,7 @@ function chatbot_chatgpt_appearance_width_wide_callback(): void {
 }
 
 // Now override the css with the width chosen by the user
-function chatbot_chatgpt_appearance_width_wide_custom_css_settings(): void {
+function chatbot_chatgpt_appearance_width_wide_custom_css_settings() {
     $chatbot_chatgpt_appearance_width_wide = esc_attr(get_option('chatbot_chatgpt_appearance_width_wide', '500px'));
 
     // Define CSS styles as global variables
@@ -51,7 +51,7 @@ function chatbot_chatgpt_appearance_width_wide_custom_css_settings(): void {
 }
 
 // Set the chatbot user text background color
-function chatbot_chatgpt_appearance_width_narrow_callback(): void {
+function chatbot_chatgpt_appearance_width_narrow_callback() {
     // Get the value of the setting we've registered with register_setting()
     $chatbot_chatgpt_appearance_width_narrow = esc_attr(get_option('chatbot_chatgpt_appearance_width_narrow', '300px'));
     ?>
@@ -61,7 +61,7 @@ function chatbot_chatgpt_appearance_width_narrow_callback(): void {
     />
     <?php
     // check to make sure that the value ends with either 'px' or '%'
-    if (substr($chatbot_chatgpt_appearance_width_narrow, -2) !== 'px' && substr($chatbot_chatgpt_appearance_width_narrow, -1) !== '%') {
+    if (!str_ends_with($chatbot_chatgpt_appearance_width_narrow, 'px') && !str_ends_with($chatbot_chatgpt_appearance_width_narrow, '%')) {
         chatbot_chatgpt_general_admin_notice( 'Narrow width must end with either "px" or "%".');
         update_option('chatbot_chatgpt_appearance_width_narrow', '300px');
     } elseif(empty($chatbot_chatgpt_appearance_width_narrow)) {
@@ -74,12 +74,45 @@ function chatbot_chatgpt_appearance_width_narrow_callback(): void {
     }
 }
 
-// Now override the css with the color chosen by the user
-function chatbot_chatgpt_appearance_width_narrow_custom_css_settings(): void {
+// Now override the css with the custom settings chosen by the user
+function chatbot_chatgpt_appearance_width_narrow_custom_css_settings() {
     $chatbot_chatgpt_appearance_width_narrow = esc_attr(get_option('chatbot_chatgpt_appearance_width_narrow', '300px'));
 
     // Define CSS styles as global variables
     $GLOBALS['chatbotChatGPTAppearanceCSS']['chatbot-narrow'] = ".chatbot-narrow { width: {$chatbot_chatgpt_appearance_width_narrow} !important; }";
     $GLOBALS['chatbotChatGPTAppearanceCSS']['chatbot-chatgpt-narrow'] = "#chatbot-chatgpt.narrow { width: {$chatbot_chatgpt_appearance_width_narrow} !important; }";
+
+}
+
+// Custom image size settings - Ver 2.0.3
+function chatbot_chatgpt_image_width_setting_callback() {
+    // Get the value of the setting we've registered with register_setting()
+    $chatbot_chatgpt_image_width_setting = esc_attr(get_option('chatbot_chatgpt_image_width_setting', '80%'));
+    ?>
+    <input type="text" id="chatbot_chatgpt_image_width_setting"
+        name="chatbot_chatgpt_image_width_setting"
+        value="<?php echo esc_attr( $chatbot_chatgpt_image_width_setting ); ?>">
+    <?php
+    // check to make sure that the value ends with either 'px' or '%'
+    if (!str_ends_with($chatbot_chatgpt_image_width_setting, 'px') && !str_ends_with($chatbot_chatgpt_image_width_setting, '%')) {
+        chatbot_chatgpt_general_admin_notice( 'Image width must end with either "px" or "%".');
+        update_option('chatbot_chatgpt_image_width_setting', '100%');
+    } elseif(empty($chatbot_chatgpt_image_width_setting)) {
+        // Show an error message or handle the error
+        chatbot_chatgpt_general_admin_notice( 'Image width cannot be blank.');
+        update_option('chatbot_chatgpt_image_width_setting', '100%');
+    } else {
+        // Save the value
+        update_option('cchatbot_chatgpt_image_width_setting', $chatbot_chatgpt_image_width_setting);
+    }
+}
+
+// Now override the css with the custom settings chosen by the user
+function chatbot_chatgpt_appearance_image_width_custom_css_settings() {
+    $chatbot_chatgpt_image_width_setting = esc_attr(get_option('chatbot_chatgpt_image_width_setting', '300px'));
+
+    // Define CSS styles as global variables
+    $GLOBALS['chatbotChatGPTAppearanceCSS']['chatbot-image-width'] = ".chatbot-image-width { width: {$chatbot_chatgpt_image_width_setting} !important; }";
+    $GLOBALS['chatbotChatGPTAppearanceCSS']['chatbot-chatgpt-image-widthnarrow'] = "#chatbot-chatgpt.image-width { width: {$chatbot_chatgpt_image_width_setting} !important; }";
 
 }

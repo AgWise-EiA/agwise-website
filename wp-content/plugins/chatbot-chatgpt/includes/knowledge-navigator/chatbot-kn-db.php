@@ -14,7 +14,7 @@ if ( ! defined( 'WPINC' ) ) {
 }
 
 // Database Management - drop the table if it exists, then add it if it doesn't exist - Ver 1.6.3
-function dbKNStore(): bool {
+function dbKNStore() {
 
     global $wpdb;
 
@@ -46,7 +46,7 @@ function dbKNStore(): bool {
 }
 
 // Database Management - drop a table if it exists, then add it if it doesn't exist to store the TF-IDF words and score - Ver 1.6.3
-function dbKNStoreTFIDF(): bool {
+function dbKNStoreTFIDF() {
 
     global $wpdb;
 
@@ -75,7 +75,7 @@ function dbKNStoreTFIDF(): bool {
 }
 
 // Database Management - drop a table if it exists, then add it if it doesn't exist to store the words and score - Ver 1.9.6
-function dbKNStoreWordCount(): bool {
+function dbKNStoreWordCount() {
     
         global $wpdb;
     
@@ -105,7 +105,7 @@ function dbKNStoreWordCount(): bool {
 }
 
 // Database Management - drop a table if it exists to clean up the database - Ver 1.9.6
-function dbKNClean(): bool {
+function dbKNClean() {
 
     global $wpdb;
 
@@ -117,7 +117,7 @@ function dbKNClean(): bool {
 }
 
 // Store the top words for context
-function store_top_words(): void {
+function store_top_words() {
 
     global $wpdb;
     global $topWords;
@@ -128,7 +128,7 @@ function store_top_words(): void {
     // String together the $topWords
     $chatbot_chatgpt_kn_conversation_context = "This site includes references to and information about the following topics: ";
     foreach ($topWords as $word => $tfidf) {
-        $chatbot_chatgpt_kn_conversation_context .= $word . ", ";
+        $chatbot_chattgpt_kn_conversation_context .= $word . ", ";
         }
     $chatbot_chatgpt_kn_conversation_context .= "and more.";
     
@@ -162,12 +162,11 @@ function output_results() {
     // Generate the directory path
     $results_dir_path = CHATBOT_CHATGPT_PLUGIN_DIR_PATH . 'results/';
 
-    // Create the directory if it doesn't exist
-    if (!file_exists($results_dir_path)) {
-        if (!mkdir($results_dir_path, 0755, true)) {
-            // back_trace( 'ERROR', 'Failed to create results directory');
-            return;
-        }
+    // Ensure the directory exists or attempt to create it
+    if (!create_directory_and_index_file($results_dir_path)) {
+        // Error handling, e.g., log the error or handle the failure appropriately
+        // back_trace ( 'ERROR', 'Failed to create directory.')
+        return;
     }
 
     // Define output files' paths

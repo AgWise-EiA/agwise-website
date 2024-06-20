@@ -253,9 +253,9 @@ final class Css {
 					}
 				} else {
 					$kenta_blocks = kenta_blocks_all();
-					if ( isset( $kenta_blocks[ $name ] ) && isset( $kenta_blocks[ $name ]['css'] ) ) {
+					if ( isset( $kenta_blocks[ $name ]['css'] ) ) {
 
-						if ( isset( $block['attrs'] ) && isset( $block['attrs']['blockID'] ) ) {
+						if ( isset( $block['attrs']['blockID'] ) ) {
 							$css = $kenta_blocks[ $name ]['css']( $block, $css );
 						}
 					}
@@ -272,6 +272,8 @@ final class Css {
 
 	/**
 	 * Generate blocks dynamic css
+	 *
+	 * @return string
 	 */
 	public function dynamicCssRaw( $post = null ) {
 		return $this->parse( $this->dynamicCss( kb_post_blocks( $post ) ) );

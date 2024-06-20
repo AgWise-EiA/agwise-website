@@ -58,7 +58,7 @@ $metadata = array(
 			'data-product_id'  => $product->get_id(),
 			'data-product_sku' => $product->get_sku(),
 			'rel'              => 'nofollow',
-			'class'            => kb_clsx(
+			'class'            => esc_attr( kb_clsx(
 				'kb-button',
 				'kb-button-' . $attrs['blockID'],
 				'kb-add-to-cart',
@@ -72,16 +72,16 @@ $metadata = array(
 						( $product->is_in_stock() || $product->backorders_allowed() )
 					)
 				)
-			),
+			) ),
 		);
 
 		$wrapper_attributes = get_block_wrapper_attributes( array(
-			'class' => kb_clsx(
+			'class' => esc_attr( kb_clsx(
 				'kb-button-wrapper',
 				'kb-button-wrapper-' . $attrs['blockID'],
 				'kb-add-to-cart-wrapper',
 				'kb-add-to-cart-wrapper-' . $attrs['blockID']
-			)
+			) )
 		) );
 
 		return sprintf(

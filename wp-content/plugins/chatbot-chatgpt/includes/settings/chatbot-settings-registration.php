@@ -15,206 +15,15 @@ if ( ! defined( 'WPINC' ) ) {
 }
 
 // Register settings
-function chatbot_chatgpt_settings_init(): void {
-
-    // Settings Custom GPTs tab - Ver 1.7.2
-    register_setting('chatbot_chatgpt_custom_gpts', 'chatbot_chatgpt_use_custom_gpt_assistant_id'); // Ver 1.6.7
-    register_setting('chatbot_chatgpt_custom_gpts', 'chatbot_chatgpt_allow_file_uploads'); // Ver 1.7.6
-    register_setting('chatbot_chatgpt_custom_gpts', 'chatbot_chatgpt_display_custom_gpt_assistant_name'); // Ver 1.9.4
-    register_setting('chatbot_chatgpt_custom_gpts', 'chatbot_chatgpt_assistant_id'); // Ver 1.6.7
-    register_setting('chatbot_chatgpt_custom_gpts', 'chatbot_chatgpt_assistant_instructions'); // Ver 1.9.3
-    register_setting('chatbot_chatgpt_custom_gpts', 'chatbot_chatgpt_assistant_id_alternate'); // Alternate Assistant - Ver 1.7.2
-    register_setting('chatbot_chatgpt_custom_gpts', 'chatbot_chatgpt_assistant_instructions_alternate'); // Alternate Assistant - Ver 1.9.3
-    register_setting('chatbot_chatgpt_custom_gpts', 'chatbot_chatgpt_assistant_beta_version'); // Beta Assistant - Ver 1.9.3
-    register_setting('chatbot_chatgpt_custom_gpts', 'chatbot_chatgpt_thread_retention_period'); // Thread Retention Period - Ver 1.9.9
-
-    add_settings_section(
-        'chatbot_chatgpt_custom_gpts_section',
-        'GPT Assistant Settings',
-        'chatbot_chatgpt_gpt_assistants_section_callback',
-        'chatbot_chatgpt_custom_gpts'
-    );
-    
-    // Use GPT Assistant ID (Yes or No) - Ver 1.6.7
-    add_settings_field(
-        'chatbot_chatgpt_use_custom_gpt_assistant_id',
-        'Use GPT Assistant Id',
-        'chatbot_chatgpt_use_gpt_assistant_id_callback',
-        'chatbot_chatgpt_custom_gpts',
-        'chatbot_chatgpt_custom_gpts_section'
-    );
-
-    // Allow file uploads to the Assistant - Ver 1.7.6
-    add_settings_field(
-        'chatbot_chatgpt_allow_file_uploads',
-        'Allow File Uploads',
-        'chatbot_chatgpt_allow_file_uploads_callback',
-        'chatbot_chatgpt_custom_gpts',
-        'chatbot_chatgpt_custom_gpts_section'
-    );
-
-    // Display Custom GPT Assistant Name - Ver 1.9.4
-    add_settings_field(
-        'chatbot_chatgpt_display_custom_gpt_assistant_name',
-        'Display GPT Assistant Name',
-        'chatbot_chatgpt_use_gpt_assistant_name_callback',
-        'chatbot_chatgpt_custom_gpts',
-        'chatbot_chatgpt_custom_gpts_section'
-    );
-
-    // CustomGPT Assistant Id - Ver 1.6.7
-    add_settings_field(
-        'chatbot_chatgpt_assistant_id',
-        'Primary GPT Assistant Id',
-        'chatbot_chatgpt_assistant_id_callback',
-        'chatbot_chatgpt_custom_gpts',
-        'chatbot_chatgpt_custom_gpts_section'
-    );
-
-    add_settings_field(
-        'chatbot_chatgpt_assistant_instructions',
-        'Assistant Instructions',
-        'chatbot_chatgpt_assistant_instructions_callback',
-        'chatbot_chatgpt_custom_gpts',
-        'chatbot_chatgpt_custom_gpts_section'
-    );
-
-    // CustomGPT Assistant Id Alternate - Ver 1.7.2
-    add_settings_field(
-        'chatbot_chatgpt_assistant_id_alternate',
-        'Alternate GPT Assistant Id',
-        'chatbot_chatgpt_assistant_id_alternate_callback',
-        'chatbot_chatgpt_custom_gpts',
-        'chatbot_chatgpt_custom_gpts_section'
-    );
-
-    add_settings_field(
-        'chatbot_chatgpt_assistant_instructions_alternate',
-        'Alternate Assistant Instructions',
-        'chatbot_chatgpt_assistant_instructions_alternate_callback',
-        'chatbot_chatgpt_custom_gpts',
-        'chatbot_chatgpt_custom_gpts_section'
-    );
-
-    // Thread Retention Period - Ver 1.9.9
-    add_settings_field(
-        'chatbot_chatgpt_thread_retention_period',
-        'Thread Retention Period (hrs)',
-        'chatbot_chatgpt_thread_retention_period_callback',
-        'chatbot_chatgpt_custom_gpts',
-        'chatbot_chatgpt_custom_gpts_section'
-    );
-
-    add_settings_field(
-        'chatbot_chatgpt_assistant_beta_version',
-        'Beta Assistant Version',
-        'chatbot_chatgpt_assistant_beta_version_callback',
-        'chatbot_chatgpt_custom_gpts',
-        'chatbot_chatgpt_custom_gpts_section'
-    );
-
-
-    // Settings settings tab - Ver 1.3.0
-    register_setting('chatbot_chatgpt_settings', 'chatbot_chatgpt_bot_name');
-    register_setting('chatbot_chatgpt_settings', 'chatbot_chatgpt_start_status');
-    register_setting('chatbot_chatgpt_settings', 'chatbot_chatgpt_start_status_new_visitor');
-    register_setting('chatbot_chatgpt_settings', 'chatbot_chatgpt_bot_prompt');
-    register_setting('chatbot_chatgpt_settings', 'chatbot_chatgpt_initial_greeting');
-    register_setting('chatbot_chatgpt_settings', 'chatbot_chatgpt_subsequent_greeting');
-    register_setting('chatbot_chatgpt_settings', 'chatbot_chatgpt_disclaimer_setting');
-    register_setting('chatbot_chatgpt_settings', 'chatbot_chatgpt_audience_choice');
-    register_setting('chatbot_chatgpt_settings', 'chatbot_chatgpt_diagnostics');
-    register_setting('chatbot_chatgpt_settings', 'chatbot_chatgpt_input_rows');
-
-    add_settings_section(
-        'chatbot_chatgpt_settings_section',
-        'Settings',
-        'chatbot_chatgpt_settings_section_callback',
-        'chatbot_chatgpt_settings'
-    );
-
-    add_settings_field(
-        'chatbot_chatgpt_bot_name',
-        'Chatbot Name',
-        'chatbot_chatgpt_bot_name_callback',
-        'chatbot_chatgpt_settings',
-        'chatbot_chatgpt_settings_section'
-    );
-
-    add_settings_field(
-        'chatbot_chatgpt_start_status',
-        'Start Status',
-        'chatbot_chatgptStartStatus_callback',
-        'chatbot_chatgpt_settings',
-        'chatbot_chatgpt_settings_section'
-    );
-
-    add_settings_field(
-        'chatbot_chatgpt_start_status_new_visitor',
-        'Start Status New Visitor',
-        'chatbot_chatbot_chatgpt_start_status_new_visitor_callback',
-        'chatbot_chatgpt_settings',
-        'chatbot_chatgpt_settings_section'
-    );
-
-        add_settings_field(
-        'chatbot_chatgpt_bot_prompt',
-        'Chatbot Prompt',
-        'chatbot_chatgpt_bot_prompt_callback',
-        'chatbot_chatgpt_settings',
-        'chatbot_chatgpt_settings_section'
-    );
-
-    add_settings_field(
-        'chatbot_chatgpt_initial_greeting',
-        'Initial Greeting',
-        'chatbot_chatgpt_initial_greeting_callback',
-        'chatbot_chatgpt_settings',
-        'chatbot_chatgpt_settings_section'
-    );
-
-    add_settings_field(
-        'chatbot_chatgpt_subsequent_greeting',
-        'Subsequent Greeting',
-        'chatbot_chatgpt_subsequent_greeting_callback',
-        'chatbot_chatgpt_settings',
-        'chatbot_chatgpt_settings_section'
-    );
-
-    // Option to remove the OpenAI disclaimer - Ver 1.4.1
-    add_settings_field(
-        'chatbot_chatgpt_disclaimer_setting',
-        'Include "As an AI language model" disclaimer',
-        'chatgpt_disclaimer_setting_callback',
-        'chatbot_chatgpt_settings',
-        'chatbot_chatgpt_settings_section'
-    );
-
-    // Audience setting - Ver 1.9.0
-    add_settings_field(
-        'chatbot_chatgpt_audience_choice',
-        'Audience for Chatbot',
-        'chatbot_chatgpt_audience_choice_callback',
-        'chatbot_chatgpt_settings',
-        'chatbot_chatgpt_settings_section'
-    );
-
-    // Input rows setting - Ver 1.9.9
-    add_settings_field(
-        'chatbot_chatgpt_input_rows',
-        'Input Rows',
-        'chatbot_chatgpt_input_rows_callback',
-        'chatbot_chatgpt_settings',
-        'chatbot_chatgpt_settings_section'
-    );
+function chatbot_chatgpt_settings_init() {
 
     // Diagnostics settings tab - Ver 1.6.5
     register_setting('chatbot_chatgpt_diagnostics', 'chatbot_chatgpt_diagnostics');
+    // Custom Error Message - Ver 2.0.3
+    register_setting('chatbot_chatgpt_diagnostics', 'chatbot_chatgpt_custom_error_message');
     // Suppress Notices and Warnings
     register_setting('chatbot_chatgpt_diagnostics', 'chatbot_chatgpt_suppress_notices');
     register_setting('chatbot_chatgpt_diagnostics', 'chatbot_chatgpt_suppress_attribution');
-    register_setting('chatbot_chatgpt_diagnostics', 'chatbot_chatgpt_suppress_learnings');
-    register_setting('chatbot_chatgpt_diagnostics', 'chatbot_chatgpt_custom_learnings_message');
     register_setting('chatbot_chatgpt_diagnostics', 'chatbot_chatgpt_delete_data');
 
     add_settings_section(
@@ -242,29 +51,20 @@ function chatbot_chatgpt_settings_init(): void {
         'chatbot_chatgpt_diagnostics_section'
     );
 
+    // Custom Error Message - Ver 2.0.3
+    add_settings_field(
+        'chatbot_chatgpt_custom_error_message',
+        'Custom Error Message',
+        'chatbot_chatgpt_custom_error_message_callback',
+        'chatbot_chatgpt_diagnostics',
+        'chatbot_chatgpt_diagnostics_section'
+    );
+
     // Option to suppress notices and warnings - Ver 1.6.5
     add_settings_field(
         'chatbot_chatgpt_suppress_notices',
         'Suppress Notices and Warnings',
         'chatbot_chatgpt_suppress_notices_callback',
-        'chatbot_chatgpt_diagnostics',
-        'chatbot_chatgpt_diagnostics_section'
-    );
-
-    // Option to suppress learnings messages - Ver 1.7.1
-    add_settings_field(
-        'chatbot_chatgpt_suppress_learnings',
-        'Suppress Learnings Messages',
-        'chatbot_chatgpt_suppress_learnings_callback',
-        'chatbot_chatgpt_diagnostics',
-        'chatbot_chatgpt_diagnostics_section'
-    );
-
-    // Option to set custom learnings message - Ver 1.7.1
-    add_settings_field(
-        'chatbot_chatgpt_custom_learnings_message',
-        'Custom Learnings Message',
-        'chatbot_chatgpt_custom_learnings_message_callback',
         'chatbot_chatgpt_diagnostics',
         'chatbot_chatgpt_diagnostics_section'
     );
@@ -364,112 +164,6 @@ function chatbot_chatgpt_settings_init(): void {
         'chatbot_chatgpt_avatar_icon_callback',
         'chatbot_chatgpt_avatar',
         'chatbot_chatgpt_avatar_section'
-    );
-
-    // Knowledge Navigator settings tab - Ver 1.6.1
-    register_setting('chatbot_chatgpt_kn_settings_section', 'chatbot_chatgpt_kn_schedule'); // Schedule Daily, Weekly, Monthly,etc.
-    register_setting('chatbot_chatgpt_kn_settings_section', 'chatbot_chatgpt_kn_maximum_top_words');
-    register_setting('chatbot_chatgpt_kn_settings_section', 'chatbot_chatgpt_kn_include_posts');
-    register_setting('chatbot_chatgpt_kn_settings_section', 'chatbot_chatgpt_kn_include_pages');
-    register_setting('chatbot_chatgpt_kn_settings_section', 'chatbot_chatgpt_kn_include_products');
-    register_setting('chatbot_chatgpt_kn_settings_section', 'chatbot_chatgpt_kn_include_comments');
-    register_setting('chatbot_chatgpt_kn_settings_section', 'chatbot_chatgpt_enhanced_response_limit');
-    register_setting('chatbot_chatgpt_kn_settings_section', 'chatbot_chatgpt_kn_tuning_percentage');
-
-    add_settings_section(
-        'chatbot_chatgpt_knowledge_navigator_settings_section',
-        'Knowledge Navigator',
-        'chatbot_chatgpt_knowledge_navigator_section_callback',
-        'chatbot_chatgpt_knowledge_navigator'
-    );
-
-    add_settings_section(
-        'chatbot_chatgpt_kn_settings_section',
-        '<hr style="border-top: 2px solid;">Knowledge Navigator Settings',
-        'chatbot_chatgpt_kn_settings_section_callback',
-        'chatbot_chatgpt_knowledge_navigator'
-    );
-
-    add_settings_field(
-        'chatbot_chatgpt_kn_schedule',
-        'Select Run Schedule',
-        'chatbot_chatgpt_kn_schedule_callback',
-        'chatbot_chatgpt_knowledge_navigator',
-        'chatbot_chatgpt_kn_settings_section'
-    );
-
-    add_settings_field(
-        'chatbot_chatgpt_kn_maximum_top_words',
-        'Maximum Top Words',
-        'chatbot_chatgpt_kn_maximum_top_words_callback',
-        'chatbot_chatgpt_knowledge_navigator',
-        'chatbot_chatgpt_kn_settings_section'
-    );
-
-    add_settings_field(
-        'chatbot_chatgpt_kn_include_posts',
-        'Include Published Posts',
-        'chatbot_chatgpt_kn_include_posts_callback',
-        'chatbot_chatgpt_knowledge_navigator',
-        'chatbot_chatgpt_kn_settings_section'
-    );
-
-    add_settings_field(
-        'chatbot_chatgpt_kn_include_pages',
-        'Include Published Pages',
-        'chatbot_chatgpt_kn_include_pages_callback',
-        'chatbot_chatgpt_knowledge_navigator',
-        'chatbot_chatgpt_kn_settings_section'
-    );
-
-    add_settings_field(
-        'chatbot_chatgpt_kn_include_products',
-        'Include Published Products',
-        'chatbot_chatgpt_kn_include_products_callback',
-        'chatbot_chatgpt_knowledge_navigator',
-        'chatbot_chatgpt_kn_settings_section'
-    );
-
-    add_settings_field(
-        'chatbot_chatgpt_kn_include_comments',
-        'Include Approved Comments',
-        'chatbot_chatgpt_kn_include_comments_callback',
-        'chatbot_chatgpt_knowledge_navigator',
-        'chatbot_chatgpt_kn_settings_section'
-    );
-
-    add_settings_field(
-        'chatbot_chatgpt_enhanced_response_limit',
-        'Enhanced Response Limit',
-        'chatbot_chatgpt_enhanced_response_limit_callback',
-        'chatbot_chatgpt_knowledge_navigator',
-        'chatbot_chatgpt_kn_settings_section'
-    );
-
-    add_settings_field(
-        'chatbot_chatgpt_kn_tuning_percentage',
-        'Tuning Percentage',
-        'chatbot_chatgpt_kn_tuning_percentage_callback',
-        'chatbot_chatgpt_knowledge_navigator',
-        'chatbot_chatgpt_kn_settings_section'
-    );
-
-    // Knowledge Navigator Analysis settings tab - Ver 1.6.1
-    register_setting('chatbot_chatgpt_kn_analysis', 'chatbot_chatgpt_kn_analysis_output');
-
-    add_settings_section(
-        'chatbot_chatgpt_kn_analysis_section',
-        'Knowledge Navigator Analysis',
-        'chatbot_chatgpt_kn_analysis_section_callback',
-        'chatbot_chatgpt_kn_analysis'
-    );
-
-    add_settings_field(
-        'chatbot_chatgpt_kn_analysis_output',
-        'Output Format',
-        'chatbot_chatgpt_kn_analysis_output_callback',
-        'chatbot_chatgpt_kn_analysis',
-        'chatbot_chatgpt_kn_analysis_section'
     );
 
     // Reporting settings tab - Ver 1.6.1

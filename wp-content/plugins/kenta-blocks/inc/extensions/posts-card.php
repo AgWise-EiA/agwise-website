@@ -12,16 +12,15 @@ if ( !function_exists( 'kb_posts_card_attrs' ) ) {
      *
      * @return array
      */
-    function kb_posts_card_attrs( $defaults = array() )
-    {
+    function kb_posts_card_attrs(  $defaults = array()  ) {
         $defaults = wp_parse_args( $defaults, array(
             'cardStyle' => 'plain',
         ) );
         return array(
             'cardStyle' => array(
-            'type'    => 'string',
-            'default' => $defaults['cardStyle'],
-        ),
+                'type'    => 'string',
+                'default' => $defaults['cardStyle'],
+            ),
         );
     }
 
@@ -34,8 +33,7 @@ if ( !function_exists( 'kb_card_preset_style' ) ) {
      *
      * @return array|string[]
      */
-    function kb_card_preset_style( $block )
-    {
+    function kb_card_preset_style(  $block  ) {
         $preset = kb_get_block_attr( $block, 'cardStyle' );
         switch ( $preset ) {
             case 'ghost':

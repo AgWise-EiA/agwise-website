@@ -124,16 +124,16 @@ $metadata = array(
 		);
 
 		$wrapper_attributes = get_block_wrapper_attributes( array(
-			'class' => kb_clsx(
+			'class' => esc_attr( kb_clsx(
 				'kb-product-rating',
 				'kb-product-rating-' . $attrs['blockID']
-			)
+			) )
 		) );
 
 		return sprintf(
 			'<div %s>%s</div>',
 			$wrapper_attributes,
-			$rating_html
+			wp_kses_post( $rating_html )
 		);
 	}
 );

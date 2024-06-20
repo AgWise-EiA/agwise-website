@@ -12,13 +12,12 @@ if ( !function_exists( 'kenta_blocks_transform_attrs' ) ) {
      *
      * @return array
      */
-    function kenta_blocks_transform_attrs( $defaults = array() )
-    {
+    function kenta_blocks_transform_attrs(  $defaults = array()  ) {
         return array(
             'transform' => array(
-            'type'    => 'string',
-            'default' => 'no',
-        ),
+                'type'    => 'string',
+                'default' => 'no',
+            ),
         );
     }
 
@@ -29,8 +28,7 @@ if ( !function_exists( 'kenta_blocks_transform_css' ) ) {
      *
      * @return array
      */
-    function kenta_blocks_transform_css( $block )
-    {
+    function kenta_blocks_transform_css(  $block  ) {
         return array();
     }
 
@@ -41,8 +39,7 @@ if ( !function_exists( 'kenta_blocks_transform_hover_css' ) ) {
      *
      * @return array
      */
-    function kenta_blocks_transform_hover_css( $block )
-    {
+    function kenta_blocks_transform_hover_css(  $block  ) {
         return array();
     }
 

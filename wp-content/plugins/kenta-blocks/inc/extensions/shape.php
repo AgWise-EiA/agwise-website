@@ -10,8 +10,7 @@ if ( !function_exists( 'kenta_blocks_shape_attrs' ) ) {
      *
      * @return array
      */
-    function kenta_blocks_shape_attrs( $defaults = array() )
-    {
+    function kenta_blocks_shape_attrs(  $defaults = array()  ) {
         $defaults = wp_parse_args( $defaults, array(
             'shape'         => 'none',
             'shapeSvg'      => '',
@@ -25,43 +24,43 @@ if ( !function_exists( 'kenta_blocks_shape_attrs' ) ) {
         ) );
         return array(
             'shape'         => array(
-            'type'    => 'string',
-            'default' => $defaults['shape'],
-        ),
+                'type'    => 'string',
+                'default' => $defaults['shape'],
+            ),
             'shapeSvg'      => array(
-            'type'     => 'string',
-            'source'   => 'html',
-            'selector' => '.kb-shape-divider',
-            'default'  => $defaults['shapeSvg'],
-        ),
+                'type'     => 'string',
+                'source'   => 'html',
+                'selector' => '.kb-shape-divider',
+                'default'  => $defaults['shapeSvg'],
+            ),
             'flipShape'     => array(
-            'type'    => 'string',
-            'default' => $defaults['flipShape'],
-        ),
+                'type'    => 'string',
+                'default' => $defaults['flipShape'],
+            ),
             'invertShape'   => array(
-            'type'    => 'string',
-            'default' => $defaults['invertShape'],
-        ),
+                'type'    => 'string',
+                'default' => $defaults['invertShape'],
+            ),
             'shapeWidth'    => array(
-            'type'    => 'object',
-            'default' => $defaults['shapeWidth'],
-        ),
+                'type'    => 'object',
+                'default' => $defaults['shapeWidth'],
+            ),
             'shapeHeight'   => array(
-            'type'    => 'object',
-            'default' => $defaults['shapeHeight'],
-        ),
+                'type'    => 'object',
+                'default' => $defaults['shapeHeight'],
+            ),
             'shapeColor'    => array(
-            'type'    => 'string',
-            'default' => $defaults['shapeColor'],
-        ),
+                'type'    => 'string',
+                'default' => $defaults['shapeColor'],
+            ),
             'shapePosition' => array(
-            'type'    => 'string',
-            'default' => $defaults['shapePosition'],
-        ),
+                'type'    => 'string',
+                'default' => $defaults['shapePosition'],
+            ),
             'shapeZIndex'   => array(
-            'type'    => 'object',
-            'default' => $defaults['zIndex'],
-        ),
+                'type'    => 'object',
+                'default' => $defaults['zIndex'],
+            ),
         );
     }
 
@@ -74,37 +73,34 @@ if ( !function_exists( 'kenta_blocks_get_shapes' ) ) {
      *
      * @return array|array[]|mixed|null
      */
-    function kenta_blocks_get_shapes( $id = null )
-    {
+    function kenta_blocks_get_shapes(  $id = null  ) {
         $shapes = array(
             'none'     => array(
-            'title'   => _x( 'None', 'Shapes', 'kenta-blocks' ),
-            'options' => array(),
-        ),
+                'title'   => _x( 'None', 'Shapes', 'kenta-blocks' ),
+                'options' => array(),
+            ),
             'tilt'     => array(
-            'title'   => _x( 'Tilt', 'Shapes', 'kenta-blocks' ),
-            'options' => array( 'shape_flip' ),
-        ),
+                'title'   => _x( 'Tilt', 'Shapes', 'kenta-blocks' ),
+                'options' => array('shape_flip'),
+            ),
             'triangle' => array(
-            'title'   => _x( 'Triangle (Pro)', 'Shapes', 'kenta-blocks' ),
-            'options' => array( 'shape_invert' ),
-        ),
+                'title'   => _x( 'Triangle (Pro)', 'Shapes', 'kenta-blocks' ),
+                'options' => array('shape_invert'),
+            ),
         );
         foreach ( $shapes as $shape => $shape_data ) {
             $folder = 'assets/images/shapes/';
             $files = array();
             $filepath = KENTA_BLOCKS_PLUGIN_PATH . ($folder . $shape . '.svg');
             if ( is_file( $filepath ) && is_readable( $filepath ) ) {
-                $files['svg'] = file_get_contents( $filepath );
+                $files['svg'] = kb_wp_filesystem()->get_contents( $filepath );
             }
-            
             if ( in_array( 'shape_invert', $shape_data['options'] ) ) {
                 $negative_filepath = KENTA_BLOCKS_PLUGIN_PATH . ($folder . $shape . '-negative' . '.svg');
                 if ( is_file( $negative_filepath ) && is_readable( $negative_filepath ) ) {
-                    $files['negative'] = file_get_contents( $negative_filepath );
+                    $files['negative'] = kb_wp_filesystem()->get_contents( $negative_filepath );
                 }
             }
-            
             $shapes[$shape]['files'] = $files;
         }
         if ( $id !== null ) {
@@ -123,8 +119,7 @@ if ( !function_exists( 'kenta_blocks_shape_css' ) ) {
      *
      * @return array|array[]
      */
-    function kenta_blocks_shape_css( $selector, $block )
-    {
+    function kenta_blocks_shape_css(  $selector, $block  ) {
         $value = kb_get_block_attr( $block, 'shape' );
         $zIndex = kb_get_block_attr( $block, 'shapeZIndex' );
         $flip = kb_get_block_attr( $block, 'flipShape' );
@@ -132,24 +127,24 @@ if ( !function_exists( 'kenta_blocks_shape_css' ) ) {
         $height = kb_get_block_attr( $block, 'shapeHeight' );
         $color = kb_get_block_attr( $block, 'shapeColor' );
         $shapeData = kenta_blocks_get_shapes( $value );
-        if ( !$shapeData || empty($shapeData['files']) ) {
+        if ( !$shapeData || empty( $shapeData['files'] ) ) {
             return array(
                 $selector => array(
-                'display' => 'none',
-            ),
+                    'display' => 'none',
+                ),
             );
         }
         $flip = $flip === 'yes' && in_array( 'shape_flip', $shapeData['options'] );
         return array(
             $selector         => array(
-            'z-index'         => $zIndex,
-            '--kb-shape-fill' => $color,
-        ),
+                'z-index'         => $zIndex,
+                '--kb-shape-fill' => $color,
+            ),
             "{$selector} svg" => array(
-            'width'     => $width,
-            'height'    => $height,
-            'transform' => ( $flip ? 'translateX(-50%) rotateY(180deg)' : 'translateX(-50%)' ),
-        ),
+                'width'     => $width,
+                'height'    => $height,
+                'transform' => ( $flip ? 'translateX(-50%) rotateY(180deg)' : 'translateX(-50%)' ),
+            ),
         );
     }
 

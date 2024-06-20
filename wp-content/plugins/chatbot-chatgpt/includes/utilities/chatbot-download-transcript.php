@@ -14,6 +14,7 @@ if ( ! defined( 'WPINC' ) ) {
 }
 
 function chatbot_chatgpt_download_transcript() {
+
     if (!isset($_POST['user_id'], $_POST['page_id'], $_POST['conversation_content'])) {
         wp_send_json_error('Missing required POST fields');
         return;
@@ -29,16 +30,18 @@ function chatbot_chatgpt_download_transcript() {
     $conversation_content = wp_strip_all_tags($conversation_content);
 
     // Define the path to the transcripts directory
-    $transcriptDir = CHATBOT_CHATGPT_PLUGIN_DIR_PATH . 'transcripts/';
+    $transcript_dir = CHATBOT_CHATGPT_PLUGIN_DIR_PATH . 'transcripts/';
 
-    // Ensure directory exists or attempt to create it
-    if (!file_exists($transcriptDir)) {
-        wp_mkdir_p($transcriptDir);
+    // Ensure the directory exists or attempt to create it
+    if (!create_directory_and_index_file($transcript_dir)) {
+        // Error handling, e.g., log the error or handle the failure appropriately
+        // back_trace ( 'ERROR', 'Failed to create directory.')
+        return;
     }
 
     // Create the filename
-    $transcriptFileName = 'transcript_' . date('Y-m-d_H-i-s') . '.txt';
-    $transcriptFile = $transcriptDir . $transcriptFileName;
+    $transcriptFileName = 'transcript_' . generate_random_string() . '_' . date('Y-m-d_H-i-s') . '.txt';
+    $transcriptFile = $transcript_dir . $transcriptFileName;
 
     // DIAG - Diagnostics - Ver 1.9.9
     // back_trace( 'Notice', 'Transcript File: ' . $transcriptFile );
@@ -62,7 +65,7 @@ add_action('wp_ajax_chatbot_chatgpt_download_transcript', 'chatbot_chatgpt_downl
 add_action('wp_ajax_nopriv_chatbot_chatgpt_download_transcript', 'chatbot_chatgpt_download_transcript');
 
 // Delete old transcripts - Ver 1.9.9   
-function chatbot_chatgpt_cleanup_old_transcripts() {
+function chatbot_chatgpt_cleanup_transcripts_directory() {
     $transcripts_dir = CHATBOT_CHATGPT_PLUGIN_DIR_PATH . 'transcripts/';
     foreach (glob($transcripts_dir . '*') as $file) {
         // Delete files older than 1 hour
@@ -70,5 +73,7 @@ function chatbot_chatgpt_cleanup_old_transcripts() {
             unlink($file);
         }
     }
+    // Create the index.php file if it does not exist
+    create_directory_and_index_file($transcripts_dir);
 }
-add_action('chatbot_chatgpt_cleanup_transcripts', 'chatbot_chatgpt_cleanup_old_transcripts');
+add_action('chatbot_chatgpt_cleanup_transcript_files', 'chatbot_chatgpt_cleanup_transcripts_directory');

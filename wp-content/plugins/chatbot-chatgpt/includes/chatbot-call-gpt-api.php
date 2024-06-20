@@ -54,7 +54,7 @@ function chatbot_chatgpt_call_api($api_key, $message) {
     $max_tokens = intval(esc_attr(get_option('chatbot_chatgpt_max_tokens_setting', '150')));
 
     // Conversation Context - Ver 1.6.1
-    $context = esc_attr(get_option('chatbot_chatgpt_conversation_context', 'You are a versatile, friendly, and helpful assistant designed to support me in a variety of tasks.'));
+    $context = esc_attr(get_option('chatbot_chatgpt_conversation_context', 'You are a versatile, friendly, and helpful assistant designed to support me in a variety of tasks that responds in Markdown.'));
  
     // Context History - Ver 1.6.1
     $chatgpt_last_response = concatenateHistory('chatbot_chatgpt_context_history');
@@ -94,18 +94,47 @@ function chatbot_chatgpt_call_api($api_key, $message) {
     //
     // ENHANCED CONTEXT - Select some context to send with the message - Ver 1.9.6
     //
-    $useEnhancedContext = esc_attr(get_option('chatbot_chatgpt_use_enhanced_context', 'No'));
+    $useEnhancedContext = esc_attr(get_option('chatbot_chatgpt_use_enhanced_context', 'Yes'));
 
     // DIAG Diagnostics - Ver 1.9.6
     // back_trace( 'NOTICE', '$useEnhancedContext: ' . $useEnhancedContext);
 
     if ($useEnhancedContext == 'Yes') {
-        $enhancedContext = kn_enhance_context($message);
-        $context = $sys_message . ' ' . $enhancedContext . $chatgpt_last_response . ' ' . $context . ' ' . $chatbot_chatgpt_kn_conversation_context;
+
         // DIAG Diagnostics - Ver 1.9.6
-        // back_trace( 'NOTICE', '$context: ' . $context);
+        // back_trace( 'NOTICE', '$enhancedContext: ' . $enhancedContext);
+
+        // Focus the content based on the message from the user
+        $enhancedContext = kn_enhance_context($message);
+
+        // Original Context Instructions
+        // $context = $sys_message . ' Here is some information that might be helpful in responding: ' . $enhancedContext . ' ' . $chatgpt_last_response . ' ' . $context . ' ' . $chatbot_chatgpt_kn_conversation_context;
+
+        // Second attempt at Context Instructions
+        // $contextInstructions = ' Here is some information that might be helpful in your response: ';
+        // $context = $contextInstructions . ' ' . $enhancedContext . ' ' . $sys_message. ' ' . $chatgpt_last_response . ' ' . $context . ' ' . $chatbot_chatgpt_kn_conversation_context;
+
+        // Third attempt at Context Instructions
+        // $contextInstructions = ' Try to only use this information in responding to input. ';
+        // $contextInstructions = ' Incorporate this information into your response. ';
+        // $context = $contextInstructions . ' ' . $enhancedContext . ' ' . $sys_message. ' ' . $chatgpt_last_response . ' ' . $context . ' ' . $chatbot_chatgpt_kn_conversation_context;
+
+        // Fourth attempt at Context Instructions
+        // $contextInstructions = ' Use this information to help guide your response. ';
+        // $context = $contextInstructions . ' ' . $enhancedContext . ' ' . $context . ' ' . $chatbot_chatgpt_kn_conversation_context;
+
+        // Fifth attempt at Context Instructions
+        $contextInstructions = ' Use this information to help guide your response. ';
+        $context = $contextInstructions . ' ' . $enhancedContext . ' ' . $context . ' ' . $chatbot_chatgpt_kn_conversation_context;
+
+        // DIAG Diagnostics - Ver 1.9.6
+        // back_trace( 'NOTICE', '$chatbot_chatgpt_kn_conversation_context: ' . $chatbot_chatgpt_kn_conversation_context);
+
     } else {
+
+        // Original Context Instructions - No Enhanced Context
         $context = $sys_message . ' ' . $chatgpt_last_response . ' ' . $context . ' ' . $chatbot_chatgpt_kn_conversation_context;
+
     }
 
     // Added Role, System, Content Static Variable - Ver 1.6.0
@@ -189,10 +218,12 @@ function chatbot_chatgpt_call_api($api_key, $message) {
     // back_trace( 'NOTICE', 'Usage - Total Tokens: ' . $response_body["usage"]["total_tokens"]);
 
     // Add the usage to the conversation tracker
-    append_message_to_conversation_log($session_id, $user_id, $page_id, 'Prompt Tokens', null, null, $response_body["usage"]["prompt_tokens"]);
-    append_message_to_conversation_log($session_id, $user_id, $page_id, 'Completion Tokens', null, null, $response_body["usage"]["completion_tokens"]);
-    append_message_to_conversation_log($session_id, $user_id, $page_id, 'Total Tokens', null, null, $response_body["usage"]["total_tokens"]);
-
+    if ($response['response']['code'] == 200) {
+        append_message_to_conversation_log($session_id, $user_id, $page_id, 'Prompt Tokens', null, null, $response_body["usage"]["prompt_tokens"]);
+        append_message_to_conversation_log($session_id, $user_id, $page_id, 'Completion Tokens', null, null, $response_body["usage"]["completion_tokens"]);
+        append_message_to_conversation_log($session_id, $user_id, $page_id, 'Total Tokens', null, null, $response_body["usage"]["total_tokens"]);
+    }
+    
     if (!empty($response_body['choices'])) {
         // Handle the response from the chat engine
         // Context History - Ver 1.6.1

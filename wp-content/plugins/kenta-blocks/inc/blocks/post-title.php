@@ -62,19 +62,24 @@ $metadata = array(
 			return '';
 		}
 
-		$tag_name = $attrs['markup'];
+		$tag_name = kb_esc_heading_markup( $attrs['markup'] );
 
 		if ( isset( $attrs['isLink'] ) && $attrs['isLink'] === 'yes' ) {
-			$title = sprintf( '<a href="%1$s" target="%2$s" %3$s>%4$s</a>', get_the_permalink( $post_ID ), '_self', '', $title );
+			$title = sprintf(
+				'<a href="%1$s" target="%2$s">%3$s</a>',
+				esc_url( get_the_permalink( $post_ID ) ),
+				'_self',
+				esc_html( $title )
+			);
 		}
 
 		$wrapper_attributes = get_block_wrapper_attributes( array(
-			'class' => kb_clsx( [
+			'class' => esc_attr( kb_clsx( [
 				'kb-post-title'                      => true,
 				'kb-post-title-' . $tag_name         => true,
 				'kb-post-title-' . $attrs['blockID'] => true,
 				'kb-background-clip'                 => $attrs['backgroundClip'] === 'yes' && $attrs['displayAsBlock'] === 'yes',
-			] )
+			] ) )
 		) );
 
 		if ( $attrs['displayAsBlock'] === 'yes' ) {

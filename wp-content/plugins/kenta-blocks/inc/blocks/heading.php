@@ -41,7 +41,7 @@ $metadata = array(
 return array(
 	'metadata' => $metadata,
 	'css'      => function ( $block, $css ) {
-		$markup = kb_get_block_attr( $block, 'markup' );
+		$markup = kb_esc_heading_markup( kb_get_block_attr( $block, 'markup' ) );
 
 		return kenta_blocks_paragraph_css( $markup, 'kb-heading', $block, $css );
 	}

@@ -17,7 +17,7 @@ if ( ! defined( 'WPINC' ) ) {
 }
 
 // Set the chatbot background color
-function chatbot_chatgpt_appearance_background_color_callback(): void {
+function chatbot_chatgpt_appearance_background_color_callback() {
     // Get the value of the setting we've registered with register_setting()
     $chatbot_chatgpt_appearance_background_color = esc_attr(get_option('chatbot_chatgpt_appearance_background_color', '#f1f1f1'));
     ?>
@@ -38,7 +38,7 @@ function chatbot_chatgpt_appearance_background_color_callback(): void {
 }
 
 // Now override the css with the color chosen by the user
-function chatbot_chatgpt_appearance_background_custom_css_settings(): void {
+function chatbot_chatgpt_appearance_background_custom_css_settings() {
     $chatbot_chatgpt_appearance_background_color = esc_attr(get_option('chatbot_chatgpt_appearance_background_color', '#f1f1f1'));
     $chatbot_chatgpt_appearance_greeting_text_color = esc_attr(get_option('chatbot_chatgpt_appearance_greeting_text_color', '#000000'));
 
@@ -51,12 +51,13 @@ function chatbot_chatgpt_appearance_background_custom_css_settings(): void {
     $GLOBALS['chatbotChatGPTAppearanceCSS']['chatbot-upload-file'] = "#chatbot-chatgpt-upload-file { background-color: {$chatbot_chatgpt_appearance_background_color} !important; }";
     $GLOBALS['chatbotChatGPTAppearanceCSS']['chatbot-erase-conversation'] = "#chatbot-chatgpt-erase-btn { background-color: {$chatbot_chatgpt_appearance_background_color} !important; }";
     $GLOBALS['chatbotChatGPTAppearanceCSS']['chatbot-chatgpt-text-to-speech-btn'] = "#chatbot-chatgpt-text-to-speech-btn { background-color: {$chatbot_chatgpt_appearance_background_color} !important; }";
+    $GLOBALS['chatbotChatGPTAppearanceCSS']['chatbot-chatgpt-download-transcript-btn'] = "#chatbot-chatgpt-download-transcript-btn { background-color: {$chatbot_chatgpt_appearance_background_color} !important; }";
     
 }
 add_action('wp_head', 'chatbot_chatgpt_appearance_background_custom_css_settings');
 
 // Set the chatbot background color
-function chatbot_chatgpt_appearance_header_background_color_callback(): void {
+function chatbot_chatgpt_appearance_header_background_color_callback() {
     // Get the value of the setting we've registered with register_setting()
     $chatbot_chatgpt_appearance_header_background_color = esc_attr(get_option('chatbot_chatgpt_appearance_header_background_color', '#222222'));
     ?>
@@ -77,7 +78,7 @@ function chatbot_chatgpt_appearance_header_background_color_callback(): void {
 }
 
 // Now override the css with the color chosen by the user
-function chatbot_chatgpt_appearance_header_background_custom_css_settings(): void {
+function chatbot_chatgpt_appearance_header_background_custom_css_settings() {
     $chatbot_chatgpt_appearance_header_background_color = esc_attr(get_option('chatbot_chatgpt_appearance_header_background_color', '#222222'));
 
     // Define CSS styles as global variables

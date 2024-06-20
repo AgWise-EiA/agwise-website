@@ -3,9 +3,9 @@
 /*
  * Plugin Name: Kenta Blocks
  * Plugin URI: https://kentatheme.com/blocks/
- * Description: The Swiss Army knife of Gutenberg page builders. Use Section / Column blocks to create any site layout. We also have unlimited colors, backgrounds, typography and more. All blocks are responsive. Always display perfectly and fully customize, whether desktop or mobile.
+ * Description: Kenta Blocks is a set of responsive blocks with powerful options and pre-designed templates library.
  * Author: WP Moose
- * Version: 1.3.9
+ * Version: 1.4.0
  * Requires at least: 5.6
  * Requires PHP: 7.2
  * License: GPLv3
@@ -17,17 +17,13 @@
 if ( !defined( 'ABSPATH' ) ) {
     exit;
 }
-
 if ( function_exists( 'kb_fs' ) ) {
     kb_fs()->set_basename( false, __FILE__ );
 } else {
-    
     if ( !function_exists( 'kb_fs' ) ) {
         // Create a helper function for easy SDK access.
-        function kb_fs()
-        {
-            global  $kb_fs ;
-            
+        function kb_fs() {
+            global $kb_fs;
             if ( !isset( $kb_fs ) ) {
                 // Include Freemius SDK.
                 require_once dirname( __FILE__ ) . '/freemius/start.php';
@@ -42,30 +38,28 @@ if ( function_exists( 'kb_fs' ) ) {
                     'has_addons'     => false,
                     'has_paid_plans' => true,
                     'menu'           => array(
-                    'slug'    => 'kenta-blocks',
-                    'pricing' => false,
-                    'contact' => true,
-                    'support' => true,
-                ),
+                        'slug'    => 'kenta-blocks',
+                        'pricing' => false,
+                        'contact' => true,
+                        'support' => true,
+                    ),
                     'is_live'        => true,
                 ) );
             }
-            
             return $kb_fs;
         }
-        
+
         // Init Freemius.
         kb_fs();
         // Signal that SDK was initiated.
         do_action( 'kb_fs_loaded' );
     }
-    
     /**
      * Defining plugin constants.
      *
      * @since 0.0.1
      */
-    define( 'KENTA_BLOCKS_VERSION', '1.3.9' );
+    define( 'KENTA_BLOCKS_VERSION', '1.4.0' );
     define( 'KENTA_BLOCKS_PLUGIN_FILE', __FILE__ );
     define( 'KENTA_BLOCKS_PLUGIN_PATH', trailingslashit( plugin_dir_path( KENTA_BLOCKS_PLUGIN_FILE ) ) );
     define( 'KENTA_BLOCKS_PLUGIN_URL', trailingslashit( plugins_url( '/', KENTA_BLOCKS_PLUGIN_FILE ) ) );
@@ -100,12 +94,10 @@ if ( function_exists( 'kb_fs' ) ) {
      */
     add_action( 'plugins_loaded', function () {
         $saved_ver = get_option( 'kb_plugin_version', '' );
-        
         if ( $saved_ver !== KENTA_BLOCKS_VERSION ) {
             update_option( 'kb_plugin_version', KENTA_BLOCKS_VERSION );
             kenta_blocks_regenerate_assets();
         }
-        
         \KentaBlocks\Bootstrap::instance();
     } );
     /**

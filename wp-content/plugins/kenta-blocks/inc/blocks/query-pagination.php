@@ -142,13 +142,13 @@ $metadata = array(
 				$prev = sprintf(
 					'<a href="%1$s" class="%2$s">%3$s</a>',
 					esc_url( add_query_arg( $page_key, $page - 1 ) ),
-					'kb-pagination-item kb-pagination-prev-item-' . $pn_style,
+					esc_attr( 'kb-pagination-item kb-pagination-prev-item-' . $pn_style ),
 					$prev_content
 				);
 			} else if ( $show_disabled ) {
 				$prev = sprintf(
 					'<span class="%1$s">%2$s</span>',
-					'kb-pagination-item-disabled kb-pagination-item kb-pagination-prev-item-' . $pn_style,
+					esc_attr( 'kb-pagination-item-disabled kb-pagination-item kb-pagination-prev-item-' . $pn_style ),
 					$prev_content
 				);
 			}
@@ -162,13 +162,13 @@ $metadata = array(
 					$next = sprintf(
 						'<a href="%1$s" class="%2$s">%3$s</a>',
 						esc_url( add_query_arg( $page_key, $page + 1 ) ),
-						'kb-pagination-item kb-pagination-prev-item-' . $pn_style,
+						esc_attr( 'kb-pagination-item kb-pagination-prev-item-' . $pn_style ),
 						$next_content
 					);
 				} else if ( $show_disabled ) {
 					$next = sprintf(
 						'<span class="%1$s">%2$s</span>',
-						'kb-pagination-item-disabled kb-pagination-item kb-pagination-prev-item-' . $pn_style,
+						esc_attr( 'kb-pagination-item-disabled kb-pagination-item kb-pagination-prev-item-' . $pn_style ),
 						$next_content
 					);
 				}
@@ -224,16 +224,16 @@ $metadata = array(
 		$wp_query = $prev_wp_query; // Restore original global query
 
 		$wrapper_attributes = get_block_wrapper_attributes( [
-			'class' => kb_clsx( [
+			'class' => esc_attr( kb_clsx( [
 				'kb-query-pagination',
 				"kb-query-pagination-{$attrs['blockID']}",
-			] )
+			] ) )
 		] );
 
 		return sprintf(
 			'<div %1$s>%2$s</div>',
 			$wrapper_attributes,
-			$prev . $numbers . $next
+			wp_kses_post( $prev . $numbers . $next )
 		);
 	}
 );

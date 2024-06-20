@@ -105,76 +105,6 @@ if ( ! function_exists( 'kenta_blocks_template_part' ) ) {
 	}
 }
 
-if ( ! function_exists( 'kenta_blocks_sanitize_rgba_color' ) ) {
-	/**
-	 * RGBA color sanitization callback example.
-	 *
-	 * @param $color
-	 *
-	 * @return string|void
-	 */
-	function kenta_blocks_sanitize_rgba_color( $color ) {
-		// css var
-		if ( false !== strpos( $color, 'var' ) ) {
-			return $color;
-		}
-
-		if ( empty( $color ) || is_array( $color ) ) {
-			return 'rgba(0,0,0,0)';
-		}
-
-		// If string does not start with 'rgba', then treat as hex
-		// sanitize the hex color and finally convert hex to rgba
-		if ( false === strpos( $color, 'rgba' ) ) {
-			return sanitize_hex_color( $color );
-		}
-
-		// By now we know the string is formatted as an rgba color so we need to further sanitize it.
-		$color = str_replace( ' ', '', $color );
-		sscanf( $color, 'rgba(%d,%d,%d,%f)', $red, $green, $blue, $alpha );
-
-		return 'rgba(' . $red . ',' . $green . ',' . $blue . ',' . $alpha . ')';
-	}
-}
-
-if ( ! function_exists( 'kenta_blocks_sanitize_rgba_color_collect' ) ) {
-	/**
-	 * A collect of RGBA color sanitization callback example.
-	 *
-	 * @param $colors
-	 *
-	 * @return mixed
-	 */
-	function kenta_blocks_sanitize_rgba_color_collect( $colors ) {
-		if ( ! is_array( $colors ) ) {
-			return [];
-		}
-
-		foreach ( $colors as $key => $value ) {
-			$colors[ $key ] = kenta_blocks_sanitize_rgba_color( $value );
-		}
-
-		return $colors;
-	}
-}
-
-if ( ! function_exists( 'kenta_blocks_sanitize_checkbox' ) ) {
-	/**
-	 * Checkbox sanitization callback example.
-	 *
-	 * Sanitization callback for 'checkbox' type controls. This callback sanitizes `$checked`
-	 * as a boolean value, either TRUE or FALSE.
-	 *
-	 * @param mixed $checked Whether the checkbox is checked.
-	 *
-	 * @return string Whether the checkbox is checked.
-	 */
-	function kenta_blocks_sanitize_checkbox( $checked ) {
-		// Boolean check.
-		return $checked === 'yes' ? $checked : 'no';
-	}
-}
-
 if ( ! function_exists( 'kenta_blocks_current_template' ) ) {
 	/**
 	 * Get current template name
@@ -578,5 +508,22 @@ if ( ! function_exists( 'kb_post_blocks' ) ) {
 		}
 
 		return array();
+	}
+}
+
+if ( ! function_exists( 'kb_wp_filesystem' ) ) {
+	/**
+	 *  Get global filesystem instance
+	 *
+	 * @return \WP_Filesystem_Direct
+	 */
+	function kb_wp_filesystem() {
+		global $wp_filesystem;
+		if ( empty( $wp_filesystem ) ) {
+			require_once ABSPATH . '/wp-admin/includes/file.php';
+			WP_Filesystem();
+		}
+
+		return $wp_filesystem;
 	}
 }

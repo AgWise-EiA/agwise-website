@@ -74,12 +74,10 @@ final class Script {
 					}
 				} else {
 					$kenta_blocks = kenta_blocks_all();
-					if ( isset( $kenta_blocks[ $name ] ) && isset( $kenta_blocks[ $name ]['script'] ) ) {
+					if ( isset( $kenta_blocks[ $name ]['script'] ) ) {
 
-						if ( isset( $block['attrs'] ) && isset( $block['attrs']['blockID'] ) ) {
-							ob_start();
-							$kenta_blocks[ $name ]['script']( $block );
-							$scripts .= ob_get_clean();
+						if ( isset( $block['attrs']['blockID'] ) ) {
+							$scripts .= $kenta_blocks[ $name ]['script']( $block );
 						}
 					}
 				}

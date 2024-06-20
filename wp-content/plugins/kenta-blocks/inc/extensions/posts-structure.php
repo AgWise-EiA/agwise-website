@@ -26,7 +26,7 @@ if ( ! function_exists( 'kb_show_post_metas' ) ) {
 		$divider     = $attrs['metaItemsDivider'] ?? 'divider-1';
 		$icon        = $attrs['metaItemsStyle'] === 'icon';
 
-		echo $before;
+		echo wp_kses_post( $before );
 
 		foreach ( $items as $item ) {
 
@@ -34,11 +34,11 @@ if ( ! function_exists( 'kb_show_post_metas' ) ) {
 
 				$byline = sprintf(
 					'%s',
-					'<a class="' . $style . '" href="' . esc_url( get_author_posts_url( get_the_author_meta( 'ID' ) ) ) . '">' . esc_html( get_the_author() ) . '</a>'
+					'<a class="' . esc_attr( $style ) . '" href="' . esc_url( get_author_posts_url( get_the_author_meta( 'ID' ) ) ) . '">' . esc_html( get_the_author() ) . '</a>'
 				);
 
 				if ( ! empty( $byline ) ) {
-					echo '<span class="byline meta-item"> ' . ( $icon ? '<i class="' . $attrs['bylineMetaIcon'] . '"></i>' : '' ) . $byline . '</span>';
+					echo '<span class="byline meta-item"> ' . ( $icon ? '<i class="' . esc_attr( $attrs['bylineMetaIcon'] ) . '"></i>' : '' ) . wp_kses_post( $byline ) . '</span>';
 				}
 			} elseif ( $item === 'published' ) {
 
@@ -56,11 +56,11 @@ if ( ! function_exists( 'kb_show_post_metas' ) ) {
 
 				$posted_on = sprintf(
 					'%s',
-					'<a class="' . $style . '" href="' . esc_url( get_permalink() ) . '" rel="bookmark"><span class="entry-date">' . $time_string . '</span></a>'
+					'<a class="' . esc_attr( $style ) . '" href="' . esc_url( get_permalink() ) . '" rel="bookmark"><span class="entry-date">' . $time_string . '</span></a>'
 				);
 
 				if ( ! empty( $posted_on ) ) {
-					echo '<span class="meta-item posted-on">' . ( $icon ? '<i class="' . $attrs['publishedMetaIcon'] . '"></i>' : '' ) . $posted_on . '</span>';
+					echo '<span class="meta-item posted-on">' . ( $icon ? '<i class="' . esc_attr( $attrs['publishedMetaIcon'] ) . '"></i>' : '' ) . wp_kses_post( $posted_on ) . '</span>';
 				}
 			} elseif ( $item === 'comments' ) {
 				if ( ! comments_open( get_the_ID() ) || get_comments_number() <= 0 ) {
@@ -68,20 +68,20 @@ if ( ! function_exists( 'kb_show_post_metas' ) ) {
 				}
 
 				echo '<span class="meta-item comments-link">';
-				echo $icon ? '<i class="' . $attrs['commentsMetaIcon'] . '"></i>' : '';
+				echo $icon ? '<i class="' . esc_attr( $attrs['commentsMetaIcon'] ) . '"></i>' : '';
 				comments_popup_link( false, false, false, $style );
 				echo '</span>';
 			}
 
 			if ( $divider !== 'none' ) {
 				echo '<span class="meta-divider">';
-				echo kb_image( $divider );
+				echo wp_kses_post( kb_image( $divider ) );
 				echo '</span>';
 			} else {
 				echo '<span class="meta-empty-divider mr-2"></span>';
 			}
 		}
 
-		echo $after;
+		echo wp_kses_post( $after );
 	}
 }

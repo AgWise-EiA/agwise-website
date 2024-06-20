@@ -78,11 +78,11 @@ $metadata = array(
 		}
 
 		$wrapper_attributes = get_block_wrapper_attributes( array(
-			'class' => kb_clsx( [
+			'class' => esc_attr( kb_clsx( [
 				'kb-post-excerpt'                      => true,
 				'kb-post-excerpt-' . $attrs['blockID'] => true,
 				'kb-background-clip'                   => $attrs['backgroundClip'] === 'yes' && $attrs['displayAsBlock'] === 'yes',
-			] )
+			] ) )
 		) );
 
 		if ( $attrs['displayAsBlock'] === 'yes' ) {

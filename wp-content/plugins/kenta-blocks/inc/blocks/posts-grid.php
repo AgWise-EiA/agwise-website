@@ -76,7 +76,7 @@ $metadata = array(
 		}
 
 		$wrapper_attributes = get_block_wrapper_attributes( [
-			'class' => kb_clsx( [ 'kb-posts-grid', 'not-prose', 'kb-posts-grid-' . $attrs['blockID'] ] )
+			'class' => esc_attr( kb_clsx( [ 'kb-posts-grid', 'not-prose', 'kb-posts-grid-' . $attrs['blockID'] ] ) )
 		] );
 
 		$content = '';
@@ -137,7 +137,7 @@ $metadata = array(
 		return sprintf(
 			'<div %1$s>%2$s</div>',
 			$wrapper_attributes,
-			$content
+			wp_kses_post( $content )
 		);
 	}
 );

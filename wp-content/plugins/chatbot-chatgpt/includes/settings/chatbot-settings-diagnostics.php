@@ -15,12 +15,13 @@ if ( ! defined( 'WPINC' ) ) {
 }
 
 // Diagnostics settings section callback - Ver 1.6.5
-function chatbot_chatgpt_diagnostics_section_callback($args): void {
+function chatbot_chatgpt_diagnostics_section_callback($args) {
     ?>
     <p>The Diagnostics tab checks the API status and set options for diagnostics and notices.</p>
     <p>You can turn on/off console and error logging (as of Version 1.6.5 most are now commented out).</p>
     <!-- <p>You can also suppress attribution ('Chatbot & Knowledge Navigator by Kognetiks') and notices by setting the value to 'On' (suppress) or 'Off' (no suppression).</p> -->
     <p>You can also suppress attribution ('Chatbot WordPress plugin by Kognetiks') and notices by setting the value to 'On' (suppress) or 'Off' (no suppression).</p>
+    <p style="background-color: #e0f7fa; padding: 10px;"><b>For an explanation on how to use the diagnostics, messages, and additional documentation please click <a href="?page=chatbot-chatgpt&tab=support&dir=messages&file=messages.md">here</a>.</b></p>
     <h2>System and Plugin Information</h2>
     <?php
     // Get PHP version
@@ -61,6 +62,17 @@ function chatbot_chatgpt_diagnostics_setting_callback($args) {
     <?php
 }
 
+// Custom Error Message - Ver 2.0.3
+function chatbot_chatgpt_custom_error_message_callback($args) {
+    $chatbot_chatgpt_custom_error_message = esc_attr(get_option('chatbot_chatgpt_custom_error_message', 'Your custom error message goes here.'));
+    if ( $chatbot_chatgpt_custom_error_message === null || $chatbot_chatgpt_custom_error_message === '' ) {
+        $chatbot_chatgpt_custom_error_message = 'Your custom error message goes here.';
+    }
+    ?>
+    <input type="text" id="chatbot_chatgpt_custom_error_message" name="chatbot_chatgpt_custom_error_message" value="<?php echo esc_html( $chatbot_chatgpt_custom_error_message ); ?>" size="50">
+    <?php
+}
+
 // Suppress Notices On/Off - Ver 1.6.5
 function chatbot_chatgpt_suppress_notices_callback($args) {
     global $chatbot_chatgpt_suppress_notices;
@@ -70,28 +82,6 @@ function chatbot_chatgpt_suppress_notices_callback($args) {
         <option value="On" <?php selected( $chatbot_chatgpt_suppress_notices, 'On' ); ?>><?php echo esc_html( 'On' ); ?></option>
         <option value="Off" <?php selected( $chatbot_chatgpt_suppress_notices, 'Off' ); ?>><?php echo esc_html( 'Off' ); ?></option>
     </select>
-    <?php
-}
-
-// Suppress Learnings Message - Ver 1.7.1
-function chatbot_chatgpt_suppress_learnings_callback($args) {
-    global $chatbot_chatgpt_suppress_learnings;
-    $chatbot_chatgpt_suppress_learnings = esc_attr(get_option('chatbot_chatgpt_suppress_learnings', 'Random'));
-    ?>
-    <select id="chatgpt_suppress_learnings_setting" name = "chatbot_chatgpt_suppress_learnings">
-        <option value="None" <?php selected( $chatbot_chatgpt_suppress_learnings, 'None' ); ?>><?php echo esc_html( 'None' ); ?></option>
-        <option value="Random" <?php selected( $chatbot_chatgpt_suppress_learnings, 'Random' ); ?>><?php echo esc_html( 'Random' ); ?></option>
-        <option value="Custom" <?php selected( $chatbot_chatgpt_suppress_learnings, 'Custom' ); ?>><?php echo esc_html( 'Custom' ); ?></option>
-    </select>
-    <?php
-}
-
-// Suppress Learnings Message - Ver 1.7.1
-function chatbot_chatgpt_custom_learnings_message_callback($args) {
-    global $chatbot_chatgpt_custom_learnings_message;
-    $chatbot_chatgpt_custom_learnings_message = esc_attr(get_option('chatbot_chatgpt_custom_learnings_message', 'More information may be found here ...'));
-    ?>
-    <input type="text" style="width: 50%;" id="chatbot_chatgpt_custom_learnings_message" name = "chatbot_chatgpt_custom_learnings_message" value="<?php echo esc_attr( $chatbot_chatgpt_custom_learnings_message ); ?>">
     <?php
 }
 
@@ -193,3 +183,16 @@ function back_trace($message_type = "NOTICE", $message = "No message") {
     }
 
 }
+
+// Log Chatbot Errors to the Server - Ver 2.0.3
+function log_chatbot_error() {
+    if (isset($_POST['error_message'])) {
+        $error_message = sanitize_text_field($_POST['error_message']);
+        error_log('[Chatbot] [ERROR] [' . $error_message . ']');
+    }
+    wp_die(); // this is required to terminate immediately and return a proper response
+}
+
+// Register AJAX actions
+add_action('wp_ajax_log_chatbot_error', 'log_chatbot_error');
+add_action('wp_ajax_nopriv_log_chatbot_error', 'log_chatbot_error');
