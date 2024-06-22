@@ -7,3 +7,4 @@ wp-content/wflogs/*
 #wp-content/wflogs/config-livewaf.php
 .htaccess
 lock360.php
+index.php
