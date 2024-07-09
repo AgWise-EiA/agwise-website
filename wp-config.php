@@ -4,6 +4,8 @@
 require_once('vendor/autoload.php');
 
 $dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
+#$dotenv = Dotenv::createImmutable(__DIR__ . '/../agwise_config/.env');
+
 $dotenv->load();
 
 $dotenv->required(['DB_HOST', 'DB_NAME', 'DB_USER', 'DB_PASSWORD']);
