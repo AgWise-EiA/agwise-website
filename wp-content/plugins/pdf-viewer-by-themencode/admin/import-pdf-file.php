@@ -1,5 +1,12 @@
 <?php
-$_POST = filter_input_array( INPUT_POST, FILTER_SANITIZE_STRING );
+
+$filtered_POST = array();
+foreach ($_POST as $key => $value) {
+	$filtered_POST[$key] = htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
+}
+
+$_POST = $filtered_POST;
+
 
 if(isset($_POST['import_file_url'])){
 	$file_url = esc_url_raw( $_POST['import_file_url'] );

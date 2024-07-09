@@ -2527,7 +2527,7 @@
       if ( $form.attr('id') === 'addtag' ) {
 
         var $submit = $form.find('#submit'),
-            $cloned = $this.find('.pvfwof-field').pvfwof_clone();
+            $cloned = $this.children('.pvfwof-field').pvfwof_clone();
 
         $submit.on( 'click', function() {
 

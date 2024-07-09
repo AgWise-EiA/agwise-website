@@ -11,7 +11,7 @@
  * Plugin URI: http://pvfwofframework.com/
  * Author: Pvfwof
  * Author URI: http://pvfwofthemes.com/
- * Version: 2.2.9
+ * Version: 2.3.1
  * Description: A Simple and Lightweight WordPress Option Framework for Themes and Plugins
  * Text Domain: pvfwof
  * Domain Path: /languages

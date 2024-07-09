@@ -212,7 +212,7 @@
   transform: rotate(90deg);
 }
 .pvfwof-nav ul li.pvfwof-tab-expanded ul {
-  display: block; 
+  display: block;
 }
 .pvfwof-nav ul ul {
   display: none;
@@ -5163,4 +5163,3 @@ span.flatpickr-weekday {
     transform: translate3d(0, 0, 0);
   }
 }
-
