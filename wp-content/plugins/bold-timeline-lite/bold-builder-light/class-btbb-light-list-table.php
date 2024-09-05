@@ -1,5 +1,7 @@
 <?php
 
+if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
+
 if ( ! class_exists( 'WP_List_Table' ) ) {
 	require_once( ABSPATH . 'wp-admin/includes/class-wp-list-table.php' );
 }
@@ -51,7 +53,7 @@ if ( ! class_exists( 'BTBB_Light_List_Table' ) ) {
 			);
 
 			if ( ! empty( $_REQUEST['s'] ) ) {
-				$args['s'] = $_REQUEST['s'];
+				$args['s'] = sanitize_text_field( $_REQUEST['s'] );
 			}
 
 			if ( ! empty( $_REQUEST['orderby'] ) ) {
@@ -167,8 +169,9 @@ if ( ! class_exists( 'BTBB_Light_List_Table' ) ) {
 			if ( current_user_can( 'delete_posts', $item->id() ) ) {
 				$url = admin_url( 'admin.php?page=' . $this->post_type . '&post=' . absint( $item->id() ) );
 				$delete_link = wp_nonce_url(
-					add_query_arg( array( 'action' => 'delete' ), $url ),
-					$this->post_type . '-delete-' . absint( $item->id() ) );
+					add_query_arg( array( 'action' => 'delete' ), esc_url_raw( $url ) ),
+					$this->post_type . '-delete-' . absint( $item->id() ) 
+				);
 
 				$actions = array_merge( $actions, array(
 					'delete' => sprintf( '<a href="%1$s" onclick="if (confirm(\'' . esc_js( esc_html__( "You are about to delete this post.\n'Cancel' to stop, 'OK' to delete.", 'bold-timeline' ) ) . '\')) {return true;} return false;">%2$s</a>',

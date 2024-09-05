@@ -1,5 +1,7 @@
 <?php
 
+if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
+
 require_once 'class-btbb-light-list-table.php';
 require_once 'class-btbb-light-item.php';
 
@@ -111,16 +113,16 @@ if ( ! class_exists( 'BTBB_Light' ) ) {
 
 			wp_enqueue_style( 'bt-bb-light-font-awesome.min', plugins_url( 'css/font-awesome.min.css', __FILE__ ) );
 			wp_enqueue_style( 'bt-bb-light', plugins_url( 'css/style.crush.css', __FILE__ ) );
-			// wp_enqueue_style( 'bt-bb-light-override', plugins_url( 'css/override.css', __FILE__ ) );
 
 			wp_enqueue_script( 'bt-bb-light-react', plugins_url( 'react.min.js', __FILE__ ) );
 			wp_enqueue_script( 'bt-bb-light', plugins_url( 'bundle.js', __FILE__ ), array( 'jquery' ) );
-			//wp_enqueue_script( 'bt-bb-light-jsx', plugins_url( 'build/jsx.min.js', __FILE__ ), array( 'jquery' ) );
 			wp_enqueue_script( 'bt-bb-light-misc', plugins_url( 'misc.js', __FILE__ ), array( 'jquery', 'bt-bb-light' ) );
 			wp_enqueue_script( 'bt-bb-light-autosize', plugins_url( 'autosize.min.js', __FILE__ ) );
 
 			wp_enqueue_script( 'wp-color-picker' );
+
 			wp_enqueue_style( 'wp-color-picker' );
+			
 			wp_enqueue_script( 'wp-color-picker-alpha', plugins_url( 'wp-color-picker-alpha.min.js', __FILE__ ), array( 'wp-color-picker' ) );
 		}
 
@@ -197,14 +199,14 @@ if ( ! class_exists( 'BTBB_Light' ) ) {
 				if ( function_exists( 'boldthemes_get_icon_fonts_bb_array' ) ) {
 					$icon_arr = boldthemes_get_icon_fonts_bb_array();
 				} else {
-					require_once( dirname(__FILE__) . '/content_elements_misc/fa_icons.php' );
-					require_once( dirname(__FILE__) . '/content_elements_misc/fa5_regular_icons.php' );
-					require_once( dirname(__FILE__) . '/content_elements_misc/fa5_solid_icons.php' );
-					require_once( dirname(__FILE__) . '/content_elements_misc/fa5_brands_icons.php' );
-					require_once( dirname(__FILE__) . '/content_elements_misc/s7_icons.php' );
+					require_once( dirname(__FILE__) . '/content_elements_misc/bt_bb_fa_icons.php' );
+					require_once( dirname(__FILE__) . '/content_elements_misc/bt_bb_fa5_regular_icons.php' );
+					require_once( dirname(__FILE__) . '/content_elements_misc/bt_bb_fa5_solid_icons.php' );
+					require_once( dirname(__FILE__) . '/content_elements_misc/bt_bb_fa5_brands_icons.php' );
+					require_once( dirname(__FILE__) . '/content_elements_misc/bt_bb_s7_icons.php' );
 					$icon_arr = array( 'Font Awesome' => bt_bb_fa_icons(), 'Font Awesome 5 Regular' => bt_bb_fa5_regular_icons(), 'Font Awesome 5 Solid' => bt_bb_fa5_solid_icons(), 'Font Awesome 5 Brands' => bt_bb_fa5_brands_icons(), 'S7' => bt_bb_s7_icons() );
 				}
-				echo 'window.bt_bb_icons = JSON.parse(\'' . json_encode( $icon_arr ) . '\')';
+				echo 'window.bt_bb_icons = JSON.parse(\'' . wp_json_encode( $icon_arr ) . '\')';
 			echo '</script>';
 			
 		}
@@ -387,7 +389,7 @@ if ( ! class_exists( 'BTBB_Light' ) ) {
 			// save
 			if ( isset( $_POST['action'] ) && $_POST['action'] == 'save' ) {
 				
-				if ( ! wp_verify_nonce( $_REQUEST['_wpnonce'], 'bt-bb-light-edit' ) ) {
+				if ( ! wp_verify_nonce( sanitize_text_field( $_REQUEST['_wpnonce'] ), 'bt-bb-light-edit' ) ) {
 					wp_die( esc_html__( 'Nonce error.', 'bold-timeline' ) );
 				}
 
@@ -441,7 +443,7 @@ if ( ! class_exists( 'BTBB_Light' ) ) {
 
 				$is_deleted = false;
 				
-				$bulk = wp_verify_nonce( $_REQUEST['_wpnonce'], 'bulk-posts' );
+				$bulk = wp_verify_nonce( sanitize_text_field( $_REQUEST['_wpnonce'] ), 'bulk-posts' );
 
 				foreach ( $posts as $post_id ) {
 					
@@ -506,7 +508,7 @@ if ( ! class_exists( 'BTBB_Light' ) ) {
 				if ( ! empty( $_REQUEST['s'] ) ) {
 					echo sprintf( '<span class="subtitle">'
 						. esc_html__( 'Search results for &#8220;%s&#8221;', 'bold-timeline' )
-						. '</span>', esc_html( $_REQUEST['s'] ) );
+						. '</span>', esc_html( sanitize_text_field( $_REQUEST['s'] ) ) );
 				}
 				
 			?>
@@ -514,7 +516,7 @@ if ( ! class_exists( 'BTBB_Light' ) ) {
 			<hr class="wp-header-end">
 
 			<form method="get" action="">
-				<input type="hidden" name="page" value="<?php echo esc_attr( $_REQUEST['page'] ); ?>" />
+				<input type="hidden" name="page" value="<?php echo esc_attr( sanitize_text_field( $_REQUEST['page'] ) ); ?>" />
 				<?php $list_table->search_box( esc_html__( 'Search', 'bold-timeline' ), $this->slug ); ?>
 				<?php $list_table->display(); ?>
 			</form>
@@ -559,7 +561,7 @@ if ( ! class_exists( 'BTBB_Light' ) ) {
 
 				<?php wp_nonce_field( 'bt-bb-light-edit' ); ?>
 				
-				<input type="hidden" id="post_ID" name="post_ID" value="<?php echo $post_id; ?>">
+				<input type="hidden" id="post_ID" name="post_ID" value="<?php echo esc_attr( $post_id ); ?>">
 				<input type="hidden" id="hiddenaction" name="action" value="save">
 				<input type="hidden" id="post_content" name="post_content" value="">
 
@@ -570,7 +572,7 @@ if ( ! class_exists( 'BTBB_Light' ) ) {
 				<div id="titlewrap">
 
 					<label id="title-prompt-text" for="title" class="screen-reader-text"><?php esc_html_e( 'Enter title here', 'bold-timeline' ); ?></label>
-					<input type="text" name="post_title" size="30" value="<?php echo $post_title; ?>" id="title" spellcheck="true" autocomplete="off">
+					<input type="text" name="post_title" size="30" value="<?php echo esc_attr( $post_title ); ?>" id="title" spellcheck="true" autocomplete="off">
 
 				</div><!-- #titlewrap -->
 
@@ -579,7 +581,7 @@ if ( ! class_exists( 'BTBB_Light' ) ) {
 				<div class="inside">
 					<p class="description">
 					<label for="bt_bb_light_shortcode"><?php esc_html_e( 'Copy this shortcode and paste it into your post, page, or text widget content:', 'bold-timeline' ); ?></label>
-					<span><input type="text" id="bt_bb_light_shortcode" onfocus="this.select();" readonly="readonly" class="large-text code" value="[<?php echo esc_html( $this->shortcode ); ?> id=&quot;<?php echo $post_id; ?>&quot;]"></span>
+					<span><input type="text" id="bt_bb_light_shortcode" onfocus="this.select();" readonly="readonly" class="large-text code" value="[<?php echo esc_attr( $this->shortcode ); ?> id=&quot;<?php echo esc_attr( $post_id ); ?>&quot;]"></span>
 					</p>
 				</div>
 
@@ -613,16 +615,16 @@ if ( ! class_exists( 'BTBB_Light' ) ) {
 				</div>
 				<div class="inside">
 				<ul class="bt-bb-light-info">
-				<li class="bt-bb-light-home-page"><a href="<?php echo esc_url_raw( $this->home_url ); ?>" target="_blank"><?php esc_html_e( 'Home page', 'bold-timeline' ); ?></a></li>
+				<li class="bt-bb-light-home-page"><a href="<?php echo esc_url( $this->home_url ); ?>" target="_blank"><?php esc_html_e( 'Home page', 'bold-timeline' ); ?></a></li>
 				<?php
 				if ( current_user_can( 'activate_plugins' ) && $this->product_id != '' ) { ?>
-					<li class="bt-bb-light-licence"><a href="<?php echo esc_url_raw( admin_url( 'admin.php?page=' . $this->license_slug ) ); ?>" target="_blank"><?php esc_html_e( 'Product License', 'bold-timeline' ); ?></a></li>
+					<li class="bt-bb-light-licence"><a href="<?php echo esc_url( admin_url( 'admin.php?page=' . $this->license_slug ) ); ?>" target="_blank"><?php esc_html_e( 'Product License', 'bold-timeline' ); ?></a></li>
 				<?php }
 				if ( $this->doc_url != '' ) { ?>
-					<li class="bt-bb-light-documentation"><a href="<?php echo esc_url_raw( $this->doc_url ); ?>" target="_blank"><?php esc_html_e( 'Documentation', 'bold-timeline' ); ?></a></li>
+					<li class="bt-bb-light-documentation"><a href="<?php echo esc_url( $this->doc_url ); ?>" target="_blank"><?php esc_html_e( 'Documentation', 'bold-timeline' ); ?></a></li>
 				<?php }
 				if ( $this->support_url != '' ) { ?>
-					<li class="bt-bb-light-support"><a href="<?php echo esc_url_raw( $this->support_url ); ?>" target="_blank"><?php esc_html_e( 'Support', 'bold-timeline' ); ?></a></li>
+					<li class="bt-bb-light-support"><a href="<?php echo esc_url( $this->support_url ); ?>" target="_blank"><?php esc_html_e( 'Support', 'bold-timeline' ); ?></a></li>
 				<?php } ?>
 					<li class="bt-bb-light-revisions"><a href="<?php echo wp_get_post_revisions_url( $post_id ); ?>" target="_blank"><?php esc_html_e( 'Revisions', 'bold-timeline' ); ?></a></li>
 				</ul>
@@ -646,7 +648,7 @@ if ( ! class_exists( 'BTBB_Light' ) ) {
 			</form>
 
 			<script>
-				window.bt_bb_light_post_type = '<?php echo $post_type; ?>';
+				window.bt_bb_light_post_type = '<?php echo esc_html( $post_type ); ?>';
 
 				if ( '' === jQuery( '#title' ).val() ) {
 					jQuery( '#title' ).focus();
@@ -700,7 +702,7 @@ if ( ! class_exists( 'BTBB_Light' ) ) {
 
 			if ( isset( $_POST['purchase_code'] ) ) {
 			
-				if ( ! wp_verify_nonce( $_REQUEST['_wpnonce'], 'bt-bb-light-license' ) ) {
+				if ( ! wp_verify_nonce( sanitize_text_field( $_REQUEST['_wpnonce'] ), 'bt-bb-light-license' ) ) {
 					wp_die( esc_html__( 'Nonce error.', 'bold-timeline' ) );
 				}
 				
@@ -841,7 +843,7 @@ if ( ! class_exists( 'BTBB_Light' ) ) {
 				
 				<p class="bt-bb-light-description"><?php echo sprintf( esc_html__( 'In order to receive all benefits, you need to activate your copy of the plugin. By activating license you will unlock premium options - %sdirect plugin updates%s and %sassistance of our support team%s.' ), '<strong>', '</strong>', '<strong>', '</strong>' ); ?></p>
 				
-				<p class="bt-bb-light-description"><?php esc_html_e( 'If you do not have a license or you have activated a license on another site, then you can ', 'bold-timeline' ); ?><a href="<?php echo esc_url_raw( $this->home_url ); ?>" target="_blank"><em><?php esc_html_e( 'purchase a license here', 'bold-timeline' ); ?></em></a><?php esc_html_e( '.', 'bold-timeline' ); ?></p>
+				<p class="bt-bb-light-description"><?php esc_html_e( 'If you do not have a license or you have activated a license on another site, then you can ', 'bold-timeline' ); ?><a href="<?php echo esc_url( $this->home_url ); ?>" target="_blank"><em><?php esc_html_e( 'purchase a license here', 'bold-timeline' ); ?></em></a><?php esc_html_e( '.', 'bold-timeline' ); ?></p>
 				
 					<table class="form-table" role="presentation">
 						<tbody>

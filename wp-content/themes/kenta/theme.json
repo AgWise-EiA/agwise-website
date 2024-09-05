@@ -84,6 +84,73 @@
           "slug": "kenta-font-xxlarge"
         }
       ]
+    },
+    "spacing": {
+      "blockGap": true,
+      "margin": true,
+      "padding": true,
+      "customSpacingSize": true,
+      "units": [
+        "%",
+        "px",
+        "em",
+        "rem",
+        "vh",
+        "vw"
+      ],
+      "spacingScale": {
+        "operator": "*",
+        "increment": 0,
+        "steps": 0,
+        "mediumStep": 0,
+        "unit": "px"
+      },
+      "spacingSizes": [
+        {
+          "name": "2X Small",
+          "size": "0.5rem",
+          "slug": "xx-small"
+        },
+        {
+          "name": "Extra Small",
+          "size": "1rem",
+          "slug": "x-small"
+        },
+        {
+          "name": "Small",
+          "size": "1.5rem",
+          "slug": "small"
+        },
+        {
+          "name": "Medium",
+          "size": "2rem",
+          "slug": "medium"
+        },
+        {
+          "name": "Large",
+          "size": "3rem",
+          "slug": "large"
+        },
+        {
+          "name": "Extra Large",
+          "size": "4rem",
+          "slug": "x-large"
+        },
+        {
+          "name": "2X Large",
+          "size": "6rem",
+          "slug": "xx-large"
+        }
+      ]
+    }
+  },
+  "styles": {
+    "elements": {
+      "link": {
+        "typography": {
+          "textDecoration": "none"
+        }
+      }
     }
   }
 }

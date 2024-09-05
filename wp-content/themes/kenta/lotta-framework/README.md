@@ -2,6 +2,10 @@
 
 ## Changelog
 
+## v2.0.17
+
+* Ref: Remove illuminate/contracts & psr/container
+
 ## v2.0.16
 
 * Ref: Typography cache

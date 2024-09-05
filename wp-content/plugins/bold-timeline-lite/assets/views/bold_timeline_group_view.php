@@ -8,7 +8,7 @@
 			// $el_id = 'id_' . $el_id . '_' . uniqid();
 			$el_id = $el_id;
 		}		
-		$id_attr = ' ' . 'id="' . $el_id . '"';
+		$id_attr = ' ' . 'id="' .  esc_attr( $el_id ) . '"';
                 
         if ( $el_class != '' ) {
 			$class[] = $el_class;
@@ -68,10 +68,10 @@
 		
 		$style_attr = '';
 		if ( $el_style != '' ) {
-			$style_attr = ' ' . 'style="' . $el_style . ';"';
+			$style_attr = ' ' . 'style="' .  esc_attr( $el_style ) . ';"';
 		}	
 				
-		$output = '<div class="' . implode( ' ', $class ) . '"' . $id_attr . $style_attr . ' data-css-override="' . $css_override . '">';
+		$output = '<div class="' .  esc_attr( implode( ' ', $class ) ) . '"' . $id_attr . $style_attr . ' data-css-override="' . $css_override . '">';
 			$output .= '<div class="bold_timeline_group_inner">';
 				if ( $title != '' ) {
 						$output .= '<div class="bold_timeline_group_header">';

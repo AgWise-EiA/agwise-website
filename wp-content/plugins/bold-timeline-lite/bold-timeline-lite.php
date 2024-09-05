@@ -3,7 +3,7 @@
 /**
  * Plugin Name: Bold Timeline Lite
  * Description: Bold Timeline Lite by BoldThemes.
- * Version: 1.2.0
+ * Version: 1.2.1
  * Author: BoldThemes
  * Author URI: https://bold-themes.com/
  */
@@ -19,6 +19,23 @@ if( !in_array( 'bold-timeline/bold-timeline.php', apply_filters('active_plugins'
 			add_action( 'wp_ajax_bold_timeline_lite_dismiss_notice_callto_action_snooze', array( 'BoldTimelineLiteNotice' , 'bold_timeline_lite_dismiss_notice_callto_action_snooze_callback' ) );		
 		}
 
+		// Helpers
+
+		require_once( 'assets-general/php/bold_timeline_helpers.php' );
+
+		// Page builder elements
+
+		define( 'BOLD_TIMELINE_ELEMENT_NAME', esc_html__( 'BoldThemes Bold Timeline', 'bold-timeline' ) );
+		define( 'BOLD_TIMELINE_ELEMENT_DESCRIPTION', esc_html__( 'Shortcode outputs BoldThemes Bold Timeline.', 'bold-timeline' ) );
+		define( 'BOLD_TIMELINE_ELEMENT_CLASS', 'bold-timeline' );
+
+		define( 'BOLD_TIMELINE_FIELD_TITLE', esc_html__( 'Bold Timelines', 'bold-timeline' ) );
+		define( 'BOLD_TIMELINE_FIELD_DESCRIPTION', esc_html__( 'This is bold timeline to show in the shortcode', 'bold-timeline' ) );
+
+		define( 'BOLD_TIMELINE_ELEMENTOR_CATEGORY', esc_html__( 'BoldThemes Widgets', 'bold-timeline' ) );
+
+		require_once( 'assets-general/php/page-builder-elements/elementor.php' );
+		require_once( 'assets-general/php/page-builder-elements/bt_bb_bold_timeline.php' );
 
 		// CSS crush
 		if ( ! file_exists( get_parent_theme_file_path( 'css-crush/CssCrush.php' ) ) ) {
@@ -283,5 +300,17 @@ if( !in_array( 'bold-timeline/bold-timeline.php', apply_filters('active_plugins'
 			<?php }
 		}
 		add_action( 'wp_head', 'bold_timeline_js_head' );
+	}
+
+	// Admin 
+	if ( !function_exists( 'bold_timeline_admin_enqueue' ) ) {
+		function bold_timeline_admin_enqueue() {
+			wp_enqueue_style( 'bold-timeline-admin-style', plugins_url( 'assets-general/css//bold-timeline-style.css', __FILE__ ) );
+			//wp_enqueue_script( 'bold-timeline-admin-js', plugins_url( 'assets-general/js/bold-timeline-admin.js', __FILE__ ) );
+		}	
+	}
+
+	if ( isset( $_GET['page'] ) && $_GET['page'] == 'bold-timeline-edit' ) {
+		add_action( 'admin_enqueue_scripts', 'bold_timeline_admin_enqueue', 100 );
 	}
 }

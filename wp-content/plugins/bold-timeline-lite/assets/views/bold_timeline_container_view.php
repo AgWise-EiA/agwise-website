@@ -8,7 +8,7 @@
 			// $el_id = 'id_' . $el_id . '_' . uniqid();
 			$el_id = $el_id;
 		}		
-		$id_attr = ' ' . 'id="' . $el_id . '"';	
+		$id_attr = ' ' . 'id="' . esc_attr( $el_id ) . '"';	
 		
 		wp_enqueue_script( 'bold-timeline', plugins_url( '../../assets/js/bold-timeline.js', __FILE__  ), array( 'jquery' ) );
 		wp_enqueue_style( 'bold-timeline', plugins_url( '../../style.css', __FILE__ ) );
@@ -334,12 +334,12 @@
 		
 		$style_attr = '';
 		if ( $el_style != '' ) {
-			$style_attr = ' ' . 'style="' . $el_style . ';"';
+			$style_attr = ' ' . 'style="' . esc_attr( $el_style ) . ';"';
 		}
 		
 		/* Output */
 		
-		$output = '<div class="' . implode( ' ', $class ) . '"' . $id_attr . $style_attr . ' data-css-override="' . $css_override . '">';
+		$output = '<div class="' . esc_attr( implode( ' ', $class ) ) . '"' . $id_attr . $style_attr . ' data-css-override="' .  esc_attr( $css_override ) . '">';
 			$output .= $line_output;
 			$output .= '<div class="bold_timeline_container_content"' . $data_slick . '>';
 				$output .= wptexturize( do_shortcode( $content ) );

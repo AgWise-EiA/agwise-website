@@ -1,5 +1,7 @@
 <?php
 
+if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
+
 if ( ! class_exists( 'BTBB_Light_Item' ) ) {
 
 	class BTBB_Light_Item {

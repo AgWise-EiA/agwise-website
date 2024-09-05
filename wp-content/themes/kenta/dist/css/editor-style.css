@@ -1341,8 +1341,7 @@ select {
   --tw-prose-quote-borders: var(--kenta-base-300);
   --tw-prose-captions: var(--kenta-accent-color);
   --tw-prose-code: var(--kenta-primary-active);
-  --tw-prose-pre-code: var(--kenta-accent-active);
-  --tw-prose-pre-bg: var(--kenta-base-100);
+  --tw-prose-pre-code: var(--kenta-base-100);
   --tw-prose-th-borders: var(--kenta-base-200);
   --tw-prose-td-borders: var(--kenta-base-200);
   --tw-prose-body: var(--kenta-content-base-color);

@@ -8,7 +8,7 @@
 			// $el_id = 'id_' . $el_id . '_' . uniqid();
 			$el_id = $el_id;
 		}		
-		$id_attr = ' ' . 'id="' . $el_id . '"';
+		$id_attr = ' ' . 'id="' .  esc_attr( $el_id ) . '"';
 		
 		if ( $el_class != '' ) {
 			$class[] = $el_class;
@@ -125,24 +125,14 @@
 				$post_image = get_post( $image );
 				if ( $post_image != '' ) {
 					$image_alt = get_post_meta( $post_image->ID, '_wp_attachment_image_alt', true );
-					if ( $image_alt == '' ) {
-						$image_alt = $post_image->post_excerpt;
-					}
+					
 					$image_title = $post_image->post_title;
-					if ( $image_title == '' ) {
-						$image_title = $image_alt;
-					}					
+					
 				}
 				
 				$image_attributes = wp_get_attachment_image_src( $image, $size );
 				
 				if ( $image_attributes && $image_attributes[0] != '' ) {
-					if ( $image_alt == '' ) {
-						$image_alt = $image_attributes[0];
-					}
-					if ( $image_title == '' ) {
-						$image_title = $image_attributes[0];
-					}
 					$images_str .= '<div class="bold_timeline_item_media_image"><img src="' . $image_attributes[0] . '" alt="' . esc_attr( $image_alt ) . '" title="' . esc_attr( $image_title ) . '"></div>';
 				}
 			} 
@@ -195,10 +185,10 @@
 		
 		$style_attr = '';
 		if ( $el_style != '' ) {
-			$style_attr = ' ' . 'style="' . $el_style . ';"';
+			$style_attr = ' ' . 'style="' .  esc_attr( $el_style ) . ';"';
 		}	
 		
-		$output = '<div class="' . implode( ' ', $class ) . '"' . $id_attr . $style_attr . ' data-css-override="' . $css_override . '" data-margin-top="0">';
+		$output = '<div class="' . esc_attr( implode( ' ', $class ) ) . '"' . $id_attr . $style_attr . ' data-css-override="' .  esc_attr( $css_override ) . '" data-margin-top="0">';
 			if ( $icon != '' ) {
 				$icon_set = substr( $icon, 0, -5 );
 				$icon = substr( $icon, -4 );
