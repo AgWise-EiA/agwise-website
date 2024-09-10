@@ -4,22 +4,73 @@ The **Kognetiks Chatbot for WordPress** plugin project is centered around revolu
 
 ## Documentation
 
+## What's new in Version 2.1.4
+
+* **Improved Table Formatting**: Enhanced the appearance of tables in chatbot responses for better readability.
+* **Bug Fixes**: Resolved minor issues and bugs identified during the development process.
+
+## What's new in Version 2.1.3
+
+* **Remote Server Access**: The **Kognetiks Chatbot for WordPress** now includes the advanced feature to allow access to your assistants from remote servers.  Coupled with security measures to control and monitor remote access to your chatbots, you must enable the **Remote Widget Access** feature.  This will allow specific remote servers to interact with your chatbot(s) via an endpoint. To ensure that only authorized servers and chatbots can access your resources, the system uses a whitelisting mechanism that pairs domains with specific chatbot shortcodes.
+* **Improving Math Handling**: Integrated code enhances chatbot’s ability to render complex mathematical expressions.
+* **Bug Fixes**: Resolved minor issues and bugs identified during the development process.
+
+## What's New in Version 2.1.2
+
+* **Changed Script Load Order**: Adjusted the loading order of scripts to ensure that critical settings are defined before the main chatbot script executes, preventing incorrect style application.
+
+## What's New in Version 2.1.1
+
+* **Code Cleanup and Optimization**: Refined and optimized the codebase for improved performance and maintainability.
+* **Variable Unification**: Standardized variable names across the project to ensure consistency and reduce potential errors.
+* **User Experience Consistency**: Addressed inconsistencies in the chatbot experience between logged-in and non-logged-in users, ensuring a uniform experience.
+* **Bug Fixes**: Resolved minor issues and bugs identified during the development process.
+
+## What's New in Version 2.1.0
+
+* **JavaScript Version Control**: Added JavaScript version control to help with cache busting.
+* **Conversation Log CSV Export**: Added a check to determine if $value is not null before calling mb_convert_encoding to prevent PHP warnings.
+
+## What's New in Version 2.0.9
+
+* **Adjusted Module Name Conflict**: Renamed one module that was had a name found to be in conflict with another vendor's plugin.
+* **Reworked Conversation Continuity**: Improved the way the chatbot handles conversation continuity for visitors and logged-in users, ensuring a seamless experience across pages.
+* **Alternate Attribution Message**: Allows for replacing the attribution message with 'Chatbot WOrdPress plugin by Kognetiks' with a text message of your choosing.
+* **Refactored Inline Styles**: Moved inline styles to an external CSS file for better maintainability and separation of concerns.
+* **floating-style CSS Class Rename**: Renamed the .floating-style CSS class to chatbot-floating-style to avoid conflicts with other plugins or themes.
+* **embedded-style CSS Class Rename**: Renamed the .embedded-style CSS class to chatbot-embedded-style to avoid conflicts with other plugins or themes.
+* **chatgptTitle CSS ID Rename**: Renamed the chatgptTitle CSS ID renamed to chatbot-chatgpt-title to avoid conflicts with other plugins or themes.
+* **chatbot-user-text CSS Class Rename**: Renamed the user-text CSSclass to chatbot-user-text to avoid conflicts with other plugins or themes.
+* **bot-text CSS Class Rename**: Renamed the bot-text CSSclass to chatbot-bot-text to avoid conflicts with other plugins or themes.
+
+## What's New in Version 2.0.8
+
+* **Logic Error Updated**: Corrected a logic error that was causing some visitors and logged-in users to lose their session continuity with the Assistants. This ensures a smoother and more consistent experience for all users.
+* **Fixed Special Characters Display Issue**: Improved the way special characters are handled in chatbot names. Previously, the code was converting special characters like '&' into their HTML equivalents (e.g., '&' became '&').
+
+## What's New in Version 2.0.7
+
+* **Model Support**: The latest models available from OpenAI are dynamically added to model picklists.  Available models now include gpt-4o and gpt-4o-mini.  See Chatbot Settings > API/Model > Chat Settings.
+* **Manage Chatbot Error Logs**: Added the ability to manage chatbot error logs, including the ability to download and delete logs. See Chatbot Settings > Tools. TIP: You must enable Diagnostics access the Tools tab. See Chatbot Settings > Messages > Messages and Diagnostics.
+* **Revised Reporting Settings Layout**: Revised and refreshed the Reporting Settings page layout for better visualization. See Chatbot Settings > Reporting.
+* **Conversation Continuation**: Added an additional setting added to enable conversation continuation after returning to a page previously visited. See Chatbot Settings > Settings > Additional Settings.
+
 ## What's New in Version 2.0.6
 
-- **Dynamic Shortcode**: Added support for dynamic shortcodes to allow for more flexible Assistant selection. Add all parameters to the shortcode, including the Assistant ID on the GTP Assistant tab. For example, `[chatbot-1]`.
-- **Logic Error Updated**: Corrected a logic error that prevented visitors and logged-in users from interacting with Assistants.
+* **Dynamic Shortcode**: Added support for dynamic shortcodes to allow for more flexible Assistant selection. Add all parameters to the shortcode, including the Assistant ID on the GTP Assistant tab. For example, `[chatbot-1]`.
+* **Logic Error Updated**: Corrected a logic error that prevented visitors and logged-in users from interacting with Assistants.
 
 ## What's New in Version 2.0.5
 
-- **Enhanced Assistant Management**: A new intuitive interface for managing all your chatbot Assistants in one place.
-- **Assistant ID Integration**: Easily add Assistants developed in the OpenAI Playground using their unique ID.
-- **Improved Shortcode Usage**: Tips for optimal placement and usage of the `[chatbot assistant="Common Name"]` shortcode.
-- **Customizable Assistant Attributes**: Tailor each Assistant's settings such as Styling, Target Audience, Voice, Allow File Uploads, Allow Transcript Downloads, Show Assistant Name, Initial Greeting, Subsequent Greeting, Placeholder Prompt, and Additional Instructions.
-- **Support Tab**: Reverted the "Support" tab to correctly display the plugin's support documentation overview.
-- **Embedded Chatbot Formatting Updated**: Added a closing </div> tag to the embedded chatbot to ensure proper formatting.
-- **Force Page Reload on Conversation Cleared**: Added an option to force a page reload when the conversation is cleared.
-- **Knowledge Navigator Analysis**: Moved the Knowledge Navigator Analysis for export to the bottom of the Knowledge Navigator tab.
-- **Custom Buttons Expanded**: Now supports up to four custom buttons, available on floating only, embedded only, or on both chatbot styles.
+* **Enhanced Assistant Management**: A new intuitive interface for managing all your chatbot Assistants in one place.
+* **Assistant ID Integration**: Easily add Assistants developed in the OpenAI Playground using their unique ID.
+* **Improved Shortcode Usage**: Tips for optimal placement and usage of the `[chatbot assistant="Common Name"]` shortcode.
+* **Customizable Assistant Attributes**: Tailor each Assistant's settings such as Styling, Target Audience, Voice, Allow File Uploads, Allow Transcript Downloads, Show Assistant Name, Initial Greeting, Subsequent Greeting, Placeholder Prompt, and Additional Instructions.
+* **Support Tab**: Reverted the "Support" tab to correctly display the plugin's support documentation overview.
+* **Embedded Chatbot Formatting Updated**: Added a closing </div> tag to the embedded chatbot to ensure proper formatting.
+* **Force Page Reload on Conversation Cleared**: Added an option to force a page reload when the conversation is cleared.
+* **Knowledge Navigator Analysis**: Moved the Knowledge Navigator Analysis for export to the bottom of the Knowledge Navigator tab.
+* **Custom Buttons Expanded**: Now supports up to four custom buttons, available on floating only, embedded only, or on both chatbot styles.
 
 ## What's New in Version 2.0.4
 
@@ -27,106 +78,106 @@ The **Kognetiks Chatbot for WordPress** plugin project is centered around revolu
 
 ## What's New in Version 2.0.3
 
-- **Transcript Download Option**: You can now choose whether users can download a transcript of their conversations with the chatbot.
-- **Improved Image Sizing**: Images smaller than the chatbot's message view now display in their actual size for better clarity.
-- **Knowledge Navigator Settings**: We've added an option to disable the Knowledge Navigator if you only want to use assistants for chatbot interactions.
-- **Knowledge Navigator Analysis**: Increased the maximum number of top keywords to 10,000 for more detailed analysis.
-- **File Download Support**: The chatbot now supports downloading files generated on the OpenAI platform.
+* **Transcript Download Option**: You can now choose whether users can download a transcript of their conversations with the chatbot.
+* **Improved Image Sizing**: Images smaller than the chatbot's message view now display in their actual size for better clarity.
+* **Knowledge Navigator Settings**: We've added an option to disable the Knowledge Navigator if you only want to use assistants for chatbot interactions.
+* **Knowledge Navigator Analysis**: Increased the maximum number of top keywords to 10,000 for more detailed analysis.
+* **File Download Support**: The chatbot now supports downloading files generated on the OpenAI platform.
 
 ## What's New in Version 2.0.2
 
-- **Documentation Updates:** The Support documentation has been extensively updated with detailed information on the chatbot settings. You can find this in the Support tab under Settings.
+* **Documentation Updates:** The Support documentation has been extensively updated with detailed information on the chatbot settings. You can find this in the Support tab under Settings.
 
-- **Data Export:** The export function for Conversation Data, Interaction Data, and Token Usage Data has been revised.
+* **Data Export:** The export function for Conversation Data, Interaction Data, and Token Usage Data has been revised.
 
-- **PHP 7 Support:** The `str_contains` function has been reverted to `strpos` for compatibility with PHP 7, as `str_contains` is only available in PHP 8.
+* **PHP 7 Support:** The `str_contains` function has been reverted to `strpos` for compatibility with PHP 7, as `str_contains` is only available in PHP 8.
 
 ## What's New in Version 2.0.1
 
-- **Support for Latest Models**
+* **Support for Latest Models**
   - Supports OpenAI's latest models: `gpt-4o` and `gpt-4o-2024-05-13`
 
 ## 2.0.1 - Configuration Options
-- **Max Prompt Tokens - Assistants**
+* **Max Prompt Tokens - Assistants**
   - Controls the maximum prompt token usage. Limits apply to the total number of tokens used in all completions throughout the run's lifecycle.
   - Example: If set to 500, prompts will be truncated at 500 tokens.
   - [More Info](https://platform.openai.com/docs/assistants/how-it-works/max-completion-and-max-prompt-tokens)
 
-- **Max Completion Tokens - Assistants**
+* **Max Completion Tokens - Assistants**
   - Controls the maximum completion token usage. Limits apply to the total number of tokens used in all completions throughout the run's lifecycle.
   - Example: If set to 1000, the completion will cap the output at 1000 tokens.
   - [More Info](https://platform.openai.com/docs/assistants/how-it-works/max-completion-and-max-prompt-tokens)
 
-- **Temperature - Assistants**
+* **Temperature - Assistants**
   - Controls randomness. Lowering the temperature results in less random completions. As the temperature approaches zero, the model will become deterministic and repetitive.
 
-- **Top P - Assistants**
+* **Top P - Assistants**
   - Controls diversity via nucleus sampling. For example, setting Top P to 0.5 means half of all likelihood-weighted options are considered.
   
 ## 2.0.1 - Speech-to-Text Prompting
-- **Whisper API Prompting**
+* **Whisper API Prompting**
   - You can use a prompt to improve the quality of transcripts generated by the Whisper API. The model will try to match the style of the prompt, so it will be more likely to use capitalization and punctuation if the prompt does too. However, the current prompting system is more limited than other language models and only provides limited control over the generated audio.
   - [More Info](https://platform.openai.com/docs/guides/speech-to-text/prompting)
 
 ## What's New in Version 2.0.0
 
-- **Revised Knowledge Navigator Settings:** Reground similar options together on this settings tab including: Suppress Learning Messages, Customer Learnings Messages, and Enhanced Response Limit.
+* **Revised Knowledge Navigator Settings:** Reground similar options together on this settings tab including: Suppress Learning Messages, Customer Learnings Messages, and Enhanced Response Limit.
 
-- **Read Aloud Option:** Added an option to allow the Read Aloud option, see API/Model > Voice Settings > Allow Read Aloud = Yes/No.
+* **Read Aloud Option:** Added an option to allow the Read Aloud option, see API/Model > Voice Settings > Allow Read Aloud = Yes/No.
 
-- **Enhanced Security:** Reduced vulnerabilities associated with file upload options.
+* **Enhanced Security:** Reduced vulnerabilities associated with file upload options.
 
 ## What's New in Version 1.9.9
 
-- **Enhanced Response Clarity:** Responses now feature bullet points for improved clarity and readability.
+* **Enhanced Response Clarity:** Responses now feature bullet points for improved clarity and readability.
 
-- **Improved Link Presentation:** Titles are now included alongside links to posts, pages, and products, providing better context for users.
+* **Improved Link Presentation:** Titles are now included alongside links to posts, pages, and products, providing better context for users.
 
-- **Thread Retention Periods:** Added an option for thread retention periods, ensuring conversation continuity with default settings of 36 hours or 720 hours (30 days).
+* **Thread Retention Periods:** Added an option for thread retention periods, ensuring conversation continuity with default settings of 36 hours or 720 hours (30 days).
 
-- **Assistant Identification:** Conversation logs now include either the chatbot's or Assistant's name for clearer tracking.
+* **Assistant Identification:** Conversation logs now include either the chatbot's or Assistant's name for clearer tracking.
 
-- **Enhanced Conversation History:** Upgraded the conversation history shortcode `[chatbot_chatgpt_history]` to include the Assistant or chatbot's name for easier reference.
+* **Enhanced Conversation History:** Upgraded the conversation history shortcode `[chatbot_chatgpt_history]` to include the Assistant or chatbot's name for easier reference.
 
-- **Transcript Download Option:** Added the ability for users to download conversation transcripts as text files to their computers.
+* **Transcript Download Option:** Added the ability for users to download conversation transcripts as text files to their computers.
 
-- **Message Input Customization:** Added an option to set the number of rows for message input, ranging from 1 to 10 rows for improved customization.
+* **Message Input Customization:** Added an option to set the number of rows for message input, ranging from 1 to 10 rows for improved customization.
 
-- **Uninstallation Cleanup:** Implemented comprehensive cleanup procedures upon uninstalling the plugin to ensure little if any residual data or files remain.
+* **Uninstallation Cleanup:** Implemented comprehensive cleanup procedures upon uninstalling the plugin to ensure little if any residual data or files remain.
 
 ## What's New in Version 1.9.8
 
-- **Improved Shortcode Documentation:** We've enhanced the readability of shortcode examples by wrapping them in \<code>\</code> tags, making them clearer and more accessible within the documentation.
+* **Improved Shortcode Documentation:** We've enhanced the readability of shortcode examples by wrapping them in \<code>\</code> tags, making them clearer and more accessible within the documentation.
 
-- **Corrected Session Handling:** We now ensure that PHP sessions are properly closed after acquiring a session ID, improving resource management and security
+* **Corrected Session Handling:** We now ensure that PHP sessions are properly closed after acquiring a session ID, improving resource management and security
 
 ## What's New in Version 1.9.7
 
-- **Corrected Enhanced Responses Append:** The repeated "here, here, here" text has been removed when the Suppress Learning Messages option is set to None.
+* **Corrected Enhanced Responses Append:** The repeated "here, here, here" text has been removed when the Suppress Learning Messages option is set to None.
 
 ## What's New in Version 1.9.6
 
-- **Optimized Knowledge Navigator:** The Knowledge Navigator has been revised to efficiently handle sites with large numbers of pages, posts, and products, ensuring more accurate search capabilities.
+* **Optimized Knowledge Navigator:** The Knowledge Navigator has been revised to efficiently handle sites with large numbers of pages, posts, and products, ensuring more accurate search capabilities.
 
-- **Customizable Depth for TF-IDF Scoring:** A new turing parameter allows you to set the depth of TF-IDF scoring based on the content length of pages, posts, or products, enhancing the relevance of search results.
+* **Customizable Depth for TF-IDF Scoring:** A new turing parameter allows you to set the depth of TF-IDF scoring based on the content length of pages, posts, or products, enhancing the relevance of search results.
 
-- **Flexible Enhanced Responses:** You can now select between 1 and 10 enhanced responses, which link to the highest matching pages, posts, or products on your site based on visitor input based on matches to the TF-IDF scores.
+* **Flexible Enhanced Responses:** You can now select between 1 and 10 enhanced responses, which link to the highest matching pages, posts, or products on your site based on visitor input based on matches to the TF-IDF scores.
 
-- **API Version Migration:** Added the option to select between OpenAI-Beta API versions: v1 (assistants=v1) and v2 (assistants=v2, default setting). Refer to the [OpenAI Migration Guide](https://platform.openai.com/docs/assistants/migration/accessing-v1-data-in-v2) for detailed information on the changes.
+* **API Version Migration:** Added the option to select between OpenAI-Beta API versions: v1 (assistants=v1) and v2 (assistants=v2, default setting). Refer to the [OpenAI Migration Guide](https://platform.openai.com/docs/assistants/migration/accessing-v1-data-in-v2) for detailed information on the changes.
 
-- **Daily Interaction Message Limit:** A new setting has been introduced to limit visitor interactions with the chatbot from 1 to 999 (the default is 999 messages per day and resets daily). This can be configured in the Chatbot Settings using the Chatbot Daily Message Limit option.
+* **Daily Interaction Message Limit:** A new setting has been introduced to limit visitor interactions with the chatbot from 1 to 999 (the default is 999 messages per day and resets daily). This can be configured in the Chatbot Settings using the Chatbot Daily Message Limit option.
 
 ## What's New in Version 1.9.5
 
 The latest update for the Kognetiks Chatbot for WordPress plugin, Version 1.9.5, brings an array of new voice options and output formats, alongside improved audio playback controls and enhanced user interface adjustments for a more streamlined experience.
 
-- **Expanded Voice Options:** We've introduced six new voice options for Text-to-Speech functionalities to cater to diverse preferences and applications. The new voices, including Allow, Echo, Fable, Onyx, Nova, and Shimmer, can be selected to personalize the auditory output of the chatbot. This variety ensures you can choose voices that best fit your brand or personal style.
+* **Expanded Voice Options:** We've introduced six new voice options for Text-to-Speech functionalities to cater to diverse preferences and applications. The new voices, including Allow, Echo, Fable, Onyx, Nova, and Shimmer, can be selected to personalize the auditory output of the chatbot. This variety ensures you can choose voices that best fit your brand or personal style.
 
-- **Enhanced Voice Output Formats:** To accommodate various technical needs and quality preferences, we have expanded our range of output formats. Users can now choose from MP3, Opus, AAC, FLAC, WAV, and PCM formats to optimize the audio quality and compatibility of the Text-to-Speech outputs.
+* **Enhanced Voice Output Formats:** To accommodate various technical needs and quality preferences, we have expanded our range of output formats. Users can now choose from MP3, Opus, AAC, FLAC, WAV, and PCM formats to optimize the audio quality and compatibility of the Text-to-Speech outputs.
 
-- **Repositioned Chatbot Controls:** For an improved user interface, we have moved essential chatbot controls — such as submit, file upload, erase, and text-to-speech buttons — below the input box. This rearrangement enhances accessibility and makes the chat interface cleaner and more intuitive.
+* **Repositioned Chatbot Controls:** For an improved user interface, we have moved essential chatbot controls — such as submit, file upload, erase, and text-to-speech buttons — below the input box. This rearrangement enhances accessibility and makes the chat interface cleaner and more intuitive.
 
-- **Redesigned API/Model Settings Page:** The settings page for chat, image, and speech generation parameters has been redesigned for better usability. You can now more easily adjust and tune your settings, ensuring the chatbot performs optimally across all integrated models.
+* **Redesigned API/Model Settings Page:** The settings page for chat, image, and speech generation parameters has been redesigned for better usability. You can now more easily adjust and tune your settings, ensuring the chatbot performs optimally across all integrated models.
 
 These updates aim to enhance the versatility and visitor experience of the Kognetiks Chatbot for WordPress, continuing our commitment to deliver cutting-edge, customizable, and accessible technology solutions.
 
@@ -134,93 +185,91 @@ These updates aim to enhance the versatility and visitor experience of the Kogne
 
 Version 1.9.4 of the **Kognetiks Chatbot for WordPress** plugin introduces personalized greeting options, displays the Assistant's name sourced from OpenAI, expands support to include image and speech models, and integrates DALL-E for image generation alongside Text-to-Speech functionalities for an enriched user interaction.
 
-- **Personalized Greetings:** Users now have the option to personalize both initial and subsequent greetings for the chatbot, enhancing the user experience with a more individualized interaction. Just add any field from your _users or _usermeta tables in WordPress to the Initial Greeting or Subsequent Greeting, such as: "**Hello [first_name], how can I help you today?**".  This can be found under Settings > Kognetiks Chatbot > Settings.
+* **Personalized Greetings:** Users now have the option to personalize both initial and subsequent greetings for the chatbot, enhancing the user experience with a more individualized interaction. Just add any field from your _users or _usermeta tables in WordPress to the Initial Greeting or Subsequent Greeting, such as: "**Hello [first_name], how can I help you today?**".  This can be found under Settings > Kognetiks Chatbot > Settings.
 
-- **Display Assistant's Name:** We've introduced a feature that allows the display of the Assistant's name, which is sourced directly from the OpenAI platform. This can be found and adjusted under Settings > Kognetiks Chatbot > GPT Assistants > Display GPT Assistant Name.
+* **Display Assistant's Name:** We've introduced a feature that allows the display of the Assistant's name, which is sourced directly from the OpenAI platform. This can be found and adjusted under Settings > Kognetiks Chatbot > GPT Assistants > Display GPT Assistant Name.
 
-- **Support for Additional Models:** Our support model range has been expanded to include not just text but also image and speech functionalities. This broadens the chatbot's application in various interactive scenarios.  You can call the Chatbot using the "model" parameter in the shortcode.
+* **Support for Additional Models:** Our support model range has been expanded to include not just text but also image and speech functionalities. This broadens the chatbot's application in various interactive scenarios.  You can call the Chatbot using the "model" parameter in the shortcode.
 
-- **Image Generation with DALL-E:** The chatbot is now equipped to generate images using OpenAI's DALL-E models, offering users a new dimension of creativity and visual interaction. To generate images using the "dall-e-3" model, use the shortcode **[chatbot style=embedded model=dall-e-3]**.
+* **Image Generation with DALL-E:** The chatbot is now equipped to generate images using OpenAI's DALL-E models, offering users a new dimension of creativity and visual interaction. To generate images using the "dall-e-3" model, use the shortcode **[chatbot style=embedded model=dall-e-3]**.
 
-- **Text-to-Speech Conversion:** With the integration of Text-to-Speech (TTS) models, the chatbot can now convert text inputs into spoken word, making it accessible for auditory communication and enhancing user engagement through speech. To generate speech from text, use the shortcode **[chatbot style=embedded model=tts-1-1106]**.
+* **Text-to-Speech Conversion:** With the integration of Text-to-Speech (TTS) models, the chatbot can now convert text inputs into spoken word, making it accessible for auditory communication and enhancing user engagement through speech. To generate speech from text, use the shortcode **[chatbot style=embedded model=tts-1-1106]**.
 
 ## Features
 
 Welcome to the future of website interaction with **Kognetiks Chatbot for WordPress**, your gateway to unparalleled visitor engagement powered by OpenAI's ChatGPT Large Language Models (LLMs) and Assistants.
 
-**🌐 Harnessing OpenAI's Large Language Models for Enhanced Engagement**
-
-Dive into the world of advanced AI with the **Kognetiks Chatbot for WordPress**.  At the core, the Chatbot takes advantage of API access to Large Language Models such as those powered by OpenAI. These models are trained to understand and respond to user queries in a natural, conversational manner. They're not just chatbots; they're intelligent conversational partners that can engage, inform, and assist your visitors in real time. Whether it's providing detailed answers to complex queries or engaging in casual conversation, these models are equipped to elevate the user experience on your website.
+**🌐 Harnessing Large Language Models for Enhanced Engagement**
+Dive into the world of advanced AI with Large Language Models at the core of the Chatbot. These models are trained to understand and respond to user queries in a natural, conversational manner. They're not just chatbots; they're intelligent conversational partners that can engage, inform, and assist your visitors in real time. Whether it's providing detailed answers to complex queries or engaging in casual conversation, these models are equipped to elevate the user experience on your website.
 
 **🌟 Assistants: Tailored Conversational Experiences**
-
-Unlock the potential of personalized digital interaction. Use the Assistants you develop, trained with your specific knowledge and skills, are here to revolutionize your website. From handling FAQs to managing bookings and offering customized suggestions, these Assistants are seamlessly integrated into your WordPress site, promising a dynamic and engaging user experience.
+Unlock the potential of personalized digital interaction. Use the Assistants you develop, trained with your specific knowledge and skills, to revolutionize your website. From handling FAQs to managing bookings and offering customized suggestions, these Assistants are seamlessly integrated into your WordPress site, promising a dynamic and engaging user experience.
 
 **🔀 Multiple Assistants, Multiple Roles**
-
-Why settle for one when you can have more? With the plugin, deploy multiple Assistants for varied roles. Imagine an Assistant dedicated to your blog and another for your e-commerce platform, each delivering a tailored experience to your visitors.
-
-The latest version of the plugin allows for virtually unlimited Assistants, allowing you to deploy a unique assistant wherever you placed the shortcode.  Simply pass the "asst_" ID to the shortcode as one of the parameters.
-
-Unlock enhanced functionality with the latest feature - **now you can upload files directly to each GPT Assistant**, providing an even more dynamic and tailored user experience across your platforms.
-
-Discover more about these innovative features at [Kognetiks.com](https://kognetiks.com/wordpress-plugins/kognetiks-chatbot/ai-powered-chatbot-for-wordpress/) and [OpenAI's Playground](https://platform.openai.com/assistants).
+The latest version of the plugin allows for virtually unlimited Assistants, allowing you to deploy a unique assistant wherever you placed the shortcode.  Simply pass the "asst_" ID to the shortcode as one of the parameters.  Discover more about these innovative features at [Kognetiks.com](https://kognetiks.com/wordpress-plugins/kognetiks-chatbot/) and [OpenAI's Playground](https://platform.openai.com/assistants).
 
 **🔄 Choose Your Style: Embedded or Floating Chatbots**
-
-Flexibility is key. Display your Chatbot as an embedded feature on pages or let it float across your site. With simple shortcodes, adapt the chatbot's presence to match your website's design and user needs.
+Flexibility is key. Display your AI-powered chatbot as an embedded feature on pages or let it float across your site. With simple shortcodes, adapt the chatbot's presence to match your website's design and user needs.
 
 **🔍 Knowledge Navigator: Unearthing Your Content's Essence**
-
 At the heart of the plugin lies the Knowledge Navigator. This powerful tool delves deep into your website, mapping its architecture and content, enabling the chatbot to deliver precise and contextually relevant responses. Enhanced by TF-IDF analysis, the Knowledge Navigator ensures your content's unique keywords shine through, making interactions more meaningful.
 
 **🗎 Conversation Logging**
-
 Conversation Logging in this plugin records and stores chat interactions between users and the chatbot, providing valuable insights for enhancing user experience and chatbot performance. Visit the privacy policy on the Settings Support tab for details on data handling.
 
 **🎭 Personalize with Custom Avatars**
-
 Add a creative touch with customizable avatars. Reflect your site's personality through these visual companions, enhancing user engagement and adding a unique flair to your digital space.
 
 **📊 Direct Traffic with Customizable Buttons**
-
 Guide your visitors where you want them. Customizable buttons can link directly to specific pages, forms, or contact information, facilitating smoother navigation and enhanced user engagement.
 
-🤖 Tailored Audience Engagement
-
+**🤖 Tailored Audience Engagement**
 Customize accessibility with three audience settings: All Audiences, Logged-in Only, or Visitors Only. Additionally, control presentation to specific audiences. Whether floating or embedded, tailor the chatbot's visibility for a seamless user experience across platforms.
 
-**🤖 Why An Kognetiks Chatbot for WordPress?**
+**🎭Personalized Greetings:**
+Users now have the option to personalize both initial and subsequent greetings for the chatbot, enhancing the user experience with a more individualized interaction. Just add any field from your _users or _usermeta table in WordPress to the Initial Greeting or Subsequent Greeting, such as: "Hello [first_name], how can I help you today?". This can be found under Settings > Kognetiks Chatbot > Settings.
 
-- **Natural Conversations:** Experience human-like interactions, thanks to OpenAI's Large Language Model API.
-- **Always Available:** Provide round-the-clock assistance in various domains, from healthcare to education.
-- **Seamless Integration:** Effortlessly bring your WordPress site to life with an easy-to-use plugin.
+**🤖Display Assistant's Name:**
+We've introduced a feature that allows the display of the Assistant's name, which is sourced directly from the OpenAI platform. This can be found and adjusted under Settings > Kognetiks Chatbot > GPT Assistants > Display GPT Assistant Name.
+
+**🌟Support for Additional Models:**
+Our support model range has been expanded to include not just text but also image and speech functionalities. This broadens the chatbot's application in various interactive scenarios. You can call the Chatbot using the "model" parameter in the shortcode.
+
+**🌟Image Generation with DALL-E:**
+The chatbot is now equipped to generate images using OpenAI's DALL-E models, offering users a new dimension of creativity and visual interaction. To generate images using the "dall-e-3" model, use the shortcode **[chatbot style=embedded model=dall-e-3]**.
+
+**🔄Text-to-Speech Conversion:**
+With the integration of Text-to-Speech (TTS) models, the chatbot can now convert text inputs into spoken word, making it accessible for auditory communication and enhancing user engagement through speech. To generate speech from text, use the shortcode **[chatbot style=embedded model=tts-1-1106]**.
+
+**🤖 Why the Kognetiks Chatbot for WordPress?**
+▪ **Natural Conversations:** Experience human-like interactions, thanks to Large Language Model APIs from companies like OpenAI.
+▪ **Always Available:** Provide round-the-clock assistance in various domains, from healthcare to education.
+▪ **Seamless Integration:** Effortlessly bring your WordPress site to life with an easy-to-use plugin.
 
 **✨ Supported Models from OpenAI**
-
-- GPT-3 series of models
-- GPT-4 series of models
-- dall-e series of models
-- tts series of models
+▪ gpt series of models including gpt-4o and gpt-4o-mini
+▪ dall-e series of models
+▪ tts series of models
+▪ stt series of models
 
 For a full list of models, please see [OpenAI's Model Overview](https://platform.openai.com/docs/models/overview).
 
 **🚀 Elevate Your Website Experience**
-A Kognetiks Chatbot for WordPress is more than just a plugin – it's a transformational tool for your website. With advanced AI technology at its core, it promises a unique and interactive experience for your visitors.
+The Kognetiks Chatbot for WordPress is more than just a plugin – it's a transformational tool for your website. With advanced AI technology at its core, it promises a unique and interactive experience for your visitors.
 
 Get your Kognetiks Chatbot for WordPress today and redefine your WordPress site with intelligence and a personal touch.
 
 **Note:** This plugin requires an API key from OpenAI. Obtain yours at [OpenAI API Keys](https://platform.openai.com/account/api-keys).
 
 ## 🌐 Features at a Glance
-- **Quick Setup:** Integrate easily with API from companies like OpenAI.
-- **Advanced AI Models:** Includes support for the latest GPT-4 Turbo from OpenAI.
-- **Customizable Interfaces:** Choose between floating and embedded chatbot styles.
-- **User-Friendly Settings:** Easily manage your API key and other settings.
-- **Intelligent Design:** Smart collapsible chatbot for a cleaner website interface.
-- **Engaging User Interaction:** Customize greetings and messages for a unique visitor experience.
-- **Persistent Memory:** The chatbot remembers interactions, offering continuity across pages.
-- **In-depth Content Analysis:** Knowledge Navigator ensures contextually relevant interactions.
+* **Quick Setup:** Integrate easily with API from companies like OpenAI.
+* **Advanced AI Models:** Includes support for the latest GPT-4 Turbo from OpenAI.
+* **Customizable Interfaces:** Choose between floating and embedded chatbot styles.
+* **User-Friendly Settings:** Easily manage your API key and other settings.
+* **Intelligent Design:** Smart collapsible chatbot for a cleaner website interface.
+* **Engaging User Interaction:** Customize greetings and messages for a unique visitor experience.
+* **Persistent Memory:** The chatbot remembers interactions, offering continuity across pages.
+* **In-depth Content Analysis:** Knowledge Navigator ensures contextually relevant interactions.
 
 ## Getting Started
 
@@ -316,7 +365,7 @@ Remember, wielding AI power requires immense responsibility — it's incumbent u
 
 ## Support
 
-💬 Looking for **plugin support**, please visit [https://kognetiks.com/wordpress-plugins/plugin-support/](https://kognetiks.com/wordpress-plugins/plugin-support/).
+💬 Looking for **plugin support**, please visit [https://kognetiks.com/plugin-support/](https://kognetiks.com/plugin-support/).
 
 📜 For **frequently asked questions**, please visit [https://kognetiks.com/wordpress-plugins/frequently-asked-questions/](https://kognetiks.com/wordpress-plugins/frequently-asked-questions/).
 

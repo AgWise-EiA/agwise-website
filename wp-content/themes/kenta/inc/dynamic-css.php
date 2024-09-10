@@ -316,15 +316,6 @@ function kenta_enqueue_dynamic_css() {
 }
 
 /**
- * Enqueue dynamic css for our theme editor
- */
-function kenta_enqueue_admin_dynamic_css() {
-	wp_register_style( 'kenta-admin-dynamic', false );
-	wp_enqueue_style( 'kenta-admin-dynamic' );
-	wp_add_inline_style( 'kenta-admin-dynamic', kenta_admin_dynamic_css() );
-}
-
-/**
  * Generate global css vars
  *
  * @return mixed
@@ -507,8 +498,8 @@ function kenta_transparent_header_css() {
 	];
 	$css['.kenta-transparent-header .kenta-site-branding .site-identity .site-title, .kenta-transparent-header .kenta-site-branding .site-identity .site-tagline']                                     =
 		Css::colors( CZ::get( 'kenta_trans_header_site_title_color' ), [
-			'initial' => '--text-color',
-			'hover'   => '--hover-color',
+			'initial' => '--kenta-link-initial-color',
+			'hover'   => '--kenta-link-hover-color',
 		] );
 
 	// Raw text
@@ -647,18 +638,8 @@ function kenta_preloader_css() {
 function kenta_no_cache_dynamic_css() {
 	$css = array();
 
-	$option_type = kenta_current_option_type();
-
-	/**
-	 * Global site
-	 */
-	$content_container_type = kenta_get_current_post_meta( 'site-container-layout' );
-	if ( $content_container_type === 'default' ) {
-		$content_container_type = CZ::get( 'kenta_' . $option_type . '_container_layout' ) ?? 'normal';
-	}
-
+	$option_type   = kenta_current_option_type();
 	$site_wrap_css = [
-		'--kenta-max-w-content'        => $content_container_type === 'normal' ? 'auto' : CZ::get( 'kenta_' . $option_type . '_container_max_width' ),
 		'--kenta-content-area-spacing' => kenta_get_current_post_meta( 'disable-content-area-spacing' ) === 'yes'
 			? '0px' : CZ::get( "kenta_{$option_type}_content_spacing" ),
 		'--wp-admin-bar-height'        => ( ! is_admin_bar_showing() || is_customize_preview() ) ? '0px' : [
@@ -941,13 +922,20 @@ function kenta_dynamic_css() {
 		$prefix       = 'kenta_' . $article_type;
 
 		// Article content
-		$content_preset                     = CZ::get( $prefix . '_content_style_preset' );
-		$css['.kenta-article-content-wrap'] = array_merge(
-			array(
-				'padding' => $content_preset === 'ghost' ? '' : '24px',
-			),
-			kenta_card_preset_style( $content_preset )
-		);
+		$content_preset = CZ::get( $prefix . '_content_style_preset' );
+		$sidebar_layout = kenta_get_sidebar_layout( $article_type );
+		if ( $sidebar_layout === 'no-sidebar' ) {
+			$css['.kenta-article-content-wrap'] = array_merge(
+				array(
+					'position' => 'relative',
+					'padding'  => $content_preset === 'ghost' ? '' : '24px',
+				)
+			);
+
+			$css['.kenta-article-content-wrap::before'] = kenta_card_preset_style( $content_preset );
+		} else {
+			$css['.kenta-article-content-wrap'] = kenta_card_preset_style( $content_preset );
+		}
 
 		// Article header
 		$css['.kenta-article-header'] = array_merge(
@@ -980,7 +968,7 @@ function kenta_dynamic_css() {
 		// Article thumbnail
 		$css['.article-featured-image']     = Css::dimensions( CZ::get( "{$prefix}_featured_image_spacing" ), 'padding' );
 		$css['.article-featured-image img'] = array_merge(
-			[ 'height' => CZ::get( "{$prefix}_featured_image_height" ) ],
+			[ 'width' => '100%', 'height' => CZ::get( "{$prefix}_featured_image_height" ) ],
 			Css::shadow( CZ::get( "{$prefix}_featured_image_shadow" ) ),
 			Css::dimensions( CZ::get( "{$prefix}_featured_image_radius" ), 'border-radius' ),
 			Css::filters( CZ::get( "{$prefix}_featured_image_filter" ) )
@@ -1083,10 +1071,6 @@ function kenta_dynamic_css() {
 		// article
 		'.kenta-article-content .wp-block-button',
 		'.kenta-article-content button',
-		'.kenta-prose .wp-block-button',
-		'.kenta-prose button',
-		'.prose-kenta .wp-block-button',
-		'.prose-kenta button'
 	];
 	$css[ implode( ',', $button_selectors ) ] = kenta_content_buttons_css();
 
@@ -1112,21 +1096,26 @@ function kenta_dynamic_css() {
 }
 
 /**
- * Generate dynamic css for admin
+ * Generate dynamic css for block editor
+ *
+ * @param $root .editor-styles-wrapper | :root
  *
  * @return mixed
+ * @since 1.4.0
  */
-function kenta_admin_dynamic_css() {
+function kenta_block_editor_dynamic_css( $root = ':root' ) {
 	$css = [];
 
-	$css['.editor-styles-wrapper'] = array_merge(
-		Css::background( CZ::get( 'kenta_site_background' ) )
+	$css[ $root ] = array_merge(
+		Css::background( CZ::get( 'kenta_site_background' ) ),
+		Css::typography( CZ::get( 'kenta_site_global_typography' ) ),
+		Css::filters( CZ::get( 'kenta_site_filters' ) )
 	);
 
-	$css['.editor-styles-wrapper .wp-block-button'] = kenta_content_buttons_css();
+	$css["{$root} .wp-block-button"] = kenta_content_buttons_css();
 
 	return Css::parse( apply_filters(
 		'kenta_filter_admin_dynamic_css',
-		kenta_content_typography_css( '.editor-styles-wrapper', $css )
+		kenta_content_typography_css( $root, $css )
 	) );
 }

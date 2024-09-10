@@ -94,6 +94,8 @@ a.kb-link:hover {
 .kb-column-wrapper {
   flex-grow: var(--kb-column-flex-grow, 1);
   flex-basis: var(--kb-column-width, 0);
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
 .kb-column-wrapper .kb-background-video {
   border-radius: var(--kb-border-radius, 0);
@@ -365,6 +367,7 @@ a.kb-icon-button:hover {
 .kb-post-featured-image img,
 .kb-image a,
 .kb-image img {
+  max-width: 100%;
   margin: 0;
   font-size: 0;
   line-height: 0;

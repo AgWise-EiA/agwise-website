@@ -15260,11 +15260,10 @@ function ImageEdit(props) {
   });
   (0,_hooks_useBlockCss__WEBPACK_IMPORTED_MODULE_15__["default"])(blockID, (_useBlockCss = {}, _defineProperty(_useBlockCss, ".kb-block.kb-block-".concat(blockID), (0,_components_reusable_position__WEBPACK_IMPORTED_MODULE_19__.positionCss)(attributes)), _defineProperty(_useBlockCss, ".kb-image.kb-image-".concat(blockID), Object.assign({
     'text-align': attributes.alignment
-  }, _components_css__WEBPACK_IMPORTED_MODULE_18__["default"].background(attributes.background), (0,_components_reusable_advanced__WEBPACK_IMPORTED_MODULE_16__.advancedCss)(attributes))), _defineProperty(_useBlockCss, ".kb-image.kb-image-".concat(blockID, " img, .kb-image.kb-image-").concat(blockID), {
+  }, _components_css__WEBPACK_IMPORTED_MODULE_18__["default"].background(attributes.background), (0,_components_reusable_advanced__WEBPACK_IMPORTED_MODULE_16__.advancedCss)(attributes))), _defineProperty(_useBlockCss, ".kb-image.kb-image-".concat(blockID, " img"), Object.assign({
     width: attributes.width,
     maxWidth: attributes.maxWidth,
-    height: attributes.height
-  }), _defineProperty(_useBlockCss, ".kb-image.kb-image-".concat(blockID, " img"), Object.assign({
+    height: attributes.height,
     opacity: attributes.opacity,
     'object-fit': attributes.objectFit
   }, (0,_components_reusable_box_style__WEBPACK_IMPORTED_MODULE_17__.boxStyleCss)(attributes), _components_css__WEBPACK_IMPORTED_MODULE_18__["default"].filter(attributes.cssFilter))), _defineProperty(_useBlockCss, ".kb-image.kb-image-".concat(blockID, " img:hover"), (0,_components_reusable_box_style__WEBPACK_IMPORTED_MODULE_17__.hoverBoxStyleCss)(attributes)), _useBlockCss));
@@ -20773,6 +20772,7 @@ function Inspector(_ref) {
             });
           },
           options: {
+            allowEmpty: true,
             view: "buttons",
             choices: {
               'flex-start': respDirection === 'row' ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_16__.jsx)(_wordpress_icons__WEBPACK_IMPORTED_MODULE_17__["default"], {
@@ -24104,7 +24104,7 @@ _wordpress_dom_ready__WEBPACK_IMPORTED_MODULE_2___default()(function () {
   if ('widgets' === window.pagenow || 'customize' === window.pagenow) return;
   var timeout = null;
   var unsubscribe = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_3__.subscribe)(function () {
-    var settingsBar = document.querySelector('.edit-post-header__settings');
+    var settingsBar = document.querySelector('.edit-post-header__settings, .editor-header__settings');
     if (!settingsBar) return;
     var wrapper = document.createElement('div');
     wrapper.classList.add('kb-templates-button-wrapper');
@@ -32849,7 +32849,9 @@ function QueryControls(_ref4) {
         getTaxonomies = _select2.getTaxonomies,
         getEntityRecords = _select2.getEntityRecords;
       var excludedPostTypes = ['attachment'];
-      var filteredPostTypes = (_getPostTypes = getPostTypes()) === null || _getPostTypes === void 0 ? void 0 : _getPostTypes.filter(function (_ref5) {
+      var filteredPostTypes = (_getPostTypes = getPostTypes({
+        per_page: -1
+      })) === null || _getPostTypes === void 0 ? void 0 : _getPostTypes.filter(function (_ref5) {
         var viewable = _ref5.viewable,
           slug = _ref5.slug;
         return viewable && !excludedPostTypes.includes(slug);

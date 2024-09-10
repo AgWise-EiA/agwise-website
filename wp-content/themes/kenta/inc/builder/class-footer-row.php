@@ -89,7 +89,7 @@ if ( ! class_exists( 'Kenta_Footer_Row' ) ) {
 			}
 
 			echo '<div ' . Utils::render_attribute_string( $attrs ) . '>';
-			echo '<div class="container mx-auto px-gutter flex flex-wrap">';
+			echo '<div class="kenta-max-w-wide has-global-padding container mx-auto px-gutter flex flex-wrap">';
 		}
 
 		/**

@@ -1,10 +1,10 @@
 === Kognetiks Chatbot for WordPress ===
 Contributors: Kognetiks
-Tags: chatbot, chatgpt, openai, ai, chat
+Tags: chatbot, chatgpt, openai, artificial intelligence, customer support
 Donate link: https://kognetiks.com/wordpress-plugins/donate/
 Requires at least: 5.5
-Tested up to: 6.5.5
-Stable tag: 2.0.6
+Tested up to: 6.6.1
+Stable tag: 2.1.4
 Requires PHP: 7.0
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
@@ -13,120 +13,52 @@ Easily integrate OpenAI's ChatGPT API into your WordPress website with this powe
 
 == Description ==
 
-**Introducing the Kognetiks Chatbot for WordPress: Revolutionizing Digital Interactions**
+**Transform Your WordPress Site with the Kognetiks Chatbot**
 
-Welcome to the future of website interaction with **Kognetiks Chatbot for WordPress**, your gateway to unparalleled visitor engagement powered by OpenAI's ChatGPT Large Language Models (LLMs) and Assistants.
+The **Kognetiks Chatbot for WordPress** is a feature-rich AI plugin that leverages OpenAI’s ChatGPT to deliver an intelligent, conversational experience on your website. This plugin is ideal for businesses, educators, and bloggers who want to automate customer support, enhance user interaction, and provide personalized assistance in real-time.
 
-**🌐 Harnessing Large Language Models for Enhanced Engagement**
-Dive into the world of advanced AI with Large Language Models at the core of the Chatbot. These models are trained to understand and respond to user queries in a natural, conversational manner. They're not just chatbots; they're intelligent conversational partners that can engage, inform, and assist your visitors in real time. Whether it's providing detailed answers to complex queries or engaging in casual conversation, these models are equipped to elevate the user experience on your website.
+🌟 **Key Features**:
 
-**🌟 Assistants: Tailored Conversational Experiences**
-Dive into the world of advanced AI with the **Kognetiks Chatbot for WordPress**.  At the core, the Chatbot takes advantage of API access to Large Language Models such as those powered by OpenAI. These models are trained to understand and respond to user queries in a natural, conversational manner. They're not just chatbots; they're intelligent conversational partners that can engage, inform, and assist your visitors in real time. Whether it's providing detailed answers to complex queries or engaging in casual conversation, these models are equipped to elevate the user experience on your website.
+* **Advanced AI-Powered Conversations**: Utilize OpenAI’s GPT models to generate natural, human-like responses that engage and assist your visitors.
 
-**🔀 Multiple Assistants, Multiple Roles**
-Unlock the potential of personalized digital interaction. Use the Assistants you develop, trained with your specific knowledge and skills, are here to revolutionize your website. From handling FAQs to managing bookings and offering customized suggestions, these Assistants are seamlessly integrated into your WordPress site, promising a dynamic and engaging user experience.
+* **Customizable Assistants**: Deploy virtually unlimited Assistants tailored to specific roles. Whether it's handling FAQs, managing bookings, or offering personalized recommendations, you can create and manage Assistants directly within the plugin.
 
-The latest version of the plugin allows for virtually unlimited Assistants, allowing you to deploy a unique assistant wherever you placed the shortcode.  Simply pass the "asst_" ID to the shortcode as one of the parameters.
+* **Embedded & Floating Chatbot Styles**: Choose how your chatbot interacts with visitors. Embed it on specific pages or have it float across your entire site. Use simple shortcodes to implement the style that best suits your design.
 
-Unlock enhanced functionality with the latest feature - **now you can upload files directly to each Assistant**, providing an even more dynamic and tailored user experience across your platforms.
+* **Knowledge Navigator**: Boost chatbot accuracy with the Knowledge Navigator, which scans your website content and maps it for contextually relevant responses. This feature is enhanced with TF-IDF analysis, ensuring the chatbot delivers precise information.
 
-Discover more about these innovative features at [Kognetiks.com](https://kognetiks.com/wordpress-plugins/kognetiks-chatbot/) and [OpenAI's Playground](https://platform.openai.com/assistants).
+* **Multi-Model Support**: Beyond text, the Kognetiks Chatbot supports image generation with DALL-E and speech functions with Text-to-Speech (TTS) models, allowing for a richer, multimedia interaction experience.
 
-**🔄 Choose Your Style: Embedded or Floating Chatbots**
-Flexibility is key. Display your AI powered chatbot as an embedded feature on pages or let it float across your site. With simple shortcodes, adapt the chatbot's presence to match your website's design and user needs.
+* **Conversation Logging**: Track and analyze user interactions with built-in conversation logging. This feature helps improve the chatbot’s performance and provides insights into user behavior.
 
-**🔍 Knowledge Navigator: Unearthing Your Content's Essence**
-At the heart of the plugin lies the Knowledge Navigator. This powerful tool delves deep into your website, mapping its architecture and content, enabling the chatbot to deliver precise and contextually relevant responses. Enhanced by TF-IDF analysis, the Knowledge Navigator ensures your content's unique keywords shine through, making interactions more meaningful.
+* **Personalized Avatars and Greetings**: Enhance engagement with custom avatars and greetings that reflect your brand’s personality. Use dynamic placeholders to greet users personally based on their WordPress profile.
 
-**🗎 Conversation Logging**
-Conversation Logging in this plugin records and stores chat interactions between users and the chatbot, providing valuable insights for enhancing user experience and chatbot performance. Visit the privacy policy on the Settings Support tab for details on data handling.
+* **Customizable Buttons**: Direct users seamlessly to specific pages, forms, or contact links with customizable buttons integrated into the chatbot’s interface.
 
-**🎭 Personalize with Custom Avatars**
-Add a creative touch with customizable avatars. Reflect your site's personality through these visual companions, enhancing user engagement and adding a unique flair to your digital space.
+* **Audience Segmentation**: Tailor the chatbot’s visibility with audience-specific settings. Choose to display the chatbot to all visitors, only logged-in users, or only new visitors.
 
-**📊 Direct Traffic with Customizable Buttons**
-Guide your visitors where you want them. Customizable buttons can link directly to specific pages, forms, or contact information, facilitating smoother navigation and enhanced user engagement.
+* **API Key Management & Security**: Securely manage your OpenAI API key directly within the plugin. Includes features for monitoring usage, setting limits, and regularly rotating keys for added security.
 
-**🤖 Tailored Audience Engagement**
-Customize accessibility with three audience settings: All Audiences, Logged-in Only, or Visitors Only. Additionally, control presentation to specific audiences. Whether floating or embedded, tailor the chatbot's visibility for a seamless user experience across platforms.
+* **Persistent Memory & Interaction Continuity**: The chatbot remembers previous
+fering a seamless and continuous experience across different pages.
 
-**🎭Personalized Greetings:**
-Users now have the option to personalize both initial and subsequent greetings for the chatbot, enhancing the user experience with a more individualized interaction. Just add any field from your _users or _usermeta table in WordPress to the Initial Greeting or Subsequent Greeting, such as: "**Hello [first_name], how can I help you today?**".  This can be found under Settings > Kognetiks Chatbot > Settings.
+* **Multi-Language Support**: Engage a global audience with multilingual support
+justing to the site’s language settings.
 
-**🤖Display Assistant's Name:**
-We've introduced a feature that allows the display of the Assistant's name, which is sourced directly from the OpenAI platform. This can be found and adjusted under Settings > Kognetiks Chatbot > GPT Assistants > Display GPT Assistant Name.
+🌟 **Why Choose the Kognetiks Chatbot?**
 
-**🌟Support for Additional Models:**
-Our support model range has been expanded to include not just text but also image and speech functionalities. This broadens the chatbot's application in various interactive scenarios.  You can call the Chatbot using the "model" parameter in the shortcode.
+* **Easy Integration**: Quickly set up the plugin and integrate with OpenAI’s AP
+ing intelligent conversations.
 
-**🌟Image Generation with DALL-E:**
-The chatbot is now equipped to generate images using OpenAI's DALL-E models, offering users a new dimension of creativity and visual interaction. To generate images using the "dall-e-3" model, use the shortcode **[chatbot style=embedded model=dall-e-3]**.
+* **Versatile Applications**: Perfect for customer support, lead generation, educational purposes, and more.
 
-**🔄Text-to-Speech Conversion:**
-With the integration of Text-to-Speech (TTS) models, the chatbot can now convert text inputs into spoken word, making it accessible for auditory communication and enhancing user engagement through speech. To generate speech from text, use the shortcode **[chatbot style=embedded model=tts-1-1106]**.
+* **Continuous Updates**: Benefit from regular updates that introduce new features and improve existing ones.
 
-**🤖 Why the Kognetiks Chatbot for WordPress?**
-▪ **Natural Conversations:** Experience human-like interactions, thanks to Large Language Model APIs from companies like OpenAI.
-▪ **Always Available:** Provide round-the-clock assistance in various domains, from healthcare to education.
-▪ **Seamless Integration:** Effortlessly bring your WordPress site to life with an easy-to-use plugin.
+🚀 **Ready to Transform Your WordPress Site?**
 
-**✨ Supported Models from OpenAI**
-▪ GPT-3 series of models
-▪ GPT-4 series of models
-▪ dall-e series of models
-▪ tts series of models
-
-For a full list of models, please see [OpenAI's Model Overview](https://platform.openai.com/docs/models/overview).
-
-**🚀 Elevate Your Website Experience**
-The Kognetiks Chatbot for WordPress is more than just a plugin – it's a transformational tool for your website. With advanced AI technology at its core, it promises a unique and interactive experience for your visitors.
-
-Get your Kognetiks Chatbot for WordPress today and redefine your WordPress site with intelligence and a personal touch.
-
-**Note:** This plugin requires an API key from OpenAI. Obtain yours at [OpenAI API Keys](https://platform.openai.com/account/api-keys).
+Get started with the Kognetiks Chatbot today and elevate your website’s interaction with cutting-edge AI technology.
 
 Visit us at [Kognetiks.com](https://kognetiks.com/wordpress-plugins/kognetiks-chatbot/) for more information.
-
-**🌐 Features at a Glance**
-▪ **Quick Setup:** Integrate easily with API from companies like OpenAI.
-▪ **Advanced AI Models:** Includes support for the latest models like GPT-4 Turbo from OpenAI.
-▪ **Customizable Interfaces:** Choose between floating and embedded chatbot styles.
-▪ **User-Friendly Settings:** Easily manage your API key and other settings.
-▪ **Intelligent Design:** Smart collapsible chatbot for a cleaner website interface.
-▪ **Engaging User Interaction:** Customize greetings and messages for a unique visitor experience.
-▪ **Persistent Memory:** The chatbot remembers interactions, offering continuity across pages.
-▪ **In-depth Content Analysis:** Knowledge Navigator ensures contextually relevant interactions.
-
-== Experience the Evolution of Website Interaction with the Kognetiks Chatbot for WordPress! ==
-
-== Getting Started ==
-
-1. Obtain your API key by signing up at [https://platform.openai.com/account/api-keys](https://platform.openai.com/account/api-keys).
-2. Install and activate the Kognetiks Chatbot for WordPress plugin.
-3. Navigate to the settings page (Settings > API/Model) and enter your API key.
-4. Customize the chatbot appearance and other parameters as needed.
-5. For a floating chatbot add the shortcode to your theme's footer: [chatbot] or [chatbot style=floating]
-6. For an embedded chatbot on any page add the shortcode: [chatbot style=embedded]
-7. Use [chatbot style=floating|embedded assistant=primary|alternate] to display the chatbot as a floating chatbot or embedded chatbot with a primary or alternate assistant.
-
-Now your website visitors can enjoy a seamless and personalized chat experience with the Kognetiks Chatbot for WordPress.
-
-== Plugin Support and FAQs ==
-
-💬 Looking for **plugin support**, please visit [https://kognetiks.com/wordpress-plugins/plugin-support/](https://kognetiks.com/wordpress-plugins/plugin-support/).
-
-📜 For **frequently asked questions**, please visit [https://kognetiks.com/wordpress-plugins/frequently-asked-questions/](https://kognetiks.com/wordpress-plugins/frequently-asked-questions/).
-
-== API Key Safety and Security ==
-
-Your API key serves as the confidential password providing access to your OpenAI account and the resources associated with it. If this key falls into the wrong hands, it can be misused in a variety of detrimental ways, including unauthorized usage, potential data leaks, and the improper application of AI models. It's crucial, therefore, to implement the following protective measures:
-
-1. Secure key storage: Ensure your API keys are stored in a safe and secure manner.
-2. Monitor and review usage: Frequently scrutinize and evaluate the usage of your API key. OpenAI provides handy usage data and records that can assist in detecting unusual activity. For insightful usage statistics, visit [https://platform.openai.com/account/usage](https://platform.openai.com/account/usage).
-3. Establish usage limits: Initially, implement a low hard limit to ensure that if the limit is reached at any point during the month, any further requests will be denied. You can set up both hard and soft limits at [https://platform.openai.com/account/billing/limits](https://platform.openai.com/account/billing/limits).
-4. Regular key rotation: Frequently changing your API keys can reduce the risk of misuse. If you observe any unexpected activity, it's important to immediately revoke your API keys. As a preventative measure, you might want to regularly revoke them to avert misuse. Manage your API keys at [https://platform.openai.com/account/api-keys](https://platform.openai.com/account/api-keys).
-
-Remember, wielding AI power requires immense responsibility — it's incumbent upon us all to ensure its careful and secure use.
 
 == Installation ==
 
@@ -164,35 +96,33 @@ Embark on a journey to elevate your website's interactivity with the Chatbot plu
 7. **Scheduling Knowledge Navigator**
    - Opt for hourly, daily, or weekly scans through the Knowledge Navigator to ensure the chatbot stays updated with your latest content.
 
+== Frequently Asked Questions ==
+
+**Plugin Support**
+
+Please visit [https://kognetiks.com/plugin-support/](https://kognetiks.com/plugin-support/).
+
+For **frequently asked questions**, please visit [https://kognetiks.com/wordpress-plugins/frequently-asked-questions/](https://kognetiks.com/wordpress-plugins/frequently-asked-questions/).
+
+**How do I get an API key?**
+
+Sign up at [OpenAI API Keys]((https://platform.openai.com/account/api-keys)) to obtain your API key. This key is necessary to use the plugin.
+
+**Can I customize the chatbot's appearance?**
+
+Yes, the chatbot’s appearance can be fully customized through CSS or via the plugin’s settings page. You can also personalize the chatbot’s name, greetings, and even choose from different avatars.
+
+**Does the chatbot support multiple languages?**
+
+Yes, the Kognetiks Chatbot supports multiple languages, allowing you to cater to a diverse audience. Set your preferred language in WordPress, and the chatbot will adapt accordingly.
+
+**What models does the plugin support?**
+
+The plugin supports OpenAI’s latest models, including the GPT series for text, DALL-E for image generation, and TTS for speech. For a detailed list, check the plugin settings or visit OpenAI's Model Overview.
+
 == Your Journey Towards an Interactive Website Begins! ==
 
 With the Kognetiks Chatbot installed, you're now equipped to offer a more dynamic, engaging, and responsive experience to your website visitors.
-
-== Frequently Asked Questions ==
-
-= How do I obtain an API key for the API? =
-
-To obtain an API key, sign up for an account at [https://platform.openai.com/account/api-keys](https://platform.openai.com/account/api-keys). Once registered, you will have access to your API key.
-
-= Can I customize the appearance of the chatbot? =
-
-Yes, the plugin comes with a default style, but you can easily customize the chatbot's appearance by editing the chatbot-chatgpt.css file or adding custom CSS rules to your WordPress theme.
-
-You can also customize the name of the chatbot, as well as changing the initial greeting and subsequent greeting.
-
-= Is the chatbot available in multiple languages? =
-
-Yes, the Kognetiks Chatbot for WordPress and OpenAI's ChatGPT API support many different languages. Set the 'Site Language' option in WordPress to your preference.
-
-= Which OpenAI models does the plugin use? =
-
-The plugin supports the gpt-3.5-turbo, gpt-4, gpt-4-1106-preview models from OpenAI.  These are the same models found in the ChatGPT product from OpenAI.
-
-The plugin now supports the latest OpenAI model **gpt-4-turbo (i.e., 'gpt-4-1106-preview')** featuring improved instruction following based on training data up to April 2023.  New models will be added as the become available.
-
-= More FAQs =
-
-You can find more frequently asked questions at [https://kognetiks.com/wordpress-plugins/frequently-asked-questions/](https://kognetiks.com/wordpress-plugins/frequently-asked-questions/).
 
 == Disclaimer ==
 
@@ -210,9 +140,9 @@ OpenAI, ChatGPT, and related marks are registered trademarks of OpenAI. Kognetik
 8. Mobile Chatbot - Minimized
 9. Mobile Chatbot - Open example
 10. Mobile Chatbot - Open example
-11. Mobile Chatbot - Table Minimized
-12. Mobile Chatbot - Table Open example
-13. Mobile Chatbot - Table Landscape example
+11. Mobile Chatbot - Tablet Minimized
+12. Mobile Chatbot - Tablet Open example
+13. Mobile Chatbot - Tablet Landscape example
 14. Chatbot Setting - Main settings
 15. Chatbot Setting - API/Model settings
 16. Chatbot Setting - GPT Assistant settings
@@ -227,11 +157,57 @@ OpenAI, ChatGPT, and related marks are registered trademarks of OpenAI. Kognetik
 
 == Changelog ==
 
-= 2.0.6 =
+= 2.1.4 - Released 09-02-2024 =
+
+* **Improved Table Formatting**: Enhanced the appearance of tables in chatbot responses for better readability.
+* **Bug Fixes**: Resolved minor issues and bugs identified during the development process.
+
+= 2.1.3 - Released 08-31-2024 =
+
+* **Remote Server Access**: The **Kognetiks Chatbot for WordPress** now includes the advanced feature to allow access to your assistants from remote servers.  Coupled with security measures to control and monitor remote access to your chatbots, you must enable the **Remote Widget Access** feature.  This will allow specific remote servers to interact with your chatbot(s) via an endpoint. To ensure that only authorized servers and chatbots can access your resources, the system uses a whitelisting mechanism that pairs domains with specific chatbot shortcodes.
+* **Improving Math Handling**: Integrated code enhances chatbot’s ability to render complex mathematical expressions.
+* **Bug Fixes**: Resolved minor issues and bugs identified during the development process.
+
+= 2.1.2 - Released 08-28-2024 =
+
+* **Changed Script Load Order**: Adjusted the loading order of scripts to ensure that critical settings are defined before the main chatbot script executes, preventing incorrect style application.
+
+= 2.1.1 - Released 08-27-2024 =
+* **Code Cleanup and Optimization**: Refined and optimized the codebase for improved performance and maintainability.
+* **Variable Unification**: Standardized variable names across the project to ensure consistency and reduce potential errors.
+* **User Experience Consistency**: Addressed inconsistencies in the chatbot experience between logged-in and non-logged-in users, ensuring a uniform experience.
+* **Bug Fixes**: Resolved minor issues and bugs identified during the development process.
+
+= 2.1.0 - Released 08-22-2024 =
+* **JavaScript Version Control**: Added JavaScript version control to help with cache busting.
+* **Conversation Log CSV Export**: Added a check to determine if $value is not null before calling mb_convert_encoding to prevent PHP warnings.
+
+= 2.0.9 - Released 08-17-2024 =
+* **Adjusted Module Name Conflict**: Renamed one module that was had a name found to be in conflict with another vendor's plugin.
+* **Reworked Conversation Continuity**: Improved the way the chatbot handles conversation continuity for visitors and logged-in users, ensuring a seamless experience across pages.
+* **Alternate Attribution Message**: Allows for replacing the attribution message with 'Chatbot WOrdPress plugin by Kognetiks' with a text message of your choosing.
+* **Refactored Inline Styles**: Moved inline styles to an external CSS file for better maintainability and separation of concerns.
+* **floating-style CSS Class Rename**: Renamed the .floating-style CSS class to chatbot-floating-style to avoid conflicts with other plugins or themes.
+* **embedded-style CSS Class Rename**: Renamed the .embedded-style CSS class to chatbot-embedded-style to avoid conflicts with other plugins or themes.
+* **chatgptTitle CSS ID Rename**: Renamed the chatgptTitle CSS ID renamed to chatbot-chatgpt-title to avoid conflicts with other plugins or themes.
+* **chatbot-user-text CSS Class Rename**: Renamed the user-text CSSclass to chatbot-user-text to avoid conflicts with other plugins or themes.
+* **bot-text CSS Class Rename**: Renamed the bot-text CSSclass to chatbot-bot-text to avoid conflicts with other plugins or themes.
+
+= 2.0.8 - Released 08-01-2024 =
+* **Logic Error Updated**: Corrected a logic error that was causing some visitors and logged-in users to lose their session continuity with the Assistants. This ensures a smoother and more consistent experience for all users.
+* **Fixed Special Characters Display Issue**: Improved the way special characters are handled in chatbot names. Previously, the code was converting special characters like '&' into their HTML equivalents (e.g., '&' became '&').
+
+= 2.0.7 - Released 07-25-2024 =
+* **Model Support**: The latest models available from OpenAI are dynamically added to model picklists.  Available models now include gpt-4o and gpt-4o-mini.  See Chatbot Settings > API/Model > Chat Settings.
+* **Manage Chatbot Error Logs**: Added the ability to manage chatbot error logs, including the ability to download and delete logs. See Chatbot Settings > Tools. TIP: You must enable Diagnostics access the Tools tab. See Chatbot Settings > Messages > Messages and Diagnostics.
+* **Revised Reporting Settings Layout**: Revised and refreshed the Reporting Settings page layout for better visualization. See Chatbot Settings > Reporting.
+* **Conversation Continuation**: Added an additional setting added to enable conversation continuation after returning to a page previously visited. See Chatbot Settings > Settings > Additional Settings.
+
+= 2.0.6 - Released 07-11-2024 =
 * **Dynamic Shortcode**: Added support for dynamic shortcodes to allow for more flexible Assistant selection. Add all parameters to the shortcode, including the Assistant ID on the GTP Assistant tab. For example, `[chatbot-1]`.
 * **Logic Error Updated**: Corrected a logic error that prevented visitors and logged-in users from interacting with Assistants.
 
-= 2.0.5 =
+= 2.0.5 - Released 07-06-2024 =
 * **Enhanced Assistant Management**: A new intuitive interface for managing all your chatbot Assistants in one place.
 * **Assistant ID Integration**: Easily add Assistants developed in the OpenAI Playground using their unique ID.
 * **Improved Shortcode Usage**: Tips for optimal placement and usage of the `[chatbot assistant="Common Name"]` shortcode.
@@ -242,10 +218,10 @@ OpenAI, ChatGPT, and related marks are registered trademarks of OpenAI. Kognetik
 * **Knowledge Navigator Analysis**: Moved the Knowledge Navigator Analysis for export to the bottom of the Knowledge Navigator tab.
 * **Custom Buttons Expanded**: Now supports up to four custom buttons, on floating only, embedded only, or on both chatbot styles.
 
-= 2.0.4 =
+= 2.0.4 - Released - 06-21-2024 =
 * Removed session id from the chatbot shortcode and replaced with a unique id for visitors and logged-in users alike.
 
-= 2.0.3 =
+= 2.0.3 - Released - 06-12-2024 =
 * **Transcript Download Option**: You can now choose whether users can download a transcript of their conversations with the chatbot.
 * **Improved Image Sizing**: Images smaller than the chatbot's message view now display in their actual size for better clarity.
 * **Knowledge Navigator Settings**: We've added an option to disable the Knowledge Navigator if you only want to use assistants for chatbot interactions.
@@ -253,12 +229,12 @@ OpenAI, ChatGPT, and related marks are registered trademarks of OpenAI. Kognetik
 * **File Download Support**: The chatbot now supports downloading files generated on the OpenAI platform.
 * **Custom Error Handling**: When there's an issue with the chatbot, you can now display a custom error message to users.
 
-= 2.0.2 =
+= 2.0.2 - Released 05-27-2024 =
 * Overhauled the Support documentation with extensive information on the chatbot settings - See the Support tab in Settings
 * Revised the export function for Conversation Data, Interaction Data and Token Usage Data
 * Reverted the function ```str_contains``` to ```strpos``` as the latter is only available in PHP 8
 
-= 2.0.1 =
+= 2.0.1 - Released 05-16-2024 =
 * Support for OpenAI's latest models: gpt-4o and gpt-4o-2024-05-13
 
 = 2.0.1 Configuration Options =

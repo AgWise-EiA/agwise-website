@@ -28,7 +28,7 @@ $attributes = array_merge(
         ),
         'alignItems'     => array(
             'type'    => 'object',
-            'default' => 'flex-start',
+            'default' => '',
         ),
         'wrap'           => array(
             'type'    => 'string',

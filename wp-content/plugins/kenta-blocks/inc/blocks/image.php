@@ -105,13 +105,16 @@ return array(
             kenta_blocks_advanced_css( $block ),
             kenta_blocks_position_css( $block )
         );
-        $css[".kb-image.kb-image-{$id} img, .kb-image.kb-image-{$id}"] = array(
-            'width'     => kb_get_block_attr( $block, 'width' ),
-            'max-width' => kb_get_block_attr( $block, 'maxWidth' ),
-            'height'    => kb_get_block_attr( $block, 'height' ),
-        );
+        // $css[".kb-image.kb-image-$id img, .kb-image.kb-image-$id"] = array(
+        // 	'width'     => kb_get_block_attr( $block, 'width' ),
+        // 	'max-width' => kb_get_block_attr( $block, 'maxWidth' ),
+        // 	'height'    => kb_get_block_attr( $block, 'height' ),
+        // );
         $css[".kb-image.kb-image-{$id} img"] = array_merge(
             array(
+                'width'      => kb_get_block_attr( $block, 'width' ),
+                'max-width'  => kb_get_block_attr( $block, 'maxWidth' ),
+                'height'     => kb_get_block_attr( $block, 'height' ),
                 'opacity'    => kb_get_block_attr( $block, 'opacity' ),
                 'object-fit' => kb_get_block_attr( $block, 'objectFit' ),
             ),

@@ -3102,6 +3102,8 @@ a.kb--button:hover svg,
 .editor-styles-wrapper .kb-column-wrapper {
   flex-grow: var(--kb-column-flex-grow, 1);
   flex-basis: var(--kb-column-width, 0);
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
 .editor-styles-wrapper .kb-column-wrapper .kb-background-video {
   border-radius: var(--kb-border-radius, 0);

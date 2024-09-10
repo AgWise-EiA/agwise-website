@@ -11,7 +11,7 @@
 
 // If this file is called directly, abort.
 if ( ! defined( 'WPINC' ) ) {
-    die;
+    die();
 }
 
 // Knowledge Navigator Analysis section callback - Ver 1.6.2
@@ -45,8 +45,10 @@ function chatbot_chatgpt_kn_analysis_output_callback($args) {
 // Download the TF-IDF data
 function chatbot_chatgpt_kn_analysis_download_csv() {
 
+    global $chatbot_chatgpt_plugin_dir_path;
+
     // Generate the results directory path
-    $results_dir_path = CHATBOT_CHATGPT_PLUGIN_DIR_PATH . 'results/';
+    $results_dir_path = $chatbot_chatgpt_plugin_dir_path . 'results/';
     // back_trace( 'NOTICE', 'results_dir_path: ' . $results_dir_path);
 
     // Specify the output file's path

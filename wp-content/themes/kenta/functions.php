@@ -9,12 +9,12 @@
 
 if ( ! defined( 'KENTA_VERSION' ) ) {
 	// Replace the version number of the theme on each release.
-	define( 'KENTA_VERSION', '1.3.3' );
+	define( 'KENTA_VERSION', '1.4.3' );
 }
 
 if ( ! defined( 'MIN_KENTA_CMP_VERSION' ) ) {
 	// Minimal Kenta Companion plugin compatible
-	define( 'MIN_KENTA_CMP_VERSION', '1.2.3' );
+	define( 'MIN_KENTA_CMP_VERSION', '1.2.5' );
 }
 
 if ( ! defined( 'KENTA_WOOCOMMERCE_ACTIVE' ) ) {

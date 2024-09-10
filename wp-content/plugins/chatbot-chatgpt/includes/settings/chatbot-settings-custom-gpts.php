@@ -11,8 +11,193 @@
 
 // If this file is called directly, abort.
 if ( ! defined( 'WPINC' ) ) {
-    die;
+    die();
 }
+
+// Register Assistant settings - Ver 2.0.2.1
+function chatbot_chatgpt_assistant_settings_init() {
+
+    // chatbot_chatgpt_assistant_settings
+    add_settings_section(
+        'chatbot_chatgpt_assistant_settings_section',
+        'Assistant Settings',
+        'chatbot_chatgpt_assistant_settings_section_callback',
+        'chatbot_chatgpt_assistant_settings'
+    );
+
+    // Settings Custom GPTs tab - Ver 1.7.2
+    // register_setting('chatbot_chatgpt_custom_gpts', 'chatbot_chatgpt_use_custom_gpt_assistant_id'); // Ver 1.6.7 - REMOVED in Ver 2.0.5
+    register_setting('chatbot_chatgpt_custom_gpts', 'chatbot_chatgpt_allow_file_uploads'); // Ver 1.7.6
+    register_setting('chatbot_chatgpt_custom_gpts', 'chatbot_chatgpt_display_custom_gpt_assistant_name'); // Ver 1.9.4
+    register_setting('chatbot_chatgpt_custom_gpts', 'assistant_id'); // Ver 1.6.7
+    register_setting('chatbot_chatgpt_custom_gpts', 'chatbot_chatgpt_assistant_instructions'); // Ver 1.9.3
+    register_setting('chatbot_chatgpt_custom_gpts', 'chatbot_chatgpt_assistant_id_alternate'); // Alternate Assistant - Ver 1.7.2
+    register_setting('chatbot_chatgpt_custom_gpts', 'chatbot_chatgpt_assistant_instructions_alternate'); // Alternate Assistant - Ver 1.9.3
+    register_setting('chatbot_chatgpt_custom_gpts', 'chatbot_chatgpt_assistant_beta_version'); // Beta Assistant - Ver 1.9.3
+    register_setting('chatbot_chatgpt_custom_gpts', 'chatbot_chatgpt_thread_retention_period'); // Thread Retention Period - Ver 1.9.9
+    register_setting('chatbot_chatgpt_custom_gpts', 'chatbot_chatgpt_max_prompt_tokens'); // Max Prompt Tokens - Ver 2.0.1
+    register_setting('chatbot_chatgpt_custom_gpts', 'chatbot_chatgpt_max_completion_tokens'); // Max Response Tokens - Ver 2.0.1
+    register_setting('chatbot_chatgpt_custom_gpts', 'chatbot_chatgpt_enable_remote_widget'); // Enable Remote Widget - Ver 2.1.3
+    register_setting('chatbot_chatgpt_custom_gpts', 'chatbot_chatgpt_allowed_remote_domains'); // Allowed Remote Domains - Ver 2.1.3
+    register_setting('chatbot_chatgpt_custom_gpts', 'chatbot_chatgpt_widget_logging'); // Widget Logging - Ver 2.1.3
+
+    // General Settings for Assistants
+    add_settings_section(
+        'chatbot_chatgpt_custom_gpts_section',
+        'Assistant General Settings',
+        'chatbot_chatgpt_gpt_assistants_section_callback',
+        'chatbot_chatgpt_gpt_assistants_settings'
+    );
+    
+    // Use GPT Assistant ID (Yes or No) - Ver 1.6.7 - REMOVED in Ver 2.0.5
+    // add_settings_field(
+    //     'chatbot_chatgpt_use_custom_gpt_assistant_id',
+    //     'Use GPT Assistant Id',
+    //     'chatbot_chatgpt_use_gpt_assistant_id_callback',
+    //     'chatbot_chatgpt_gpt_assistants_settings',
+    //     'chatbot_chatgpt_custom_gpts_section'
+    // );
+
+    // Allow file uploads to the Assistant - Ver 1.7.6
+    add_settings_field(
+        'chatbot_chatgpt_allow_file_uploads',
+        'Allow File Uploads',
+        'chatbot_chatgpt_allow_file_uploads_callback',
+        'chatbot_chatgpt_gpt_assistants_settings',
+        'chatbot_chatgpt_custom_gpts_section'
+    );
+
+    // Display Custom GPT Assistant Name - Ver 1.9.4
+    add_settings_field(
+        'chatbot_chatgpt_display_custom_gpt_assistant_name',
+        'Display GPT Assistant Name',
+        'chatbot_chatgpt_use_gpt_assistant_name_callback',
+        'chatbot_chatgpt_gpt_assistants_settings',
+        'chatbot_chatgpt_custom_gpts_section'
+    );
+
+    // Assistant Id Settings
+    add_settings_section(
+        'chatbot_chatgpt_assistant_ids_section',
+        'Assistant IDs and Additional Instructions',
+        'chatbot_chatgpt_assistant_id_section_callback',
+        'chatbot_chatgpt_assistant_id_settings'
+    );
+
+    // CustomGPT Assistant Id - Ver 1.6.7
+    add_settings_field(
+        'assistant_id',
+        'Primary GPT Assistant Id',
+        'chatbot_chatgpt_assistant_id_callback',
+        'chatbot_chatgpt_assistant_id_settings',
+        'chatbot_chatgpt_assistant_ids_section'
+    );
+
+    add_settings_field(
+        'chatbot_chatgpt_assistant_instructions',
+        'Assistant Instructions',
+        'chatbot_chatgpt_assistant_instructions_callback',
+        'chatbot_chatgpt_assistant_id_settings',
+        'chatbot_chatgpt_assistant_ids_section'
+    );
+
+    // CustomGPT Assistant Id Alternate - Ver 1.7.2
+    add_settings_field(
+        'chatbot_chatgpt_assistant_id_alternate',
+        'Alternate GPT Assistant Id',
+        'chatbot_chatgpt_assistant_id_alternate_callback',
+        'chatbot_chatgpt_assistant_id_settings',
+        'chatbot_chatgpt_assistant_ids_section'
+    );
+
+    add_settings_field(
+        'chatbot_chatgpt_assistant_instructions_alternate',
+        'Alternate Assistant Instructions',
+        'chatbot_chatgpt_assistant_instructions_alternate_callback',
+        'chatbot_chatgpt_assistant_id_settings',
+        'chatbot_chatgpt_assistant_ids_section'
+    );
+
+    // Advanced Additional Settings
+    add_settings_section(
+        'chatbot_chatgpt_assistant_advanced_settings_section',
+        'Advanced Additional Settings',
+        'chatbot_chatgpt_assistant_advanced_settings_section_callback',
+        'chatbot_chatgpt_additional_assistant_settings'
+    );
+
+    // Max Prompt Tokens - Ver 2.0.1
+    add_settings_field(
+        'chatbot_chatgpt_max_prompt_tokens',
+        'Max Prompt Tokens',
+        'chatbot_chatgpt_max_prompt_tokens_callback',
+        'chatbot_chatgpt_additional_assistant_settings',
+        'chatbot_chatgpt_assistant_advanced_settings_section'
+    );
+
+    // Max Response Tokens - Ver 2.0.1
+    add_settings_field(
+        'chatbot_chatgpt_max_completion_tokens',
+        'Max Response Tokens',
+        'chatbot_chatgpt_max_completion_tokens_callback',
+        'chatbot_chatgpt_additional_assistant_settings',
+        'chatbot_chatgpt_assistant_advanced_settings_section'
+    );
+
+    // Thread Retention Period - Ver 1.9.9
+    add_settings_field(
+        'chatbot_chatgpt_thread_retention_period',
+        'Thread Retention Period (hrs)',
+        'chatbot_chatgpt_thread_retention_period_callback',
+        'chatbot_chatgpt_additional_assistant_settings',
+        'chatbot_chatgpt_assistant_advanced_settings_section'
+    );
+
+    add_settings_field(
+        'chatbot_chatgpt_assistant_beta_version',
+        'Beta Assistant Version',
+        'chatbot_chatgpt_assistant_beta_version_callback',
+        'chatbot_chatgpt_additional_assistant_settings',
+        'chatbot_chatgpt_assistant_advanced_settings_section'
+    );
+
+    // Remote Widget Settings - Ver 2.1.3
+    add_settings_section(
+        'chatbot_chatgpt_remote_widget_settings_section',
+        'Remote Widget Settings',
+        'chatbot_chatgpt_remote_widget_settings_section_callback',
+        'chatbot_chatgpt_remote_widget_settings'
+    );
+
+    // Max Response Tokens - Ver 2.1.3
+    add_settings_field(
+        'chatbot_chatgpt_enable_remote_widget',
+        'Enable Remote Widget',
+        'chatbot_chatgpt_enable_remote_widget_callback',
+        'chatbot_chatgpt_remote_widget_settings',
+        'chatbot_chatgpt_remote_widget_settings_section'
+    );
+
+    // Max Prompt Tokens - Ver 2.1.3
+    add_settings_field(
+        'chatbot_chatgpt_allowed_remote_domains',
+        'Allowed Remote Domains',
+        'chatbot_chatgpt_allowed_remote_domains_callback',
+        'chatbot_chatgpt_remote_widget_settings',
+        'chatbot_chatgpt_remote_widget_settings_section'
+    );
+
+    // Widget Logging - Ver 2.1.3
+    add_settings_field(
+        'chatbot_chatgpt_widget_logging',
+        'Widget Logging',
+        'chatbot_chatgpt_widget_logging_callback',
+        'chatbot_chatgpt_remote_widget_settings',
+        'chatbot_chatgpt_remote_widget_settings_section'
+    );
+    
+}
+add_action('admin_init', 'chatbot_chatgpt_assistant_settings_init');
 
 // GPT Assistants settings section callback - Ver 1.7.2 - Updated Ver 2.0.4
 function chatbot_chatgpt_assistant_settings_section_callback($args) {
@@ -26,6 +211,7 @@ function chatbot_chatgpt_assistant_settings_section_callback($args) {
     <p>When you're ready to use an Assistant, simply add a shortcode such as <code>[chatbot-1]</code>, <code>[chatbot-2]</code>, etc. to your page.</p>
     <p><b>TIP:</b> For best results ensure that the shortcode appears only once on the page.</p>
     <p><b>TIP:</b> When using the 'embedded' style, it's best to put the shortcode in a page or post, not in a footer.</b></p>
+    <p><b><i>Don't forget to click </i><code>Save Settings</code><i> to save any changes your might make.</i></b></p>
     <p style="background-color: #e0f7fa; padding: 10px;"><b>For an explanation Assistant Settings and additional documentation please click <a href="?page=chatbot-chatgpt&tab=support&dir=assistants&file=manage-assistants.md">here</a>.</b></p>
     <?php
 }
@@ -64,7 +250,7 @@ function chatbot_chatgpt_use_gpt_assistant_id_callback($args) {
     </select>
     <?php
     if ($use_assistant_id == 'No') {
-        update_option('chatbot_chatgpt_assistant_id', '');
+        update_option('assistant_id', '');
         update_option('chatbot_chatgpt_assistant_id_alternate', '');
     }
 }
@@ -82,7 +268,7 @@ function chatbot_chatgpt_allow_file_uploads_callback($args) {
 
 // GPT Assistant ID field callback - Ver 1.6.7
 function chatbot_chatgpt_assistant_id_callback($args) {
-    $assistant_id = esc_attr(get_option('chatbot_chatgpt_assistant_id', 'Please provide the GPT Assistant Id.'));
+    $assistant_id = esc_attr(get_option('assistant_id', 'Please provide the GPT Assistant Id.'));
     $use_assistant_id = esc_attr(get_option('chatbot_chatgpt_use_custom_gpt_assistant_id', 'No'));
     if ($use_assistant_id == 'Yes' && ($assistant_id == 'Please provide the GPT Assistant Id.' or empty($assistant_id))) {
         $assistant_id = 'Please provide the GPT Assistant Id.';
@@ -190,149 +376,55 @@ function chatbot_chatgpt_max_completion_tokens_callback($args) {
     <?php
 }
 
-// Register Assistant settings - Ver 2.0.2.1
-function chatbot_chatgpt_assistant_settings_init() {
-
-        // chatbot_chatgpt_assistant_settings
-        add_settings_section(
-            'chatbot_chatgpt_assistant_settings_section',
-            'Assistant Settings',
-            'chatbot_chatgpt_assistant_settings_section_callback',
-            'chatbot_chatgpt_assistant_settings'
-        );
-    
-        // Settings Custom GPTs tab - Ver 1.7.2
-        // register_setting('chatbot_chatgpt_custom_gpts', 'chatbot_chatgpt_use_custom_gpt_assistant_id'); // Ver 1.6.7 - REMOVED in Ver 2.0.5
-        register_setting('chatbot_chatgpt_custom_gpts', 'chatbot_chatgpt_allow_file_uploads'); // Ver 1.7.6
-        register_setting('chatbot_chatgpt_custom_gpts', 'chatbot_chatgpt_display_custom_gpt_assistant_name'); // Ver 1.9.4
-        register_setting('chatbot_chatgpt_custom_gpts', 'chatbot_chatgpt_assistant_id'); // Ver 1.6.7
-        register_setting('chatbot_chatgpt_custom_gpts', 'chatbot_chatgpt_assistant_instructions'); // Ver 1.9.3
-        register_setting('chatbot_chatgpt_custom_gpts', 'chatbot_chatgpt_assistant_id_alternate'); // Alternate Assistant - Ver 1.7.2
-        register_setting('chatbot_chatgpt_custom_gpts', 'chatbot_chatgpt_assistant_instructions_alternate'); // Alternate Assistant - Ver 1.9.3
-        register_setting('chatbot_chatgpt_custom_gpts', 'chatbot_chatgpt_assistant_beta_version'); // Beta Assistant - Ver 1.9.3
-        register_setting('chatbot_chatgpt_custom_gpts', 'chatbot_chatgpt_thread_retention_period'); // Thread Retention Period - Ver 1.9.9
-        register_setting('chatbot_chatgpt_custom_gpts', 'chatbot_chatgpt_max_prompt_tokens'); // Max Prompt Tokens - Ver 2.0.1
-        register_setting('chatbot_chatgpt_custom_gpts', 'chatbot_chatgpt_max_completion_tokens'); // Max Response Tokens - Ver 2.0.1
-    
-        // General Settings for Assistants
-        add_settings_section(
-            'chatbot_chatgpt_custom_gpts_section',
-            'Assistant General Settings',
-            'chatbot_chatgpt_gpt_assistants_section_callback',
-            'chatbot_chatgpt_gpt_assistants_settings'
-        );
-        
-        // Use GPT Assistant ID (Yes or No) - Ver 1.6.7 - REMOVED in Ver 2.0.5
-        // add_settings_field(
-        //     'chatbot_chatgpt_use_custom_gpt_assistant_id',
-        //     'Use GPT Assistant Id',
-        //     'chatbot_chatgpt_use_gpt_assistant_id_callback',
-        //     'chatbot_chatgpt_gpt_assistants_settings',
-        //     'chatbot_chatgpt_custom_gpts_section'
-        // );
-    
-        // Allow file uploads to the Assistant - Ver 1.7.6
-        add_settings_field(
-            'chatbot_chatgpt_allow_file_uploads',
-            'Allow File Uploads',
-            'chatbot_chatgpt_allow_file_uploads_callback',
-            'chatbot_chatgpt_gpt_assistants_settings',
-            'chatbot_chatgpt_custom_gpts_section'
-        );
-    
-        // Display Custom GPT Assistant Name - Ver 1.9.4
-        add_settings_field(
-            'chatbot_chatgpt_display_custom_gpt_assistant_name',
-            'Display GPT Assistant Name',
-            'chatbot_chatgpt_use_gpt_assistant_name_callback',
-            'chatbot_chatgpt_gpt_assistants_settings',
-            'chatbot_chatgpt_custom_gpts_section'
-        );
-
-        // Assistant Id Settings
-        add_settings_section(
-            'chatbot_chatgpt_assistant_ids_section',
-            'Assistant IDs and Additional Instructions',
-            'chatbot_chatgpt_assistant_id_section_callback',
-            'chatbot_chatgpt_assistant_id_settings'
-        );
-    
-        // CustomGPT Assistant Id - Ver 1.6.7
-        add_settings_field(
-            'chatbot_chatgpt_assistant_id',
-            'Primary GPT Assistant Id',
-            'chatbot_chatgpt_assistant_id_callback',
-            'chatbot_chatgpt_assistant_id_settings',
-            'chatbot_chatgpt_assistant_ids_section'
-        );
-    
-        add_settings_field(
-            'chatbot_chatgpt_assistant_instructions',
-            'Assistant Instructions',
-            'chatbot_chatgpt_assistant_instructions_callback',
-            'chatbot_chatgpt_assistant_id_settings',
-            'chatbot_chatgpt_assistant_ids_section'
-        );
-    
-        // CustomGPT Assistant Id Alternate - Ver 1.7.2
-        add_settings_field(
-            'chatbot_chatgpt_assistant_id_alternate',
-            'Alternate GPT Assistant Id',
-            'chatbot_chatgpt_assistant_id_alternate_callback',
-            'chatbot_chatgpt_assistant_id_settings',
-            'chatbot_chatgpt_assistant_ids_section'
-        );
-    
-        add_settings_field(
-            'chatbot_chatgpt_assistant_instructions_alternate',
-            'Alternate Assistant Instructions',
-            'chatbot_chatgpt_assistant_instructions_alternate_callback',
-            'chatbot_chatgpt_assistant_id_settings',
-            'chatbot_chatgpt_assistant_ids_section'
-        );
-    
-        // Advanced Additional Settings
-        add_settings_section(
-            'chatbot_chatgpt_assistant_advanced_settings_section',
-            'Advanced Additional Settings',
-            'chatbot_chatgpt_assistant_advanced_settings_section_callback',
-            'chatbot_chatgpt_additional_assistant_settings'
-        );
-
-        // Max Prompt Tokens - Ver 2.0.1
-        add_settings_field(
-            'chatbot_chatgpt_max_prompt_tokens',
-            'Max Prompt Tokens',
-            'chatbot_chatgpt_max_prompt_tokens_callback',
-            'chatbot_chatgpt_additional_assistant_settings',
-            'chatbot_chatgpt_assistant_advanced_settings_section'
-        );
-    
-        // Max Response Tokens - Ver 2.0.1
-        add_settings_field(
-            'chatbot_chatgpt_max_completion_tokens',
-            'Max Response Tokens',
-            'chatbot_chatgpt_max_completion_tokens_callback',
-            'chatbot_chatgpt_additional_assistant_settings',
-            'chatbot_chatgpt_assistant_advanced_settings_section'
-        );
-    
-        // Thread Retention Period - Ver 1.9.9
-        add_settings_field(
-            'chatbot_chatgpt_thread_retention_period',
-            'Thread Retention Period (hrs)',
-            'chatbot_chatgpt_thread_retention_period_callback',
-            'chatbot_chatgpt_additional_assistant_settings',
-            'chatbot_chatgpt_assistant_advanced_settings_section'
-        );
-    
-        add_settings_field(
-            'chatbot_chatgpt_assistant_beta_version',
-            'Beta Assistant Version',
-            'chatbot_chatgpt_assistant_beta_version_callback',
-            'chatbot_chatgpt_additional_assistant_settings',
-            'chatbot_chatgpt_assistant_advanced_settings_section'
-        );
-        
+// Remote Widget Settings section callback - Ver 2.1.3
+function chatbot_chatgpt_remote_widget_settings_section_callback($args) {
+    ?>
+    <p>Configure the Remote Widget settings to allow access from specific domains.</p>
+    <p style="background-color: #e0f7fa; padding: 10px;"><b>For an explanation of the Remote Widget Settings and additional documentation please click <a href="?page=chatbot-chatgpt&tab=support&dir=assistants&file=remote-widget.md">here</a>.</b></p>
+    <?php
 }
-add_action('admin_init', 'chatbot_chatgpt_assistant_settings_init');
+
+// Enable Remote Widget field callback - Ver 2.1.3
+function chatbot_chatgpt_enable_remote_widget_callback($args) {
+    $enable_remote_widget = esc_attr(get_option('chatbot_chatgpt_enable_remote_widget', 'No'));
+    ?>
+    <select id="chatbot_chatgpt_enable_remote_widget" name="chatbot_chatgpt_enable_remote_widget">
+        <option value="Yes" <?php selected( $enable_remote_widget, 'Yes' ); ?>><?php echo esc_html( 'Yes' ); ?></option>
+        <option value="No" <?php selected( $enable_remote_widget, 'No' ); ?>><?php echo esc_html( 'No' ); ?></option>
+    </select>
+    <?php
+}
+
+// Allowed Remote Domains field callback - Ver 2.1.3
+function chatbot_chatgpt_allowed_remote_domains_callback($args) {
+    $allowed_remote_domains = esc_attr(get_option('chatbot_chatgpt_allowed_remote_domains', ''));
+    ?>
+    <textarea id="chatbot_chatgpt_allowed_remote_domains" name="chatbot_chatgpt_allowed_remote_domains" placeholder="Enter the allowed remote domains separated by a comma." rows="5" cols="50"><?php echo esc_attr( $allowed_remote_domains ); ?></textarea>
+    <?php
+}
+
+// Widget logging field callback - Ver 2.1.3
+function chatbot_chatgpt_widget_logging_callback($args) {
+    $widget_logging = esc_attr(get_option('chatbot_chatgpt_widget_logging', 'No'));
+    ?>
+    <select id="chatbot_chatgpt_widget_logging" name="chatbot_chatgpt_widget_logging">
+        <option value="Yes" <?php selected( $widget_logging, 'Yes' ); ?>><?php echo esc_html( 'Yes' ); ?></option>
+        <option value="No" <?php selected( $widget_logging, 'No' ); ?>><?php echo esc_html( 'No' ); ?></option>
+    </select>
+    <?php
+}
+
+// Manage Error Logs
+function chatbot_chatgpt_manage_widget_logs_section_callback() {
+
+    ?>
+    <div>
+        <p>Click the <code>Download</code> button to retrieve a widget access log file, or the <code>Delete</code> button to remove a widget access log file.</p>
+        <p>Click the <code>Delete All</code> button to remove all widget access log files.</p>
+    </div>
+    <?php
+
+    // Call the capability tester
+    chatbot_chatgpt_manage_widget_logs();
+
+}

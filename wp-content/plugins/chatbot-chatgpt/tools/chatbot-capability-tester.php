@@ -10,14 +10,14 @@
 
 // If this file is called directly, abort.
 if ( ! defined( 'WPINC' ) ) {
-    die;
+    die();
 }
 
 // User Capability Check
 function chatbot_chatgpt_capability_tester() {
 
     echo '<div>';
-    echo '<h2>User Capability Check</h2>';
+    echo '<h2>Capability Check Results</h2>';
 
     $capabilities = array(
         'read',
@@ -28,10 +28,10 @@ function chatbot_chatgpt_capability_tester() {
 
     foreach ($capabilities as $capability) {
         if (current_user_can($capability)) {
-            // back_trace('NOTICE', 'User has the capability: ' . $capability);
+            // back_trace( 'NOTICE', 'User has the capability: ' . $capability);
             echo '<p>User has the capability: ' . $capability . '</p>';
         } else {
-            // back_trace('ERROR', 'User does not have the capability: ' . $capability);
+            // back_trace( 'ERROR', 'User does not have the capability: ' . $capability);
             echo '<p>User does not have the capability: ' . $capability . '</p>';
         }
     }

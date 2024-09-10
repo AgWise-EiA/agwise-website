@@ -12,17 +12,9 @@
   z-index: 9999;
 }
 
-.link {
+.no-underline,
+.no-underline a {
   text-decoration: none;
-  transition-property: color, background-color, border-color, fill, stroke, -webkit-text-decoration-color;
-  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
-  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, -webkit-text-decoration-color;
-  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-  transition-duration: 300ms;
-  color: var(--kenta-initial-color, var(--kenta-accent-color));
-}
-.link:hover {
-  color: var(--kenta-hover-color, var(--kenta-primary-color));
 }
 
 .screen-reader-text {
@@ -390,7 +382,7 @@
   margin-top: 0;
 }
 .woocommerce .kenta-products li.product .woocommerce-loop-product__title:hover {
-  color: var(--kenta-hover-color);
+  color: var(--kenta-link-hover-color);
 }
 .woocommerce .kenta-products li.product .price {
   display: block;
@@ -406,12 +398,11 @@
 .woocommerce .kenta-products li.product .added_to_cart {
   font-size: 0.85rem;
   text-decoration: underline;
-  color: var(--kenta-initial-color);
   padding-left: 12px;
   padding-right: 12px;
 }
 .woocommerce .kenta-products li.product .added_to_cart:hover {
-  color: var(--kenta-hover-color);
+  color: var(--kenta-link-hover-color);
 }
 
 .woocommerce div.product {
@@ -934,6 +925,10 @@
   transition-property: opacity;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transition-duration: 200ms;
+}
+.woocommerce .woocommerce-MyAccount-navigation ul li a, 
+.woocommerce .woocommerce-MyAccount-navigation ul li a a {
+  text-decoration: none;
 }
 .woocommerce .woocommerce-MyAccount-navigation ul li a:hover {
   color: var(--kenta-primary-color);

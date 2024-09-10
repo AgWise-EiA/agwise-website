@@ -39,8 +39,8 @@ trait Blocks {
 		$blocks = kenta_blocks_all( 'metadata' );
 
 		$global_args = array(
-			'version'       => KENTA_BLOCKS_VERSION,
 			'api_version'   => 2,
+			'textdomain'    => 'kenta-blocks',
 			'category'      => 'kenta-blocks',
 			'style'         => 'kenta-blocks-style',
 			'editor_script' => 'kenta-blocks-editor-script',

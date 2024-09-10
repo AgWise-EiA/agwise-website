@@ -10,39 +10,14 @@
 
 // If this file is called directly, abort.
 if ( ! defined( 'WPINC' ) ) {
-    die;
-}
-
-// Export the chatbot options to a file
-function chatbot_chatgpt_options_exporter() {
-
-    // Get the saved chatbot_chatgpt_kn_analysis_choice value or default to "CSV"
-    $output_choice = esc_attr(get_option('chatbot_chatgpt_options_exporter', 'CSV'));
-    // DIAG - Log the output choice
-    // back_trace( 'NOTICE', '$output_choice' . $output_choice);
-    ?>
-    <div>
-        <p>Choose the format for exporting the chatbot options:</p>
-        <select id="chatbot_chatgpt_options_exporter" name="chatbot_chatgpt_options_exporter">
-            <option value="<?php echo esc_attr( 'csv' ); ?>" <?php selected( $output_choice, 'csv' ); ?>><?php echo esc_html( 'CSV' ); ?></option>
-            <option value="<?php echo esc_attr( 'json' ); ?>" <?php selected( $output_choice, 'json' ); ?>><?php echo esc_html( 'JSON' ); ?></option>
-        </select>
-    </div>
-    <div>
-        <p>Use the button (below) to retrieve the chatbot options and download the file.</p>
-    <?php
-        if (is_admin()) {
-            $header = " ";
-            $header .= '<a class="button button-primary" href="' . esc_url(admin_url('admin-post.php?action=chatbot_chatgpt_download_options_data')) . '">Download Options Data</a>';
-            echo $header;
-        }
-    ?>
-    </div>
-    <?php
-
+    die();
 }
 
 function chatbot_chatgpt_download_options_data() {
+
+    global $chatbot_chatgpt_plugin_dir_path;
+
+    global $wpdb;
 
     // Ensure the current user has the capability to export options
     if (!current_user_can('manage_options')) {
@@ -54,7 +29,7 @@ function chatbot_chatgpt_download_options_data() {
         wp_die(__('Headers already sent. Cannot proceed with the download.', 'chatbot-chatgpt'));
     }
 
-    $debug_dir_path = CHATBOT_CHATGPT_PLUGIN_DIR_PATH . 'debug/';
+    $debug_dir_path = $chatbot_chatgpt_plugin_dir_path . 'debug/';
 
     // Create debug directory if it doesn't exist
     if (!file_exists($debug_dir_path)) {
@@ -63,14 +38,13 @@ function chatbot_chatgpt_download_options_data() {
         }
     }
 
-    global $wpdb;
-
-    $output_choice = strtolower(esc_attr(get_option('chatbot_chatgpt_options_exporter', 'csv')));
+    $output_choice = strtolower(esc_attr(get_option('chatbot_chatgpt_options_exporter_extension', 'csv')));
 
     $options_file = $debug_dir_path . 'chatbot-chatgpt-options.' . $output_choice;
 
-    // back_trace('NOTICE', '$output_choice: ' . $output_choice);
-    // back_trace('NOTICE', '$options_file: ' . $options_file);
+    // DIAG - Diagnostics - Ver 2.0.7
+    // back_trace( 'NOTICE', '$output_choice: ' . $output_choice);
+    // back_trace( 'NOTICE', '$options_file: ' . $options_file);
 
     // Fetch options from the database
     $options = $wpdb->get_results("SELECT * FROM {$wpdb->prefix}options WHERE option_name LIKE 'chatbot%' AND option_name != 'chatbot_chatgpt_api_key'", ARRAY_A);
@@ -78,7 +52,7 @@ function chatbot_chatgpt_download_options_data() {
     // Write options to file
     if ($output_choice == 'json') {
 
-        // back_trace('NOTICE', 'JSON output choice');
+        // back_trace( 'NOTICE', 'JSON output choice');
 
         // Write options to JSON file
         $options_data = json_encode($options, JSON_PRETTY_PRINT);
@@ -88,7 +62,7 @@ function chatbot_chatgpt_download_options_data() {
 
     } elseif ($output_choice == 'csv') {
 
-        // back_trace('NOTICE', 'CSV output choice');
+        // back_trace( 'NOTICE', 'CSV output choice');
 
         // Open the file for writing
         $fileHandle = fopen($options_file, 'w');
