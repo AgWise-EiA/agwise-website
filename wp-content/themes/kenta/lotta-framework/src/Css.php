@@ -178,10 +178,7 @@ class Css {
 	 *
 	 * @return string
 	 */
-	public
-	function keyframes(
-		$keyframes_output = [], $beauty = false
-	) {
+	public function keyframes( $keyframes_output = [], $beauty = false ) {
 		$parse_css = '';
 		$eol       = $beauty ? PHP_EOL : '';
 
@@ -212,10 +209,7 @@ class Css {
 	 *
 	 * @return array
 	 */
-	public
-	function dimensions(
-		$value, $selector = 'margin'
-	) {
+	public function dimensions( $value, $selector = 'margin' ) {
 		if ( $value === self::INITIAL_VALUE || $value === null ) {
 			return array();
 		}
@@ -245,16 +239,35 @@ class Css {
 	}
 
 	/**
+	 * Get value for responsive
+	 *
+	 * @param $value
+	 * @param null $device
+	 * @param null $previous
+	 *
+	 * @return array|mixed|null
+	 */
+	protected function getResponsiveValue( $value, $device = null, $previous = null ) {
+
+		if ( ! $device ) {
+			return $value;
+		}
+
+		$value = [
+			$device => $value
+		];
+
+		return is_array( $previous ) ? array_merge( $previous, $value ) : $value;
+	}
+
+	/**
 	 * Convert background control value to css output
 	 *
 	 * @param array $background
 	 *
 	 * @return array
 	 */
-	public
-	function background(
-		$background
-	) {
+	public function background( $background ) {
 		if ( $background === self::INITIAL_VALUE || $background === null ) {
 			return [];
 		}
@@ -346,10 +359,7 @@ class Css {
 	 *
 	 * @return array
 	 */
-	public
-	function border(
-		$border, $selector = 'border'
-	) {
+	public function border( $border, $selector = 'border' ) {
 		if ( $border === null || $border === self::INITIAL_VALUE ) {
 			return array();
 		}
@@ -411,10 +421,7 @@ class Css {
 	 *
 	 * @return array
 	 */
-	public
-	function shadow(
-		$shadow, $selector = 'box-shadow'
-	) {
+	public function shadow( $shadow, $selector = 'box-shadow' ) {
 
 		if ( $shadow === null || $shadow === self::INITIAL_VALUE ) {
 			return array();
@@ -458,10 +465,7 @@ class Css {
 	 *
 	 * @return array
 	 */
-	public
-	function filters(
-		$filter
-	) {
+	public function filters( $filter ) {
 
 		if ( $filter === null ) {
 			return array();
@@ -501,10 +505,7 @@ class Css {
 	 *
 	 * @return array
 	 */
-	public
-	function typography(
-		$typography
-	) {
+	public function typography( $typography ) {
 		if ( $typography === null || $typography === self::INITIAL_VALUE ) {
 			return array();
 		}
@@ -567,10 +568,7 @@ class Css {
 	 *
 	 * @return array
 	 */
-	public
-	function colors(
-		$colors, $maps, $css = []
-	) {
+	public function colors( $colors, $maps, $css = [] ) {
 
 		foreach ( $maps as $color => $key ) {
 			if ( isset( $colors[ $color ] ) && $colors[ $color ] !== self::INITIAL_VALUE ) {
@@ -585,30 +583,5 @@ class Css {
 		}
 
 		return $css;
-	}
-
-	/**
-	 * Get value for responsive
-	 *
-	 * @param $value
-	 * @param null $device
-	 * @param null $previous
-	 *
-	 * @return array|mixed|null
-	 */
-	protected
-	function getResponsiveValue(
-		$value, $device = null, $previous = null
-	) {
-
-		if ( ! $device ) {
-			return $value;
-		}
-
-		$value = [
-			$device => $value
-		];
-
-		return is_array( $previous ) ? array_merge( $previous, $value ) : $value;
 	}
 }

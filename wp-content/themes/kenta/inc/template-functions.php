@@ -228,7 +228,7 @@ function kenta_header_row_start( $id ) {
 add_action( 'kenta_start_header_row', 'kenta_header_row_start', 10 );
 
 function kenta_header_row_container_start( $id ) {
-	echo '<div class="container mx-auto text-xs px-gutter flex flex-wrap items-stretch">';
+	echo '<div class="kenta-max-w-wide has-global-padding container mx-auto text-xs flex flex-wrap items-stretch">';
 }
 
 add_action( 'kenta_start_header_row', 'kenta_header_row_container_start', 20 );
@@ -467,7 +467,7 @@ function kenta_add_post_author_bio() {
 	}
 
 	$attrs = [
-		'class' => 'kenta-max-w-content mx-auto prose prose-kenta',
+		'class' => 'kenta-max-w-content has-global-padding mx-auto',
 	];
 
 	if ( is_customize_preview() ) {
@@ -541,7 +541,7 @@ function kenta_add_post_navigation() {
 	}
 
 	$attrs = [
-		'class' => 'kenta-max-w-content mx-auto',
+		'class' => 'kenta-max-w-content has-global-padding mx-auto',
 	];
 
 	if ( is_customize_preview() ) {
@@ -658,3 +658,39 @@ if ( ! function_exists( 'kenta_render_breadcrumbs' ) ) {
 	}
 }
 add_action( 'kenta_render_breadcrumbs', 'kenta_render_breadcrumbs' );
+
+if ( ! function_exists( 'kenta_custom_theme_layout' ) ) {
+	/**
+	 * Modify the theme's JSON data by updating the theme's layout
+	 * based on the Customizer value
+	 *
+	 * @param object $theme_json The original theme JSON data.
+	 *
+	 * @return object The modified theme JSON data.
+	 *
+	 * @since 2.0.0
+	 */
+	function kenta_custom_theme_layout( $theme_json ) {
+		// Site wide size
+		$wide_size    = '1140px';
+		$option_type  = kenta_current_option_type();
+		$content_size = CZ::get( 'kenta_' . $option_type . '_container_max_width' );
+		if ( ! $content_size // without custom width
+		     || Utils::str_ends_with( $content_size, 'ch' ) ) { // drop support for 'ch' unit
+			$content_size = '720px';
+		}
+
+		$new_data = array(
+			'version'  => 2,
+			'settings' => array(
+				'layout' => array(
+					'contentSize' => $content_size,
+					'wideSize'    => $wide_size,
+				),
+			)
+		);
+
+		return $theme_json->update_with( $new_data );
+	}
+}
+add_filter( 'wp_theme_json_data_theme', 'kenta_custom_theme_layout' );

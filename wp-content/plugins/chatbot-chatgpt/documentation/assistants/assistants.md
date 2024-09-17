@@ -30,7 +30,7 @@ These settings allow you to configure the behavior and capabilities of the Assis
 
 ![Assistant IDs and Additional Instructions](assistant-ids-and-additional-instructions.png)
 
-1. **Assistant Id**:
+1. **Assistant ID**:
    - **Description**: This field is for specifying the primary Assistant ID.
    - **Input**: Enter the Assistant ID provided by OpenAI or your specific setup.
 
@@ -74,12 +74,12 @@ These settings allow you to configure the behavior and capabilities of the Assis
    - **Example**: "Hello again [first_name]! How can I help you?" Customize this to acknowledge returning visitors.
 
 10. **Chatbot Prompt**:
-   - **Description**: This is the initial prompt that appears in the chatbot input field.
-   - **Example**: "Tell me your deepest secrets ..." can be customized to something more appropriate for your audience and use case.
+    - **Description**: This is the initial prompt that appears in the chatbot input field.
+    - **Example**: "Tell me your deepest secrets ..." can be customized to something more appropriate for your audience and use case.
 
 11. **Additional Instructions**:
-   - **Description**: This field allows you to provide specific instructions to the primary assistant.
-   - **Input**: Enter any special instructions or context that will guide the assistant's responses.
+    - **Description**: This field allows you to provide specific instructions to the primary assistant.
+    - **Input**: Enter any special instructions or context that will guide the assistant's responses.
 
 ## Assistant General Settings
 
@@ -108,8 +108,9 @@ These settings allow you to configure the behavior and capabilities of the Assis
 
 2. **Max Response Tokens**:
    - **Description**: This setting determines the maximum number of tokens for the assistant's response.
-   - **Options**: A numeric value between `1,000` and `20,000` (the default is `20000`).
+   - **Options**: A numeric value between `1,000` and `100,000` (the default is `20000`).
    - **Selection**: Set this based on the level of detail you want in the responses. Higher values allow for longer responses.
+   - **Additional Info**: For a deeper explanation, please see [Max Completion and Max Prompt Tokens](https://platform.openai.com/docs/assistants/deep-dive/max-completion-and-max-prompt-tokens).
 
 3. **Thread Retention Period (hrs)**:
     - **Description**: This setting specifies how long conversation threads are retained.
@@ -120,6 +121,32 @@ These settings allow you to configure the behavior and capabilities of the Assis
     - **Description**: This setting allows you to select the version of the beta assistant to use.
     - **Options**: Versions `V1` and `v2` (the default is now `V2`).
     - **Selection**: Choose the version that fits your needs, typically the latest for the most up-to-date features.
+    - **Additional Info**: For a deeper explanation, please see [Migration Guide](https://platform.openai.com/docs/assistants/migration/agents).
+
+## Remote Widget Access
+
+The **Kognetiks Chatbot for WordPress** now includes the advanced feature to allow access to your assistants from remote servers.  Coupled with security measures to control and monitor remote access to your chatbots, you must enable the **Remote Widget Access** feature.  This will allow specific remote servers to interact with your chatbot(s) via an endpoint. To ensure that only authorized servers and chatbots can access your resources, the system uses a whitelisting mechanism that pairs domains with specific chatbot shortcodes, for example ```kognetiks.com,chatbot-4``` which will only allow calls from kognetiks.com and only then to chatbot-4.  Your resources are valuable, take appropriate precautions when allowing remote server access.
+
+![Remote Widget Settings](remote-widget-settings.png)
+
+### Field Descriptions
+
+1. **Enable Remote Widget**:
+   - **Description**: This settings enables and disables remote access on a global basis.  By default it is set to ```No```.  To allow access by a remote server to a chatbot, you will need to change this setting to ```Yes```.
+   - **Input**: Choose ```Yes``` or ```No```.
+
+2. **Allowed Domains**:
+    - **Description**: Enter the domain and assistant identified to allow remote access to a chatbot.  For example if the domain is ```kognetiks.com``` and you the chatbot is ```chatbot-4```, then enter ```kognetiks.com,chatbot-4```.  The pairs will be checked at when the remote server calls the chatbot widget endpoint.  If the pair is domain and chatbot are not paired correctly, no chatbot will be present.
+    - **Input**: ```domain.com,chatbot-n```
+    - **Tip**: Be sure to put each pair on it's own line, seperated the domain name and the chatbot shortcode identifier with a coma.
+    - **Caution**: Your server and OpenAI resources are valuable.  Be sure to secure those resouces by carefully maintaining the allowed pairs of domains and chatbots that you have white listed in this section.
+
+3. **Widget Logging**:
+    - **Description**: Widget logging records valid and invalid access to your chatbot(s) from remote servers.  This is especially helpful to ensure that your resources are used only by those that you have allowed.  On the ```Tools``` tab you will find a section titled **Manage Widget Access Logs** where you can download and delete remote widget access.
+
+For more information refer to the [Managing Remote Assess to the Kognetiks Chatbot for WordPress](remote-widget-settings.md) section for details on how to configure a remote server.
+
+---
 
 ## Steps to Configure
 

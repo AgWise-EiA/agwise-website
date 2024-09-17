@@ -11,7 +11,7 @@
 
 // If this file is called directly, abort.
 if ( ! defined( 'WPINC' ) ) {
-    die;
+    die();
 }
 
 // General settings section callback - Ver 2.0.2.1
@@ -19,6 +19,7 @@ function chatbot_chatgpt_bot_settings_section_callback($args) {
 
     ?>
     <p>Configure the general settings for the Chatbot plugin, including name of the chatbot, prompts and greetings, and general settings.</p>
+    <p><b><i>Don't forget to click </i><code>Save Settings</code><i> to save any changes your might make.</i></b></p>
     <p style="background-color: #e0f7fa; padding: 10px;"><b>For an explanation of the general Settings and additional documentation please click <a href="?page=chatbot-chatgpt&tab=support&dir=settings&file=settings.md">here</a>.</b></p>
     <?php
 
@@ -139,6 +140,17 @@ function chatbot_chatgpt_force_page_reload_callback($args) {
     <?php    
 }
 
+// Conversation Continuation - Ver 2.0.7
+function chatbot_chatgpt_conversation_continuation_callback($args) {
+    $chatbot_chatgpt_conversation_continuation = esc_attr(get_option('chatbot_chatgpt_conversation_continuation', 'Off'));
+    ?>
+    <select id="chatbot_chatgpt_conversation_continuation" name="chatbot_chatgpt_conversation_continuation">
+        <option value="On" <?php selected( $chatbot_chatgpt_conversation_continuation, 'On' ); ?>><?php echo esc_html( 'On' ); ?></option>
+        <option value="Off" <?php selected( $chatbot_chatgpt_conversation_continuation, 'Off' ); ?>><?php echo esc_html( 'Off' ); ?></option>
+    </select>
+    <?php    
+}
+
 // Option to remove OpenAI disclaimer - Ver 1.4.1
 function chatbot_chatgpt_disclaimer_setting_callback($args) {
     $chatbot_chatgpt_disclaimer_setting = esc_attr(get_option('chatbot_chatgpt_disclaimer_setting', 'Yes'));
@@ -176,6 +188,17 @@ function chatbot_chatgpt_input_rows_callback($args) {
     <?php
 }
 
+// Speech Recognition - Ver 2.1.5.1
+function chatbot_chatgpt_speech_recognition_callback($args) {
+    $chatbot_chatgpt_speech_recognition = esc_attr(get_option('chatbot_chatgpt_speech_recognition', 'No'));
+    ?>
+    <select id="chatbot_chatgpt_speech_recognition" name="chatbot_chatgpt_speech_recognition">
+        <option value="Yes" <?php selected( $chatbot_chatgpt_speech_recognition, 'Yes' ); ?>><?php echo esc_html( 'Yes' ); ?></option>
+        <option value="No" <?php selected( $chatbot_chatgpt_speech_recognition, 'No' ); ?>><?php echo esc_html( 'No' ); ?></option>
+    </select>
+    <?php    
+}
+
 
 // Register the settings
 function chatbot_chatgpt_settings_setup_init() {
@@ -196,9 +219,11 @@ function chatbot_chatgpt_settings_setup_init() {
     register_setting('chatbot_chatgpt_settings', 'chatbot_chatgpt_subsequent_greeting');
     register_setting('chatbot_chatgpt_settings', 'chatbot_chatgpt_allow_download_transcript');
     register_setting('chatbot_chatgpt_settings', 'chatbot_chatgpt_force_page_reload');
+    register_setting('chatbot_chatgpt_settings', 'chatbot_chatgpt_conversation_continuation');
     register_setting('chatbot_chatgpt_settings', 'chatbot_chatgpt_disclaimer_setting');
     register_setting('chatbot_chatgpt_settings', 'chatbot_chatgpt_audience_choice');
     register_setting('chatbot_chatgpt_settings', 'chatbot_chatgpt_input_rows');
+    register_setting('chatbot_chatgpt_settings', 'chatbot_chatgpt_speech_recognition');
 
     // Chatbot Settings - Chatbot Name, Start Status, Start Status New Visitor
     add_settings_section(
@@ -272,6 +297,15 @@ function chatbot_chatgpt_settings_setup_init() {
         'chatbot_chatgpt_additional_setup_settings'
     );
 
+    // Speech Recognition - Ver 2.1.5.1
+    add_settings_field(
+        'chatbot_chatgpt_speech_recognition',
+        'Allow Speech Recognition',
+        'chatbot_chatgpt_speech_recognition_callback',
+        'chatbot_chatgpt_additional_setup_settings',
+        'chatbot_chatgpt_additional_setup_section'
+    );
+
     // Option to allow downloading transcripts - Ver 2.0.3
     add_settings_field(
         'chatbot_chatgpt_allow_download_transcript',
@@ -286,6 +320,15 @@ function chatbot_chatgpt_settings_setup_init() {
         'chatbot_chatgpt_force_page_reload',
         'Force Page Reload on Conversation Cleared',
         'chatbot_chatgpt_force_page_reload_callback',
+        'chatbot_chatgpt_additional_setup_settings',
+        'chatbot_chatgpt_additional_setup_section'
+    );
+
+    // Conversation Continuation - Ver 2.0.7
+    add_settings_field(
+        'chatbot_chatgpt_conversation_continuation',
+        'Conversation Continuation',
+        'chatbot_chatgpt_conversation_continuation_callback',
         'chatbot_chatgpt_additional_setup_settings',
         'chatbot_chatgpt_additional_setup_section'
     );

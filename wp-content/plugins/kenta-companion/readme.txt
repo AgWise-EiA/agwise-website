@@ -1,10 +1,10 @@
 === Kenta Companion ===
 Contributors: ibllex, wpmoose
 Tags: widget, widgets
-Stable tag: 1.2.4
+Stable tag: 1.2.6
 Requires at least: 5.4
-Tested up to: 6.5
-Requires PHP: 7.2
+Tested up to: 6.6
+Requires PHP: 7.4
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -13,6 +13,15 @@ License URI: https://www.gnu.org/licenses/gpl-3.0.html
 Kenta Companion is an extension to the Kenta theme. It provides a lot of features and one-click demo import for Kenta Theme. Learn more: https://kentatheme.com/
 
 == Changelog ==
+
+= v1.2.6 =
+
+* Fix: Container style error
+
+= v1.2.5 =
+
+* Add: More scroll to top button style option
+* Ref: Remove jQuery dependencies
 
 = v1.2.4 =
 

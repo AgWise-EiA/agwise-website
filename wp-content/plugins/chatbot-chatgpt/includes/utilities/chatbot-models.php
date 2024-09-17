@@ -10,19 +10,18 @@
 
 // If this file is called directly, abort.
 if ( ! defined( 'WPINC' ) ) {
-    die;
+    die();
 }
 
 // Function to get the Assistant's name
-function get_openai_models() {
+function chatbot_chatgpt_get_openai_models() {
 
-    // Global variables
     global $session_id;
     global $user_id;
     global $page_id;
     global $thread_id;
     global $assistant_id;
-    global $script_data_array;
+    global $kchat_settings;
     global $additional_instructions;
     global $model;
     global $voice;
@@ -51,7 +50,7 @@ function get_openai_models() {
             'owned_by' => 'system'
         ),
         array(
-            'id' => 'tts-1-1106',
+            'id' => 'tts-1-hd',
             'object' => 'model',
             'created' => 1699053241,
             'owned_by' => 'system'
@@ -72,7 +71,7 @@ function get_openai_models() {
         update_option('chatbot_chatgpt_image_model_option', 'dall-e-3');
     }
     if (get_option('chatbot_chatgpt_voice_model_option') === false) {
-        update_option('chatbot_chatgpt_voice_model_option', 'tts-1-1106');
+        update_option('chatbot_chatgpt_voice_model_option', 'tts-1-hd');
     }
     if (get_option('chatbot_chatgpt_whisper_model_option') === false) {
         update_option('chatbot_chatgpt_whisper_model_option', 'whisper-1');

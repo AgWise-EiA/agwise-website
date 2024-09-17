@@ -10,7 +10,7 @@
 
 // If this file is called directly, abort.
 if ( ! defined( 'WPINC' ) ) {
-    die;
+    die();
 }
 
 function chatbot_chatgpt_erase_conversation_handler() {
@@ -132,7 +132,10 @@ function chatbot_chatgpt_erase_conversation_handler() {
 // Delete any file transients - Ver 1.9.3
 // THIS IS VERY AGGRESSIVE - USE WITH CAUTION
 function delete_any_file_transients($session_id) {
+
     global $wpdb;
+
     $sql = "DELETE FROM $wpdb->options WHERE option_name LIKE '_transient_chatbot_chatgpt_file_id_$session_id%'";
     $wpdb->query($sql);
+    
 }

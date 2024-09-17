@@ -5,7 +5,6 @@ namespace KentaCompanion\Extensions;
 use LottaFramework\Customizer\Controls\Background;
 use LottaFramework\Customizer\Controls\Section;
 use LottaFramework\Customizer\Controls\Slider;
-use LottaFramework\Customizer\Controls\Toggle;
 use LottaFramework\Facades\AsyncCss;
 use LottaFramework\Facades\Css;
 use LottaFramework\Facades\CZ;

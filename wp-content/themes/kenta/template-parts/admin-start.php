@@ -53,7 +53,7 @@ $demo_preview    = 'https://kentatheme.com/' . $demo_slug;
     </div>
     <div class="panel-body">
 
-        <a href="#" class="kenta-notice-dismiss">
+        <a href="#" class="kenta-notice-dismiss text-sm">
 			<?php esc_html_e( "Dismiss", 'kenta' ); ?>
         </a>
 

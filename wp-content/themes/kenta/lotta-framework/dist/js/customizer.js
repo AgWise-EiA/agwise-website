@@ -15233,8 +15233,13 @@ object-assign
         function _arrayWithHoles(arr) {
             if (Array.isArray(arr)) return arr;
         }
-        var StatePopup = function StatePopup(_ref) {
-            var children = _ref.children, content = _ref.content, placement = _ref.placement, toggleable = _ref.toggleable, arrow = _ref.arrow, offset = _ref.offset, disableOutsideClick = _ref.disableOutsideClick;
+        var StatePopup = function StatePopup() {
+            var _ref = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {
+                placement: "bottom",
+                toggleable: true,
+                arrow: true,
+                offset: [ 0, 12 ]
+            }, children = _ref.children, content = _ref.content, placement = _ref.placement, toggleable = _ref.toggleable, arrow = _ref.arrow, offset = _ref.offset, disableOutsideClick = _ref.disableOutsideClick;
             var _useState = (0, _wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(false), _useState2 = _slicedToArray(_useState, 2), isOpen = _useState2[0], setIsOpen = _useState2[1];
             var _useState3 = (0, _wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(null), _useState4 = _slicedToArray(_useState3, 2), referenceElement = _useState4[0], setReferenceElement = _useState4[1];
             var _useState5 = (0, _wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(null), _useState6 = _slicedToArray(_useState5, 2), popperElement = _useState6[0], setPopperElement = _useState6[1];
@@ -15285,12 +15290,6 @@ object-assign
                     }) ]
                 })) ]
             });
-        };
-        StatePopup.defaultProps = {
-            placement: "bottom",
-            toggleable: true,
-            arrow: true,
-            offset: [ 0, 12 ]
         };
         const __WEBPACK_DEFAULT_EXPORT__ = StatePopup;
     }, (__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
@@ -17661,8 +17660,10 @@ object-assign
         function _arrayWithHoles(arr) {
             if (Array.isArray(arr)) return arr;
         }
-        function Tooltip(_ref) {
-            var children = _ref.children, content = _ref.content, placement = _ref.placement;
+        function Tooltip() {
+            var _ref = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {
+                placement: "top"
+            }, children = _ref.children, content = _ref.content, placement = _ref.placement;
             var _useState = (0, _wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(false), _useState2 = _slicedToArray(_useState, 2), isOpen = _useState2[0], setIsOpen = _useState2[1];
             var _useState3 = (0, _wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(null), _useState4 = _slicedToArray(_useState3, 2), referenceElement = _useState4[0], setReferenceElement = _useState4[1];
             var _useState5 = (0, _wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(null), _useState6 = _slicedToArray(_useState5, 2), popperElement = _useState6[0], setPopperElement = _useState6[1];
@@ -17705,9 +17706,6 @@ object-assign
                 })) ]
             });
         }
-        Tooltip.defaultProps = {
-            placement: "top"
-        };
         const __WEBPACK_DEFAULT_EXPORT__ = Tooltip;
     }, (__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
         "use strict";
@@ -29588,20 +29586,22 @@ object-assign
                             responsive: true,
                             units: [ {
                                 unit: "px",
-                                min: 0,
-                                max: 200
+                                min: 10,
+                                max: 200,
+                                step: 1
                             }, {
                                 unit: "pt",
-                                min: 0,
-                                max: 50
+                                min: 10,
+                                max: 50,
+                                step: 1
                             }, {
                                 unit: "em",
-                                min: 0,
+                                min: .5,
                                 max: 50,
                                 step: .1
                             }, {
                                 unit: "rem",
-                                min: 0,
+                                min: .5,
                                 max: 50,
                                 step: .1
                             } ]
@@ -29614,23 +29614,23 @@ object-assign
                             responsive: true,
                             units: [ {
                                 unit: "",
-                                min: 0,
+                                min: 1,
                                 max: 10
                             }, {
                                 unit: "px",
-                                min: 0,
+                                min: 10,
                                 max: 100
                             }, {
                                 unit: "pt",
-                                min: 0,
+                                min: 10,
                                 max: 100
                             }, {
                                 unit: "em",
-                                min: 0,
+                                min: 1,
                                 max: 100
                             }, {
                                 unit: "rem",
-                                min: 0,
+                                min: 1,
                                 max: 100
                             } ]
                         }
@@ -29643,11 +29643,13 @@ object-assign
                             units: [ {
                                 unit: "px",
                                 min: -20,
-                                max: 20
+                                max: 20,
+                                step: 1
                             }, {
                                 unit: "pt",
                                 min: -20,
-                                max: 20
+                                max: 20,
+                                step: 1
                             }, {
                                 unit: "em",
                                 min: -10,

@@ -62,10 +62,10 @@ if ( ! trait_exists( 'Kenta_Article_Controls' ) ) {
 				( new ImageRadio( 'kenta_' . $type . '_container_layout' ) )
 					->setLabel( __( 'Content Width', 'kenta' ) )
 					->setDefaultValue( $defaults['layout'] )
-					->asyncCss( '.kenta-site-wrap', [
-						'--kenta-max-w-content' => AsyncCss::unescape( AsyncCss::valueMapper( [
-							'normal' => 'auto',
-							'narrow' => '65ch',
+					->asyncCss( '.kenta-site-wrap .kenta-container', [
+						'--wp--style--global--content-size' => AsyncCss::unescape( AsyncCss::valueMapper( [
+							'normal' => 'var(--wp--style--global--wide-size)',
+							'narrow' => '720px',
 						] ) )
 					] )
 					->setChoices( [
@@ -84,15 +84,14 @@ if ( ! trait_exists( 'Kenta_Article_Controls' ) ) {
 					->setControls( [
 						( new Slider( 'kenta_' . $type . '_container_max_width' ) )
 							->setLabel( __( 'Content Max Width', 'kenta' ) )
-							->asyncCss( '.kenta-site-wrap', [
-								'--kenta-max-w-content' => 'value'
+							->asyncCss( '.kenta-site-wrap .kenta-container', [
+								'--wp--style--global--content-size' => 'value'
 							] )
 							->setUnits( [
-								[ 'unit' => 'px', 'min' => 500, 'max' => 1400 ],
+								[ 'unit' => 'px', 'min' => 500, 'max' => 1140 ],
 								[ 'unit' => '%', 'min' => 50, 'max' => 100 ],
-								[ 'unit' => 'ch', 'min' => 50, 'max' => 150 ],
 							] )
-							->setDefaultValue( '65ch' )
+							->setDefaultValue( '720px' )
 					] )
 				,
 				( new Separator() ),

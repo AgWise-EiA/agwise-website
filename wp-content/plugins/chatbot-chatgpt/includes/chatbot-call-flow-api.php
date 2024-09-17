@@ -10,7 +10,7 @@
 
 // If this file is called directly, abort.
 if ( ! defined( 'WPINC' ) ) {
-    die;
+    die();
 }
 
 // Call the ChatGPT API
@@ -24,7 +24,7 @@ function chatbot_chatgpt_call_flow_api($api_key, $message) {
     global $thread_id;
     global $assistant_id;
     global $learningMessages;
-    global $script_data_array;
+    global $kchat_settings;
     global $additional_instructions;
     global $model;
     global $voice;
@@ -42,7 +42,7 @@ function chatbot_chatgpt_call_flow_api($api_key, $message) {
     // back_trace( 'NOTICE', 'BEGIN $assistant_id: ' . $assistant_id);
 
     // Fetch the KFlow data
-    // $sequence_id = $script_data_array['sequence_id'];
+    // $sequence_id = $kchat_settings['sequence_id'];
     $kflow_sequence = get_chatbot_chatgpt_transients('kflow_sequence', null, null, $session_id);
     $kflow_step = (int) get_chatbot_chatgpt_transients('kflow_step', null, null, $session_id);
 
@@ -74,7 +74,7 @@ function chatbot_chatgpt_call_flow_api($api_key, $message) {
         // Call the ChatGPT Assistant API
         $api_key = ''; // Not needed as this is stored in the assistant
         $thread_id = ''; // Not needed as this is the end of the script so no thread_id
-        $message = chatbot_chatgpt_custom_gpt_call_api($api_key, $message, $assistant_id, $thread_id, $user_id, $page_id);
+        $message = chatbot_chatgpt_custom_gpt_call_api($api_key, $message, $assistant_id, $thread_id, $session_id, $user_id, $page_id);
 
     } else {
 
@@ -89,7 +89,7 @@ function chatbot_chatgpt_call_flow_api($api_key, $message) {
         // $thread_id
         // $thread_id = '[answer=' . $kflow_step . ']';
         
-        // Add +1 to $script_data_array['next_step']
+        // Add +1 to $kchat_settings['next_step']
         // $kflow_step = $kflow_step + 1;
 
         // Update the transients
@@ -116,7 +116,8 @@ function chatbot_chatgpt_call_flow_api($api_key, $message) {
     // Add message to conversation log
     // DIAG Diagnostics
     // back_trace( 'NOTICE', '$message: ' . $message);
-
+    $thread_id = get_chatbot_chatgpt_threads($user_id, $session_id, $page_id, $assistant_id);
+    // back_trace( 'NOTICE', '$thread_id ' . $thread_id);
     append_message_to_conversation_log($session_id, $user_id, $page_id, 'Chatbot', $thread_id, $assistant_id, $message);
 
     // Get the user ID and page ID

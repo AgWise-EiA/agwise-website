@@ -2,6 +2,14 @@
 
 ## Changelog
 
+## v2.0.19
+
+* Ref: Avoiding Invalid Typography values
+
+## v2.0.18
+
+* Ref: Remove deprecated defaultProps
+
 ## v2.0.17
 
 * Ref: Remove illuminate/contracts & psr/container

@@ -11,13 +11,31 @@
 
 // If this file is called directly, abort.
 if ( ! defined( 'WPINC' ) ) {
-    die;
+    die();
 }
+
+// Register Support settings - Ver 2.0.7
+function chatbot_chatgpt_support_settings_init() {
+
+    // Support settings tab - Ver 1.3.0
+    register_setting('chatbot_chatgpt_support', 'chatgpt_support_key');
+
+    add_settings_section(
+        'chatbot_chatgpt_support_section',
+        'Support',
+        'chatbot_chatgpt_support_section_callback',
+        'chatbot_chatgpt_support'
+    );
+
+}
+add_action('admin_init', 'chatbot_chatgpt_support_settings_init');
 
 // Get the list of documentation contents
 function listDocumentationContents() {
 
-    $documentationPath = CHATBOT_CHATGPT_PLUGIN_DIR_PATH . '/documentation';
+    global $chatbot_chatgpt_plugin_dir_path;
+
+    $documentationPath = $chatbot_chatgpt_plugin_dir_path . '/documentation';
     
     if (!file_exists($documentationPath)) {
         return "The specified documentation directory does not exist.";
@@ -82,8 +100,8 @@ function validateDocumentation($dir, $file) {
     }
 
     // Diagnostics
-    // back_trace('NOTICE', '$valid_directories: ' . print_r($valid_directories, true));
-    // back_trace('NOTICE', '$valid_files: ' . print_r($valid_files, true));
+    // back_trace( 'NOTICE', '$valid_directories: ' . print_r($valid_directories, true));
+    // back_trace( 'NOTICE', '$valid_files: ' . print_r($valid_files, true));
 
     if (!empty($valid_directories) && !empty($valid_files) && !empty($dir) && !empty($file)) {
         // If the $dir and $file are found in the list of $valid_directories and $valid_files, return true
@@ -107,6 +125,8 @@ function validateDocumentation($dir, $file) {
 // Support settings section callback - Ver 1.3.0
 function chatbot_chatgpt_support_section_callback() {
 
+    global $chatbot_chatgpt_plugin_dir_path;
+
     // Get the 'documentation' parameter from the URL
     $docLocation = '';
     if (isset($_GET['dir'])) {
@@ -127,9 +147,9 @@ function chatbot_chatgpt_support_section_callback() {
 
     // Validate the that the requested documentation directory and file exist
     if (validateDocumentation($dir, $file)) {
-        $docLocation = CHATBOT_CHATGPT_PLUGIN_DIR_PATH . 'documentation/' . $docLocation;
+        $docLocation = $chatbot_chatgpt_plugin_dir_path . 'documentation/' . $docLocation;
     } else {
-        $docLocation = CHATBOT_CHATGPT_PLUGIN_DIR_PATH . 'documentation/' . 'overview.md';
+        $docLocation = $chatbot_chatgpt_plugin_dir_path . 'documentation/' . 'overview.md';
     }
 
     // DIAG - Diagnostics - Ver 2.0.2.1
@@ -146,7 +166,7 @@ function chatbot_chatgpt_support_section_callback() {
     $dir = isset($_GET['dir']) ? sanitize_text_field($_GET['dir']) : '';
     $file = isset($_GET['file']) ? sanitize_text_field($_GET['file']) : '';
     
-    $basePath = CHATBOT_CHATGPT_PLUGIN_DIR_PATH . 'documentation/';
+    $basePath = $chatbot_chatgpt_plugin_dir_path . 'documentation/';
     $basePath = "?page=chatbot-chatgpt";
     if ($dir !== '') {
         $basePath .= "&tab=support&dir=" . $dir;
@@ -166,9 +186,9 @@ function chatbot_chatgpt_support_section_callback() {
     // $absolutePath = __DIR__ . '/debug_adjustedHtmlContent.html';
     // $result = file_put_contents($absolutePath, $adjustedHtmlContent);
     // if ($result === false) {
-    //     back_trace(  "Failed to write to file: " . $absolutePath );
+    //     // back_trace(  "Failed to write to file: " . $absolutePath );
     // } else {
-    //     back_trace( 'NOTICE', "File written successfully to: " . $absolutePath );
+    //     // back_trace( 'NOTICE', "File written successfully to: " . $absolutePath );
     // }
 
     echo $adjustedHtmlContent;
@@ -236,3 +256,4 @@ function adjustImagePath($url, $basePath) {
     }
     return $url;
 }
+

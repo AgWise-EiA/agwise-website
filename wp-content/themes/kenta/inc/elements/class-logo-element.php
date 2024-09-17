@@ -132,8 +132,8 @@ if ( ! class_exists( 'Kenta_Logo_Element' ) ) {
 							->setLabel( __( 'Site Title Color', 'kenta' ) )
 							->enableAlpha()
 							->asyncColors( ".{$this->slug} .site-title", [
-								'initial' => '--text-color',
-								'hover'   => '--hover-color',
+								'initial' => '--kenta-link-initial-color',
+								'hover'   => '--kenta-link-hover-color',
 							] )
 							->addColor( 'initial', __( 'Initial', 'kenta' ),
 								$this->getDefaultSetting( 'title-initial', 'var(--kenta-accent-color)' ) )
@@ -155,7 +155,7 @@ if ( ! class_exists( 'Kenta_Logo_Element' ) ) {
 							->setLabel( __( 'Site Tagline Color', 'kenta' ) )
 							->enableAlpha()
 							->asyncColors( ".{$this->slug} .site-tagline", [
-								'initial' => '--text-color',
+								'initial' => '--kenta-link-initial-color',
 							] )
 							->addColor( 'initial', __( 'Initial', 'kenta' ),
 								$this->getDefaultSetting( 'tagline-initial', 'var(--kenta-accent-active)' ) )
@@ -180,8 +180,8 @@ if ( ! class_exists( 'Kenta_Logo_Element' ) ) {
 					$css[".{$this->slug} .site-title"] = array_merge(
 						Css::typography( CZ::get( $this->getSlug( 'site_title_typography' ) ) ),
 						Css::colors( CZ::get( $this->getSlug( 'site_title_color' ) ), [
-							'initial' => '--text-color',
-							'hover'   => '--hover-color',
+							'initial' => '--kenta-link-initial-color',
+							'hover'   => '--kenta-link-hover-color',
 						] )
 					);
 				}
@@ -190,7 +190,7 @@ if ( ! class_exists( 'Kenta_Logo_Element' ) ) {
 					$css[".{$this->slug} .site-tagline"] = array_merge(
 						Css::typography( CZ::get( $this->getSlug( 'site_tagline_typography' ) ) ),
 						Css::colors( CZ::get( $this->getSlug( 'site_tagline_color' ) ), [
-							'initial' => '--text-color',
+							'initial' => '--kenta-link-initial-color',
 						] )
 					);
 				}

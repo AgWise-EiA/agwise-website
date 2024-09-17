@@ -11,10 +11,10 @@
 
 // If this file is called directly, abort.
 if ( ! defined( 'WPINC' ) ) {
-    die;
+    die();
 }
 
-// Register settings
+// Register Knowledge Navigator settings
 function chatbot_chatgpt_kn_settings_init() {
 
     // Knowledge Navigator Tab

@@ -1,9 +1,9 @@
 <?php return array(
     'root' => array(
         'name' => 'ibllex/lotta-framework',
-        'pretty_version' => 'v2.0.17',
-        'version' => '2.0.17.0',
-        'reference' => 'd602dd1c4ca625feecb5d3353a496374ae7efc45',
+        'pretty_version' => 'v2.0.19',
+        'version' => '2.0.19.0',
+        'reference' => 'fcf5c9bf85f46b12905b0515f36363bea07a5bd6',
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -11,9 +11,9 @@
     ),
     'versions' => array(
         'ibllex/lotta-framework' => array(
-            'pretty_version' => 'v2.0.17',
-            'version' => '2.0.17.0',
-            'reference' => 'd602dd1c4ca625feecb5d3353a496374ae7efc45',
+            'pretty_version' => 'v2.0.19',
+            'version' => '2.0.19.0',
+            'reference' => 'fcf5c9bf85f46b12905b0515f36363bea07a5bd6',
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),

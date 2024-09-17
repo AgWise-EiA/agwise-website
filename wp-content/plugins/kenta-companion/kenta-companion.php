@@ -4,8 +4,8 @@
  * Plugin Name:       Kenta Companion
  * Description:       Kenta Companion is an extension to the Kenta theme. It provides a lot of features and one-click demo import for Kenta Theme.
  * Requires at least: 5.4
- * Requires PHP:      7.2
- * Version:           1.2.4
+ * Requires PHP:      7.4
+ * Version:           1.2.6
  * Author:            WP Moose
  * Author URI:        https://www.wpmoose.com
  * License:           GPL-2.0-or-later
@@ -22,8 +22,8 @@ if ( !defined( 'ABSPATH' ) ) {
  *
  * @since 1.0.0
  */
-define( 'KCMP_VERSION', '1.2.4' );
-define( 'MIN_KENTA_VERSION', '1.2.8' );
+define( 'KCMP_VERSION', '1.2.6' );
+define( 'MIN_KENTA_VERSION', '1.4.0' );
 define( 'KCMP_PLUGIN_FILE', __FILE__ );
 define( 'KCMP_PLUGIN_PATH', trailingslashit( plugin_dir_path( KCMP_PLUGIN_FILE ) ) );
 define( 'KCMP_PLUGIN_URL', trailingslashit( plugins_url( '/', KCMP_PLUGIN_FILE ) ) );

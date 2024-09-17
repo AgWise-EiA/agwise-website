@@ -174,6 +174,65 @@ if ( ! function_exists( 'kenta_image_url' ) ) {
 	}
 }
 
+if ( ! function_exists( 'kenta_get_sidebar_layout' ) ) {
+	/**
+	 * Get current post/page/store sidebar layout
+	 *
+	 * @param $post_type
+	 *
+	 * @return mixed|string
+	 * @since 2.0.0
+	 */
+	function kenta_get_sidebar_layout( $post_type = 'page' ) {
+		$layout       = 'no-sidebar';
+		$page_sidebar = kenta_get_current_post_meta( 'site-sidebar-layout' );
+		if ( $page_sidebar && $page_sidebar !== 'default' ) {
+			$layout = $page_sidebar;
+		} else if ( ( ! is_front_page() || is_home() ) && CZ::checked( "kenta_{$post_type}_sidebar_section" ) ) {
+			$layout = CZ::get( "kenta_{$post_type}_sidebar_layout" );
+		}
+
+		return $layout;
+	}
+}
+
+if ( ! function_exists( 'kenta_get_container_style' ) ) {
+	/**
+	 * @return mixed|string
+	 */
+	function kenta_get_container_style( $post_type = 'page' ) {
+		$page_container = kenta_get_current_post_meta( 'site-container-style' );
+		if ( $page_container && $page_container !== 'default' ) {
+			return $page_container;
+		}
+
+		if ( $post_type === 'post' ) {
+			return CZ::get( 'kenta_single_post_container_style' );
+		}
+
+		if ( $post_type === 'page' ) {
+			return CZ::get( 'kenta_pages_container_style' );
+		}
+
+		return 'boxed';
+	}
+}
+
+if ( ! function_exists( 'kenta_get_container_layout' ) ) {
+	/**
+	 * @return mixed|string
+	 */
+	function kenta_get_container_layout( $post_type = 'page' ) {
+		$option_type              = $post_type === 'page' ? 'pages' : 'single_post';
+		$content_container_layout = kenta_get_current_post_meta( 'site-container-layout' );
+		if ( $content_container_layout === 'default' ) {
+			$content_container_layout = CZ::get( 'kenta_' . $option_type . '_container_layout' ) ?? 'normal';
+		}
+
+		return $content_container_layout;
+	}
+}
+
 if ( ! function_exists( 'kenta_container_css' ) ) {
 	/**
 	 * Get container css
@@ -183,13 +242,25 @@ if ( ! function_exists( 'kenta_container_css' ) ) {
 	 *
 	 * @return []|array|string[]
 	 */
-	function kenta_container_css( $layout = 'no-sidebar', $style = 'boxed', $css = [] ) {
-		return array_merge( $css, [
-			'kenta-container lg:flex flex-grow z-[1]' => true,
-			'container mx-auto px-gutter'             => $style === 'boxed',
-			'kenta-no-sidebar no-sidebar'             => $layout !== 'right-sidebar' && $layout !== 'left-sidebar',
-			'kenta-right-sidebar lg:flex-row'         => $layout === 'right-sidebar',
-			'kenta-left-sidebar lg:flex-row-reverse'  => $layout === 'left-sidebar',
+	function kenta_container_css( $args = array() ) {
+		$args = wp_parse_args( $args, array(
+			'layout'  => 'narrow',
+			'sidebar' => 'no-sidebar',
+			'style'   => 'boxed',
+			'css'     => array(),
+		) );
+
+		$sidebar = $args['sidebar'];
+		$style   = $args['style'];
+
+		return array_merge( $args['css'], [
+			'kenta-container flex flex-col lg:flex-row flex-grow z-[1]' => true,
+			'kenta-max-w-wide mx-auto'                                  => $style === 'boxed' && ( $sidebar === 'right-sidebar' || $sidebar === 'left-sidebar' ),
+			'is-style-' . $style                                        => true,
+			'is-align-' . $args['layout']                               => true,
+			'kenta-no-sidebar no-sidebar'                               => $sidebar !== 'right-sidebar' && $sidebar !== 'left-sidebar',
+			'kenta-right-sidebar lg:flex-row'                           => $sidebar === 'right-sidebar',
+			'kenta-left-sidebar lg:flex-row-reverse'                    => $sidebar === 'left-sidebar',
 		] );
 	}
 }
@@ -555,8 +626,8 @@ if ( ! function_exists( 'kenta_post_elements_css' ) ) {
 				$css["$scope_selector .entry-title"] = array_merge(
 					Css::typography( $options->get( 'kenta_' . $id . '_title_typography', $settings ) ),
 					Css::colors( $options->get( 'kenta_' . $id . '_title_color', $settings ), [
-						'initial' => '--kenta-initial-color',
-						'hover'   => '--kenta-hover-color',
+						'initial' => '--kenta-link-initial-color',
+						'hover'   => '--kenta-link-hover-color',
 					] ) );
 			}
 
@@ -676,7 +747,7 @@ if ( ! function_exists( 'kenta_show_article_feature_image' ) ) {
 	function kenta_show_article_feature_image( $preview_location, $prefix ) {
 
 		$thumb_attrs = [
-			'class' => $prefix . '_feature_image article-featured-image prose prose-kenta mx-auto',
+			'class' => $prefix . '_feature_image article-featured-image kenta-max-w-content mx-auto',
 		];
 
 		if ( is_customize_preview() ) {
@@ -737,7 +808,7 @@ if ( ! function_exists( 'kenta_show_article_header' ) ) {
 		$featured_image_pos = CZ::get( "{$prefix}_featured_image_position" );
 
 		$header_attrs = [
-			'class' => "kenta-{$type}-header" . ' kenta-article-header kenta-max-w-content mx-auto relative z-[1]',
+			'class' => "kenta-{$type}-header" . ' kenta-article-header kenta-max-w-content has-global-padding mx-auto relative z-[1]',
 		];
 
 		if ( is_customize_preview() ) {
@@ -806,9 +877,10 @@ if ( ! function_exists( 'kenta_show_article' ) ) {
 		$content_attrs = [
 			'class' => Utils::clsx( apply_filters( 'kenta_article_content_classes', array(
 				'kenta-article-content',
-				'kenta-entry-content',
+				'is-layout-constrained',
+				'kenta-entry-content entry-content',
+				'has-global-padding',
 				'clearfix',
-				'prose prose-kenta' => kenta_get_current_post_meta( 'prose-style' ) !== 'disable',
 				'mx-auto'
 			), $type ) ),
 		];
@@ -1301,8 +1373,8 @@ if ( ! function_exists( 'kenta_show_archive_header' ) ) {
 
 		$attrs = [
 			'class' => Utils::clsx( array(
-				'kenta-archive-header'             => true,
-				'kenta-archive-header-has-overlay' => CZ::checked( 'kenta_archive_header_has_overlay' ),
+				'kenta-archive-header has-global-padding' => true,
+				'kenta-archive-header-has-overlay'        => CZ::checked( 'kenta_archive_header_has_overlay' ),
 			) )
 		];
 
@@ -1313,7 +1385,7 @@ if ( ! function_exists( 'kenta_show_archive_header' ) ) {
 
 		?>
         <section <?php \LottaFramework\Utils::print_attribute_string( $attrs ); ?>>
-            <div class="container mx-auto px-gutter">
+            <div class="container kenta-max-w-wide mx-auto">
 				<?php
 				if ( is_search() ) {
 					?>
@@ -1379,7 +1451,7 @@ if ( ! function_exists( 'kenta_show_share_box' ) ) {
 
 		$socials = CZ::repeater( 'kenta_social_networks' );
 		?>
-        <div class="mx-auto kenta-max-w-content">
+        <div class="mx-auto kenta-max-w-content has-global-padding">
             <div <?php Utils::print_attribute_string( $attrs ); ?>>
 				<?php
 				foreach ( $socials as $social ) {

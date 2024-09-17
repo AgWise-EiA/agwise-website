@@ -1,10 +1,10 @@
 === Kenta Blocks – Responsive Blocks and block templates library ===
 Contributors: ibllex, wpmoose
 Tags: gutenberg blocks, block editor, page builder
-Stable tag: 1.4.0
+Stable tag: 1.4.2
 Requires at least: 5.6
-Tested up to: 6.5
-Requires PHP: 7.2
+Tested up to: 6.6
+Requires PHP: 7.4
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -39,6 +39,17 @@ Kenta Blocks is a set of responsive blocks with powerful options and pre-designe
 * [**Posts Excerpt**](https://kentatheme.com/docs/kenta-blocks/blocks-guide/post-excerpt-block-kb/) Display a post's excerpt.
 
 == Changelog ==
+
+= 1.4.2 =
+
+* Fix: particles.js error
+
+= 1.4.1 =
+
+* Ref: Kenat 1.4.0 compatible
+* Ref: WP 6.6 compatible
+* Fix: Image (KB) block alignment error
+* Fix: Column (KB) block style error
 
 = 1.4.0 =
 

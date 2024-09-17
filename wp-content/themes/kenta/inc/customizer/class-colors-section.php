@@ -46,12 +46,6 @@ if ( ! class_exists( 'Kenta_Colors_Section' ) ) {
 					->setDescription( __( "Save the user's color scheme to the cookie and refresh the page without losing current color scheme.", 'kenta' ) )
 					->openByDefault()
 				,
-				( new Separator( 'kenta_gutenberg_color_palette_separator' ) ),
-				( new Toggle( 'kenta_color_palette_in_gutenberg' ) )
-					->setLabel( __( 'Use Colors in Gutenberg Editor', 'kenta' ) )
-					->setDescription( __( "This option allow you to replace the original Gutenberg's color palette with the colors you defined above.", 'kenta' ) )
-					->openByDefault()
-				,
 			];
 		}
 

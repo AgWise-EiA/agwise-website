@@ -10,12 +10,13 @@
 
 // If this file is called directly, abort.
 if ( ! defined( 'WPINC' ) ) {
-    die;
+    die();
 }
 
 function kn_enhance_context( $message ) {
 
     global $wpdb;
+
     global $stopWords;
 
     // Split the text into words based on spaces

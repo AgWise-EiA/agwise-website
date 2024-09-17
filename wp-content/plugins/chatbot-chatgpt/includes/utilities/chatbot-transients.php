@@ -10,7 +10,7 @@
 
 // If this file is called directly, abort.
 if ( ! defined( 'WPINC' ) ) {
-    die;
+    die();
 }
 
 // Set the transients based on the type - Ver 1.8.1
@@ -52,6 +52,8 @@ function set_chatbot_chatgpt_transients( $transient_type , $transient_value , $u
         $transient_key = 'chatbot_chatgpt_assistant_id_' . $page_id . '_' . $user_id;
     } elseif ( $transient_type == 'thread_id' ) {
         $transient_key = 'chatbot_chatgpt_thread_id_' . $page_id . '_' . $user_id;
+    } elseif ( $transient_type == 'additional_instructions' ) {
+        $transient_key = 'chatbot_chatgpt_additional_instructions_' . $page_id . '_' . $user_id;
     } else {
         return;
     }
@@ -60,7 +62,7 @@ function set_chatbot_chatgpt_transients( $transient_type , $transient_value , $u
     set_transient($transient_key, $transient_value, 60*60*24); // Store for 24 hours
 
     // DIAG - Diagnostics
-    // back_trace( 'NOTICE', '*********************************');
+    // back_trace( 'NOTICE', '========================================');
     // back_trace( 'NOTICE', 'PUT - $transient_type: ' . $transient_type);
     // back_trace( 'NOTICE', 'PUT - $transient_value: ' . $transient_value);
     // back_trace( 'NOTICE', 'PUT - $user_id: ' . $user_id);
@@ -118,6 +120,8 @@ function get_chatbot_chatgpt_transients( $transient_type, $user_id = null, $page
         $transient_key = 'chatbot_chatgpt_assistant_id_' . $page_id . '_' . $user_id;
     } elseif ($transient_type == 'thread_id') {
         $transient_key = 'chatbot_chatgpt_thread_id_' . $page_id . '_' . $user_id;
+    } elseif ($transient_type == 'additional_instructions') {
+        $transient_key = 'chatbot_chatgpt_additional_instructions_' . $page_id . '_' . $user_id;
     } else {
         return '';
     }
@@ -126,7 +130,7 @@ function get_chatbot_chatgpt_transients( $transient_type, $user_id = null, $page
     $transient_value = get_transient($transient_key);
 
     // DIAG - Diagnostics
-    // back_trace( 'NOTICE', '*********************************');
+    // back_trace( 'NOTICE', '========================================');
     // back_trace( 'NOTICE', 'GET - $transient_value: ' . $transient_value);
     // back_trace( 'NOTICE', 'GET - $transient_type: ' . $transient_type);
     // back_trace( 'NOTICE', 'GET - $user_id: ' . $user_id);
@@ -134,7 +138,13 @@ function get_chatbot_chatgpt_transients( $transient_type, $user_id = null, $page
     // back_trace( 'NOTICE', 'GET - $session_id: ' . $session_id);
 
     // Return the transient value if it's found, or an empty string if not
-    return $transient_value !== false ? $transient_value : '';
+    // return $transient_value !== false ? $transient_value : '';
+
+    // Get the transient value
+    $transient_value = get_transient($transient_key);
+
+    // Ensure the return value is a string
+    return is_string($transient_value) ? $transient_value : '';
    
 }
 
@@ -152,7 +162,7 @@ function delete_chatbot_chatgpt_transients( $transient_type, $user_id = null, $p
     global $step_id;
 
     // DIAG - Diagnostics
-    // back_trace( 'NOTICE', '*********************************');
+    // back_trace( 'NOTICE', '========================================');
     // back_trace( 'NOTICE', 'DEL - $transient_value: ' . $transient_value);
     // back_trace( 'NOTICE', 'DEL - $transient_type: ' . $transient_type);
     // back_trace( 'NOTICE', 'DEL - $user_id: ' . $user_id);
@@ -205,6 +215,9 @@ function delete_chatbot_chatgpt_transients( $transient_type, $user_id = null, $p
     } elseif ( $transient_type == 'thread_id' ) {
         $thread_id_transient_key = 'chatbot_chatgpt_thread_id_' . $user_id . '_' . $page_id;
         delete_transient($thread_id_transient_key);
+    } elseif ( $transient_type == 'additional_instructions' ) {
+        $additional_instructions_transient_key = 'chatbot_chatgpt_additional_instructions_' . $user_id . '_' . $page_id;
+        delete_transient($additional_instructions_transient_key);
     } else {
         return;
     }

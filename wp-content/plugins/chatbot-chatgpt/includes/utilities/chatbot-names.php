@@ -10,19 +10,18 @@
 
 // If this file is called directly, abort.
 if ( ! defined( 'WPINC' ) ) {
-    die;
+    die();
 }
 
 // Function to get the Assistant's name
 function get_chatbot_chatgpt_assistant_name($assistant_id_lookup) {
 
-    // Global variables
     global $session_id;
     global $user_id;
     global $page_id;
     global $thread_id;
     global $assistant_id;
-    global $script_data_array;
+    global $kchat_settings;
     global $additional_instructions;
     global $model;
     global $voice;

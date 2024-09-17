@@ -10,7 +10,7 @@
 
 // If this file is called directly, abort.
 if ( ! defined( 'WPINC' ) ) {
-    die;
+    die();
 }
 
 // Call the ChatGPT API
@@ -22,7 +22,7 @@ function chatbot_chatgpt_call_api($api_key, $message) {
     global $thread_id;
     global $assistant_id;
     global $learningMessages;
-    global $script_data_array;
+    global $kchat_settings;
     global $additional_instructions;
     global $model;
     global $voice;

@@ -11,10 +11,10 @@
 
 // If this file is called directly, abort.
 if ( ! defined( 'WPINC' ) ) {
-    die;
+    die();
 }
 
-// Register settings
+// Register API settings
 function chatbot_chatgpt_api_settings_init() {
 
     add_settings_section(
