@@ -223,7 +223,7 @@ function runTheAssistant($thread_id, $assistant_id, $context, $api_key) {
 
     $max_prompt_tokens = (int) esc_attr(get_option('chatbot_chatgpt_max_prompt_tokens', 20000));
     $max_completion_tokens = (int) esc_attr(get_option('chatbot_chatgpt_max_completion_tokens', 20000));
-    $temperature = (float) esc_attr(get_option('chatbot_chatgpt_temperature', 1.0));
+    $temperature = (float) esc_attr(get_option('chatbot_chatgpt_temperature', 0.5));
     $top_p = (float) esc_attr(get_option('chatbot_chatgpt_top_p', 1.0));
 
     // Additional instructions - Ver 2.0.9
@@ -271,6 +271,8 @@ function runTheAssistant($thread_id, $assistant_id, $context, $api_key) {
 
     $response = fetchDataUsingCurl($url, $context);
 
+    // back_trace( 'NOTICE', '$response: ' . print_r($response, true));
+
     // Check for false response
     if ($response === FALSE) {
         // DIAG - Diagnostics
@@ -288,7 +290,7 @@ function runTheAssistant($thread_id, $assistant_id, $context, $api_key) {
     // Check for an error response without decoding
     if (strpos($response, '"error"') !== false && strpos($response, '"message"') !== false) {
 
-        // prod_trace('ERROR', print_r($response, true));
+        // prod_trace( 'ERROR', print_r($response, true));
 
         // Extract the error message and type using regular expressions
         preg_match('/"message"\s*:\s*"([^"]+)"/', $response, $messageMatch);
@@ -298,11 +300,11 @@ function runTheAssistant($thread_id, $assistant_id, $context, $api_key) {
         $errorType = $typeMatch[1] ?? 'Unknown type';
     
         // Handle the error
-        prod_trace('ERROR', $errorMessage);
-        prod_trace('ERROR', $errorType);
+        prod_trace( 'ERROR', $errorMessage);
+        prod_trace( 'ERROR', $errorType);
     } else {
         // No error found, proceed with normal logic
-        // prod_trace('INFO', 'No errors found. Proceeding with the operation.');
+        // prod_trace( 'INFO', 'No errors found. Proceeding with the operation.');
     }
     
     // DIAG - Diagnostics  Ver 2.0.1

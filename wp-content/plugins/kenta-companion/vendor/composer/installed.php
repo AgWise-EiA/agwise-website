@@ -1,9 +1,9 @@
 <?php return array(
     'root' => array(
         'name' => 'wpmoose/kenta-companion',
-        'pretty_version' => 'v1.2.6',
-        'version' => '1.2.6.0',
-        'reference' => 'd70c753df6644b19d1791827c43078945ac04fd9',
+        'pretty_version' => 'v1.3.0',
+        'version' => '1.3.0.0',
+        'reference' => 'a0ab2c0ff598de1cbf90e59b1308a7db612e6cd1',
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -47,9 +47,9 @@
             'dev_requirement' => false,
         ),
         'wpmoose/kenta-companion' => array(
-            'pretty_version' => 'v1.2.6',
-            'version' => '1.2.6.0',
-            'reference' => 'd70c753df6644b19d1791827c43078945ac04fd9',
+            'pretty_version' => 'v1.3.0',
+            'version' => '1.3.0.0',
+            'reference' => 'a0ab2c0ff598de1cbf90e59b1308a7db612e6cd1',
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),

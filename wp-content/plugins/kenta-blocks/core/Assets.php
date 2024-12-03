@@ -92,9 +92,6 @@ class Assets {
         $script_dependencies = ( isset( $script_asset['dependencies'] ) ? $script_asset['dependencies'] : array() );
         $frontend_asset = (require KENTA_BLOCKS_PLUGIN_PATH . "dist/frontend.asset.php");
         $frontend_dependencies = ( isset( $frontend_asset['dependencies'] ) ? $frontend_asset['dependencies'] : array() );
-        //		if ( KENTA_BLOCKS_WOOCOMMERCE_ACTIVE ) {
-        //			$script_dependencies[] = 'kenta-blocks-wc-script';
-        //		}
         wp_register_script(
             'kenta-blocks-wc-script',
             KENTA_BLOCKS_PLUGIN_URL . "dist/{$wcScript}{$suffix}.js",

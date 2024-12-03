@@ -1,8 +1,8 @@
 === Pdf Embed ===
 Contributors:      tropicalista
 Tags:              pdf embedder, embed pdf, pdf embed api, pdf block, block
-Tested up to:      6.6
-Stable tag:        0.4.9
+Tested up to:      6.7
+Stable tag:        0.5.0
 License:           GPL-2.0-or-later
 License URI:       https://www.gnu.org/licenses/gpl-2.0.html
 Requires at least: 5.6.0
@@ -23,7 +23,7 @@ A simple, responsive and 100% free Gutenberg Block to display PDF on your websit
 - Show download button
 - Show print button
 - Show full screen
-- 📈Track Pdf events in Google Analytics
+- 📈Track Pdf events in Google Analytics ([docs](https://developer.adobe.com/document-services/docs/overview/pdf-embed-api/howtodata/#google-analytics))
 - 🔥Show PDF in Lightbox on button click
 
 == Supported Browsers ==
@@ -78,6 +78,9 @@ Yes you will need a free [Adobe PDF Embed API](https://developer.adobe.com/docum
 5. Pdf block controls
 
 == Changelog ==
+
+= 0.5.0 =
+* Compatitbility wp 6.7
 
 = 0.4.9 =
 * Compatitbility wp 6.6

@@ -57,13 +57,15 @@
 		
 		// Move overlaping items
 		
+		var mt 				= 0;
+		var default_gap 	= 64;	// Default gap
+		var connector_top 	= 32;	// Default connector top position, TODO: izracunati ovo tako da bude standardan razmak	
+				
 		jQuery( '.bold_timeline_container.bold_timeline_container_line_position_center.bold_timeline_container_line_position_overlap .bold_timeline_group_content' ).each( function( index ) {
 		
 			jQuery( this ).find( '.bold_timeline_item:not(:first-child)' ).each( function( index ) {
 					
-				var mt 				= 0;
-				var default_gap 	= 64;	// Default gap
-				var connector_top 	= 32;	// Default connector top position, TODO: izracunati ovo tako da bude standardan razmak
+
 				
 				var $this 			= jQuery( this );
 				var $prev 			= jQuery( this ).prev( '.bold_timeline_item' );
@@ -119,6 +121,15 @@
 			} );
 			
 		} );
+
+		// fix when last item is shorter than the previous one
+		var g = jQuery( '.bold_timeline_container.bold_timeline_container_line_position_center.bold_timeline_container_line_position_overlap .bold_timeline_group:last .bold_timeline_group_content' );
+		var c = g.find(".bold_timeline_item:last").prev();
+		if ( c.length > 0 ) {
+			var cp = c.position();
+			var mb_fix = cp.top + c.outerHeight() + c.data( 'margin-top' ) - g.outerHeight() - connector_top - default_gap;
+			if ( mb_fix > 0 ) g.css( 'margin-bottom', '' + mb_fix + 'px' );		
+		}
 		
 		boldTimelineAnimateItems();
 		

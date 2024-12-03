@@ -1,9 +1,9 @@
 === Kenta Companion ===
 Contributors: ibllex, wpmoose
 Tags: widget, widgets
-Stable tag: 1.2.6
+Stable tag: 1.3.0
 Requires at least: 5.4
-Tested up to: 6.6
+Tested up to: 6.7
 Requires PHP: 7.4
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
@@ -13,6 +13,11 @@ License URI: https://www.gnu.org/licenses/gpl-3.0.html
 Kenta Companion is an extension to the Kenta theme. It provides a lot of features and one-click demo import for Kenta Theme. Learn more: https://kentatheme.com/
 
 == Changelog ==
+
+= v1.3.0 =
+
+* Ref: Update Freemius SDK
+* Ref: WP 6.7 support
 
 = v1.2.6 =
 

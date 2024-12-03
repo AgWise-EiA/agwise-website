@@ -16,7 +16,6 @@ if ( ! defined( 'WPINC' ) ) {
 // Create the table for the chatbot assistants
 function create_chatbot_chatgpt_assistants_table() {
 
-
     global $wpdb;
 
     $table_name = $wpdb->prefix . 'chatbot_chatgpt_assistants';
@@ -27,6 +26,14 @@ function create_chatbot_chatgpt_assistants_table() {
     }
     
     $charset_collate = $wpdb->get_charset_collate();
+
+    // Fallback cascade for invalid or unsupported character sets
+    if (empty($charset_collate) || strpos($charset_collate, 'utf8mb4') === false) {
+        if (strpos($charset_collate, 'utf8') === false) {
+            // Fallback to utf8 if utf8mb4 is not supported
+            $charset_collate = "CHARACTER SET utf8 COLLATE utf8_general_ci";
+        }
+    }
 
     $sql = "CREATE TABLE $table_name (
         id BIGINT(20) UNSIGNED AUTO_INCREMENT,
@@ -45,6 +52,7 @@ function create_chatbot_chatgpt_assistants_table() {
         PRIMARY KEY (id)
     ) $charset_collate;";
 
+
     require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
 
     // Execute SQL query and create the table
@@ -52,12 +60,12 @@ function create_chatbot_chatgpt_assistants_table() {
 
     // Check for errors after dbDelta
     if ($wpdb->last_error) {
-        logErrorToServer('Failed to create table: ' . $table_name);
-        logErrorToServer('SQL: ' . $sql);
-        logErrorToServer('Error details: ' . $wpdb->last_error);
-        // error_log('Failed to create table: ' . $table_name);
-        // error_log('SQL: ' . $sql);
-        // error_log('Error details: ' . $wpdb->last_error);
+        // logErrorToServer('Failed to create table: ' . $table_name);
+        // logErrorToServer('SQL: ' . $sql);
+        // logErrorToServer('Error details: ' . $wpdb->last_error);
+        error_log('Failed to create table: ' . $table_name);
+        error_log('SQL: ' . $sql);
+        error_log('Error details: ' . $wpdb->last_error);
         return false;  // Table creation failed
     }
 
@@ -68,6 +76,7 @@ function create_chatbot_chatgpt_assistants_table() {
     update_chatbot_chatgpt_number_of_shortcodes();
 
 }
+register_activation_hook(__FILE__, 'create_chatbot_chatgpt_assistants_table');
 
 // Drop the table for the chatbot assistants
 function drop_chatbot_chatgpt_assistants_table() {
@@ -140,22 +149,19 @@ function get_chatbot_chatgpt_assistant_by_key($id) {
 // Keep the chatbot_chatgpt_number_of_shortcodes option updated - Ver 2.0.6
 function update_chatbot_chatgpt_number_of_shortcodes() {
 
-
     global $wpdb;
 
     $table_name = $wpdb->prefix . 'chatbot_chatgpt_assistants';
 
-    // $number_of_shortcodes = $wpdb->get_var("SELECT COUNT(*) FROM $table_name");
-
-    // Check if the table exists
-    $table_exists = $wpdb->get_var("SHOW TABLES LIKE '$table_name'") == $table_name;
+    // Check if the table exists using a prepared statement
+    $table_exists = $wpdb->get_var($wpdb->prepare("SHOW TABLES LIKE %s", $table_name)) == $table_name;
 
     if ($table_exists) {
-        // The table exists, proceed with the original query
+        // The table exists, proceed with retrieving the maximum ID as the count of shortcodes
         $number_of_shortcodes = $wpdb->get_var("SELECT MAX(id) FROM $table_name");
 
-        // If the query fails for any other reason, set $number_of_shortcodes to 0
-        if ($number_of_shortcodes === NULL || $number_of_shortcodes === FALSE) {
+        // If the query fails for any reason, set $number_of_shortcodes to 0
+        if ($number_of_shortcodes === null || $number_of_shortcodes === false) {
             $number_of_shortcodes = 0;
         }
     } else {
@@ -165,82 +171,17 @@ function update_chatbot_chatgpt_number_of_shortcodes() {
 
     update_option('chatbot_chatgpt_number_of_shortcodes', $number_of_shortcodes);
 
+    // Optionally log for debugging
     // error_log('chatbot-assistants - Number of Shortcodes: ' . $number_of_shortcodes);
-
-}
-
-// Add a row to the chatbot assistants table
-function add_chatbot_chatgpt_assistant($assistant_id, $common_name, $style, $audience, $voice, $allow_file_uploads, $allow_transcript_downloads, $show_assistant_name, $initial_greeting, $subsequent_greeting, $placeholder_prompt, $additional_instructions) {
-
-    global $wpdb;
-
-    $table_name = $wpdb->prefix . 'chatbot_chatgpt_assistants';
-
-    $wpdb->insert(
-        $table_name,
-        array(
-            'assistant_id' => $assistant_id ?? 'Please provide the GPT Assistant Id.',
-            'common_name' => $common_name ?? 'Kognetiks Chatbot Assistant',
-            'style' => $style ?? 'embedded',
-            'audience' => $audience ?? 'All',
-            'voice' => $voice ?? 'alloy',
-            'allow_file_uploads' => $allow_file_uploads ?? 'Yes',
-            'allow_transcript_downloads' => $allow_transcript_downloads ?? 'Yes',
-            'show_assistant_name' => $show_assistant_name ?? 'Yes',
-            'initial_greeting' => $initial_greeting ?? 'Hello! How can I help you today?',
-            'subsequent_greeting' => $subsequent_greeting ?? 'Hello again! How can I help you?',
-            'placeholder_prompt' => $placeholder_prompt ?? 'Enter your question ...',
-            'additional_instructions' => $additional_instructions ?? ''
-        )
-    );
-}
-
-// Update a row in the chatbot assistants table
-function update_chatbot_chatgpt_assistant($id, $assistant_id, $common_name, $style, $audience, $voice, $allow_file_uploads, $allow_transcript_downloads, $show_assistant_name, $initial_greeting, $subsequent_greeting, $placeholder_prompt, $additional_instructions) {
-
-    global $wpdb;
-
-    $table_name = $wpdb->prefix . 'chatbot_chatgpt_assistants';
-
-    // DIAG - Diagnostics - Ver 2.0.4
-    // back_trace( 'NOTICE', '$initial_greeting', $initial_greeting );
-    // back_trace( 'NOTICE', '$subsequent_greeting', $subsequent_greeting );
-
-    $wpdb->update(
-        $table_name,
-        array(
-            'assistant_id' => $assistant_id ?? 'Please provide the GPT Assistant Id.',
-            'common_name' => $common_name ?? 'Kognetiks Chatbot Assistant',
-            'style' => $style ?? 'embedded',
-            'audience' => $audience ?? 'All',
-            'voice' => $voice ?? 'alloy',
-            'allow_file_uploads' => $allow_file_uploads ?? 'Yes',
-            'allow_transcript_downloads' => $allow_transcript_downloads ?? 'Yes',
-            'show_assistant_name' => $show_assistant_name ?? 'Yes',
-            'initial_greeting' => $initial_greeting ?? 'Hello! How can I help you today?',
-            'subsequent_greeting' => $subsequent_greeting ?? 'Hello again! How can I help you?',
-            'placeholder_prompt' => $placeholder_prompt ?? 'Enter your question ...',
-            'additional_instructions' => $additional_instructions ?? ''
-        ),
-        array('id' => $id)
-    );
-}
-
-// Delete a row from the chatbot assistants table
-function delete_chatbot_chatgpt_assistant($id) {
-
-    global $wpdb;
-
-    $table_name = $wpdb->prefix . 'chatbot_chatgpt_assistants';
-
-    $wpdb->delete(
-        $table_name,
-        array('id' => $id)
-    );
 }
 
 // Display the chatbot assistants table
 function display_chatbot_chatgpt_assistants_table() {
+
+    if ( ! current_user_can('manage_options') ) {
+        wp_send_json_error( 'Unauthorized user', 403 );
+        wp_die();
+    }
 
     global $wpdb;
 
@@ -314,9 +255,9 @@ function display_chatbot_chatgpt_assistants_table() {
         echo '<tr>';
         echo '<td>';  // Actions column for each assistant row
         // Update button to trigger the updateAssistant function
-        echo '<button class="button-primary" onclick="updateAssistant(' . $assistant->id . ')">Update</button>&nbsp';
+        echo '<button type="button" class="button-primary" onclick="updateAssistant(' . $assistant->id . ')">Update</button>&nbsp';
         // Delete button to trigger the deleteAssistant function
-        echo '<button class="button-primary" onclick="deleteAssistant(' . $assistant->id . ')">Delete</button>';
+        echo '<button type="button" class="button-primary" onclick="deleteAssistant(' . $assistant->id . ')">Delete</button>';
         echo '</td>';
         echo '<td onclick="copyToClipboard(\'[chatbot-' . $assistant->id . ']\')"><b>' . '&#91;chatbot-' . $assistant->id . '&#93;' . '</b></td>';
         echo '<td><input type="text" name="assistant_id_' . $assistant->id . '" value="' . $assistant->assistant_id . '"></td>';
@@ -360,7 +301,7 @@ function display_chatbot_chatgpt_assistants_table() {
 
     // Row for adding a new assistant
     echo '<tr>';
-    echo '<td><button class="button-primary" onclick="addNewAssistant()">Add New Assistant</button></td>';  // Actions column for adding new assistant
+    echo '<td><button type="button" class="button-primary" onclick="addNewAssistant()">Add New Assistant</button></td>';  // Actions column for adding new assistant
     echo '<td>New</td>';
     echo '<td><input type="text" name="new_assistant_id" placeholder="Please provide the GPT Assistant Id."></td>';
     echo '<td><input type="text" name="new_common_name" placeholder="Common Name"></td>';
@@ -405,85 +346,106 @@ function display_chatbot_chatgpt_assistants_table() {
     
 }
 
-
 // Scripts for the chatbot assistants table
 function chatbot_chatgpt_assistants_scripts() {
 
-    ?>
-    <script type="text/javascript">
+    if ( current_user_can('manage_options') ) {
 
-        // Function to update an assistant's details
-        function updateAssistant(id) {
-            var data = {
-                action: 'update_assistant',
-                id: id,
-                assistant_id: document.getElementsByName('assistant_id_' + id)[0].value,
-                common_name: document.getElementsByName('common_name_' + id)[0].value,
-                style: document.getElementsByName('style_' + id)[0].value,
-                audience: document.getElementsByName('audience_' + id)[0].value,
-                voice: document.getElementsByName('voice_' + id)[0].value,
-                allow_file_uploads: document.getElementsByName('allow_file_uploads_' + id)[0].value,
-                allow_transcript_downloads: document.getElementsByName('allow_transcript_downloads_' + id)[0].value,
-                show_assistant_name: document.getElementsByName('show_assistant_name_' + id)[0].value,
-                initial_greeting: document.getElementsByName('initial_greeting_' + id)[0].value,
-                subsequent_greeting: document.getElementsByName('subsequent_greeting_' + id)[0].value,
-                placeholder_prompt: document.getElementsByName('placeholder_prompt_' + id)[0].value,
-                additional_instructions: document.getElementsByName('additional_instructions_' + id)[0].value
-            };
+        $nonce = wp_create_nonce('chatbot_nonce_action');
 
-            // Send the update request via AJAX
-            jQuery.post(ajaxurl, data, function(response) {
-                alert('Assistant updated successfully!');
-                location.reload();  // Reload the page to reflect the deletion
-            });
-        }
+        ?>
+        <script type="text/javascript">
 
-        // Function to delete an assistant
-        function deleteAssistant(id) {
-            var data = {
-                action: 'delete_assistant',
-                id: id
-            };
+            var chatbot_nonce = "<?php echo esc_js($nonce); ?>";
 
-            // Send the delete request via AJAX
-            jQuery.post(ajaxurl, data, function(response) {
-                alert('Assistant deleted successfully!');
-                location.reload();  // Reload the page to reflect the deletion
-            });
-        }
+            // Function to update an assistant's details
+            function updateAssistant(id) {
+                var data = {
+                    action: 'update_assistant',
+                    id: id,
+                    assistant_id: document.getElementsByName('assistant_id_' + id)[0].value,
+                    common_name: document.getElementsByName('common_name_' + id)[0].value,
+                    style: document.getElementsByName('style_' + id)[0].value,
+                    audience: document.getElementsByName('audience_' + id)[0].value,
+                    voice: document.getElementsByName('voice_' + id)[0].value,
+                    allow_file_uploads: document.getElementsByName('allow_file_uploads_' + id)[0].value,
+                    allow_transcript_downloads: document.getElementsByName('allow_transcript_downloads_' + id)[0].value,
+                    show_assistant_name: document.getElementsByName('show_assistant_name_' + id)[0].value,
+                    initial_greeting: document.getElementsByName('initial_greeting_' + id)[0].value,
+                    subsequent_greeting: document.getElementsByName('subsequent_greeting_' + id)[0].value,
+                    placeholder_prompt: document.getElementsByName('placeholder_prompt_' + id)[0].value,
+                    additional_instructions: document.getElementsByName('additional_instructions_' + id)[0].value
+                };
 
-        // Function to add a new assistant
-        function addNewAssistant() {
-            var data = {
-                action: 'add_new_assistant',
-                assistant_id: document.getElementsByName('new_assistant_id')[0].value,
-                common_name: document.getElementsByName('new_common_name')[0].value,
-                style: document.getElementsByName('new_style')[0].value,
-                audience: document.getElementsByName('new_audience')[0].value,
-                voice: document.getElementsByName('new_voice')[0].value,
-                allow_file_uploads: document.getElementsByName('new_allow_file_uploads')[0].value,
-                allow_transcript_downloads: document.getElementsByName('new_allow_transcript_downloads')[0].value,
-                show_assistant_name: document.getElementsByName('new_show_assistant_name')[0].value,
-                initial_greeting: document.getElementsByName('new_initial_greeting')[0].value,
-                subsequent_greeting: document.getElementsByName('new_subsequent_greeting')[0].value,
-                placeholder_prompt: document.getElementsByName('new_placeholder_prompt')[0].value,
-                additional_instructions: document.getElementsByName('new_additional_instructions')[0].value
-            };
+                data._wpnonce = chatbot_nonce;
 
-            // Send the add request via AJAX
-            jQuery.post(ajaxurl, data, function(response) {
-                alert('New assistant added successfully!');
-                location.reload();  // Reload the page to reflect the addition
-            });
-        }
+                // Send the update request via AJAX
+                jQuery.post(ajaxurl, data, function(response) {
+                    alert('Assistant updated successfully!');
+                    location.reload();  // Reload the page to reflect the deletion
+                });
+            }
 
-    </script>
-    <?php
+            // Function to delete an assistant
+            function deleteAssistant(id) {
+                var data = {
+                    action: 'delete_assistant',
+                    id: id
+                };
+
+                data._wpnonce = chatbot_nonce;
+
+                // Send the delete request via AJAX
+                jQuery.post(ajaxurl, data, function(response) {
+                    alert('Assistant deleted successfully!');
+                    location.reload();  // Reload the page to reflect the deletion
+                });
+            }
+
+            // Function to add a new assistant
+            function addNewAssistant() {
+                var data = {
+                    action: 'add_new_assistant',
+                    assistant_id: document.getElementsByName('new_assistant_id')[0].value,
+                    common_name: document.getElementsByName('new_common_name')[0].value,
+                    style: document.getElementsByName('new_style')[0].value,
+                    audience: document.getElementsByName('new_audience')[0].value,
+                    voice: document.getElementsByName('new_voice')[0].value,
+                    allow_file_uploads: document.getElementsByName('new_allow_file_uploads')[0].value,
+                    allow_transcript_downloads: document.getElementsByName('new_allow_transcript_downloads')[0].value,
+                    show_assistant_name: document.getElementsByName('new_show_assistant_name')[0].value,
+                    initial_greeting: document.getElementsByName('new_initial_greeting')[0].value,
+                    subsequent_greeting: document.getElementsByName('new_subsequent_greeting')[0].value,
+                    placeholder_prompt: document.getElementsByName('new_placeholder_prompt')[0].value,
+                    additional_instructions: document.getElementsByName('new_additional_instructions')[0].value
+                };
+
+                data._wpnonce = chatbot_nonce;
+
+                // Send the add request via AJAX
+                jQuery.post(ajaxurl, data, function(response) {
+                    alert('New assistant added successfully!');
+                    location.reload();  // Reload the page to reflect the addition
+                });
+            }
+
+        </script>
+        <?php
+
+    }
+
 }
 add_action('admin_footer', 'chatbot_chatgpt_assistants_scripts');
 
-
+// Update Assistant AJAX action
 function update_assistant() {
+
+    check_ajax_referer('chatbot_nonce_action', '_wpnonce');
+
+    if ( ! current_user_can('manage_options') ) {
+        wp_send_json_error( 'Unauthorized user', 403 );
+        wp_die();
+    }
 
     global $wpdb;
 
@@ -522,11 +484,27 @@ function update_assistant() {
         array('id' => $id)
     );
 
+    // Check for errors after update
+    if ($wpdb->last_error) {
+        error_log('Failed to update row in table: ' . $table_name);
+        error_log('Error details: ' . $wpdb->last_error);
+        return false;  // Row update failed
+    }
+
     wp_die();
+
 }
 add_action('wp_ajax_update_assistant', 'update_assistant');
 
+// Delete Assistant AJAX action
 function delete_assistant() {
+
+    check_ajax_referer('chatbot_nonce_action', '_wpnonce');
+
+    if ( ! current_user_can('manage_options') ) {
+        wp_send_json_error( 'Unauthorized user', 403 );
+        wp_die();
+    }
 
     global $wpdb;
 
@@ -535,11 +513,26 @@ function delete_assistant() {
     $id = intval($_POST['id']);
     $wpdb->delete($table_name, array('id' => $id));
 
+    // Check for errors after delete
+    if ($wpdb->last_error) {
+        error_log('Failed to delete row from table: ' . $table_name);
+        error_log('Error details: ' . $wpdb->last_error);
+        return false;  // Row deletion failed
+    }
+
     wp_die();
+
 }
 add_action('wp_ajax_delete_assistant', 'delete_assistant');
 
 function add_new_assistant() {
+
+    check_ajax_referer('chatbot_nonce_action', '_wpnonce');
+
+    if ( ! current_user_can('manage_options') ) {
+        wp_send_json_error( 'Unauthorized user', 403 );
+        wp_die();
+    }
 
     global $wpdb;
 
@@ -576,12 +569,21 @@ function add_new_assistant() {
         )
     );
 
+    // Check for errors after insert
+    if ($wpdb->last_error) {
+        error_log('Failed to insert row into table: ' . $table_name);
+        error_log('Error details: ' . $wpdb->last_error);
+        return false;  // Row insertion failed
+    }
+
     wp_die();
+
 }
 add_action('wp_ajax_add_new_assistant', 'add_new_assistant');
 
 // Upgrade the old primary and alternate assistant settings to the new chatbot assistants table
 function upgrade_chatbot_chatgpt_assistants_table() {
+
     global $wpdb;
 
     $table_name = $wpdb->prefix . 'chatbot_chatgpt_assistants';
@@ -611,6 +613,14 @@ function upgrade_chatbot_chatgpt_assistants_table() {
                 'additional_instructions' => $assistant_instructions
             )
         );
+
+        // Check for errors after insert
+        if ($wpdb->last_error) {
+            error_log('Failed to insert row into table: ' . $table_name);
+            error_log('Error details: ' . $wpdb->last_error);
+            return false;  // Row insertion failed
+        }
+
     }
 
     if ($assistant_id_alternate) {
@@ -631,6 +641,14 @@ function upgrade_chatbot_chatgpt_assistants_table() {
                 'additional_instructions' => $assistant_instructions_alternate
             )
         );
+
+        // Check for errors after insert
+        if ($wpdb->last_error) {
+            error_log('Failed to insert row into table: ' . $table_name);
+            error_log('Error details: ' . $wpdb->last_error);
+            return false;  // Row insertion failed
+        }
+        
     }
 
     // Delete options from wp_options table
