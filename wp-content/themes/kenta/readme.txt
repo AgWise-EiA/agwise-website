@@ -2,9 +2,9 @@
 Contributors: ibllex, wpmoose
 Author: WP Moose
 Requires at least: WordPress 5.4+
-Tested up to: WordPress 6.6
+Tested up to: WordPress 6.7
 Requires PHP: 7.4
-Stable tag: 1.4.3
+Stable tag: 1.4.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Tags: blog, portfolio, e-commerce, grid-layout, one-column, two-columns, three-columns, four-columns, left-sidebar, right-sidebar, block-styles, custom-background, custom-colors, custom-header, custom-logo, custom-menu, editor-style, featured-image-header, featured-images, footer-widgets, full-width-template, rtl-language-support, sticky-post, threaded-comments, theme-options, translation-ready, wide-blocks
@@ -47,6 +47,12 @@ GPL v2 - src/lotta-framework/LICENSE
 Credits - src/lotta-framework/README.md
 
 == Changelog ==
+
+= 1.4.4 =
+
+* Add: Show last modified date option in post header metas
+* Ref: Update Fontawesome icons to the latest version
+* Ref: Update Google Fonts list to the latest version
 
 = 1.4.3 =
 

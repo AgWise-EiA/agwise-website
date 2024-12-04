@@ -1098,7 +1098,7 @@ function kenta_dynamic_css() {
 /**
  * Generate dynamic css for block editor
  *
- * @param $root .editor-styles-wrapper | :root
+ * @param $root .editor-styles-wrapper | body
  *
  * @return mixed
  * @since 1.4.0

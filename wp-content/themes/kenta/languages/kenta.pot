@@ -2,14 +2,14 @@
 # This file is distributed under the GNU General Public License v2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Kenta 1.4.3\n"
+"Project-Id-Version: Kenta 1.4.4\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/theme/kenta\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2024-09-05T03:44:31+00:00\n"
+"POT-Creation-Date: 2024-11-10T08:46:33+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.11.0\n"
 "X-Domain: kenta\n"
@@ -282,7 +282,7 @@ msgstr ""
 #: inc/extensions/class-related-posts-extension.php:164
 #: inc/extensions/class-scroll-top-extension.php:169
 #: inc/traits/trait-post-structure.php:121
-#: inc/traits/trait-post-structure.php:362
+#: inc/traits/trait-post-structure.php:366
 #: inc/traits/trait-socials-controls.php:68
 #: inc/traits/trait-widgets-controls.php:99
 msgid "Style"
@@ -934,7 +934,7 @@ msgstr ""
 #: inc/customizer/class-header-section.php:142
 #: inc/customizer/class-header-section.php:149
 #: inc/elements/class-collapsable-menu-element.php:119
-#: inc/template-tags.php:1044
+#: inc/template-tags.php:1049
 #: inc/traits/trait-global-color-controls.php:47
 #: inc/traits/trait-global-color-controls.php:58
 msgid "Active"
@@ -947,7 +947,7 @@ msgstr ""
 #: inc/customizer/class-content-section.php:50
 #: inc/elements/class-menu-element.php:51
 #: inc/elements/class-menu-element.php:129
-#: inc/template-tags.php:1036
+#: inc/template-tags.php:1041
 #: inc/traits/trait-button-controls.php:105
 #: inc/traits/trait-icon-button-controls.php:71
 msgid "Ghost"
@@ -978,7 +978,7 @@ msgstr ""
 #: inc/customizer/class-content-section.php:56
 #: inc/elements/class-menu-element.php:56
 #: inc/elements/class-menu-element.php:133
-#: inc/template-tags.php:1045
+#: inc/template-tags.php:1050
 #: inc/traits/trait-button-controls.php:111
 #: inc/traits/trait-icon-button-controls.php:76
 msgid "Custom (Premium)"
@@ -1442,7 +1442,7 @@ msgid "Simple"
 msgstr ""
 
 #: inc/elements/class-collapsable-menu-element.php:89
-#: inc/template-tags.php:1038
+#: inc/template-tags.php:1043
 msgid "Bordered"
 msgstr ""
 
@@ -1891,36 +1891,36 @@ msgstr ""
 msgid "Page"
 msgstr ""
 
-#: inc/template-tags.php:533
+#: inc/template-tags.php:538
 msgid "Edit"
 msgstr ""
 
-#: inc/template-tags.php:906
+#: inc/template-tags.php:911
 msgid "Pages:"
 msgstr ""
 
-#: inc/template-tags.php:1037
+#: inc/template-tags.php:1042
 #: inc/traits/trait-widgets-controls.php:140
 msgid "Plain"
 msgstr ""
 
-#: inc/template-tags.php:1039
+#: inc/template-tags.php:1044
 msgid "Shadowed"
 msgstr ""
 
-#: inc/template-tags.php:1040
+#: inc/template-tags.php:1045
 msgid "Mixed"
 msgstr ""
 
-#: inc/template-tags.php:1041
+#: inc/template-tags.php:1046
 msgid "Inner Shadow"
 msgstr ""
 
-#: inc/template-tags.php:1042
+#: inc/template-tags.php:1047
 msgid "Inner Shadow Bordered"
 msgstr ""
 
-#: inc/template-tags.php:1043
+#: inc/template-tags.php:1048
 msgid "Solid Shadow"
 msgstr ""
 
@@ -2246,7 +2246,7 @@ msgid "Height"
 msgstr ""
 
 #: inc/traits/trait-post-structure.php:216
-#: inc/traits/trait-post-structure.php:369
+#: inc/traits/trait-post-structure.php:373
 msgid "Full Width"
 msgstr ""
 
@@ -2279,15 +2279,19 @@ msgid "Published Date"
 msgstr ""
 
 #: inc/traits/trait-post-structure.php:334
+msgid "Show modified date"
+msgstr ""
+
+#: inc/traits/trait-post-structure.php:338
 msgid "Date Format"
 msgstr ""
 
 #. translators: placeholder here means the actual URL.
-#: inc/traits/trait-post-structure.php:338
+#: inc/traits/trait-post-structure.php:342
 msgid "Date format %s instructions %s."
 msgstr ""
 
-#: inc/traits/trait-post-structure.php:345
+#: inc/traits/trait-post-structure.php:349
 msgid "Comments"
 msgstr ""
 

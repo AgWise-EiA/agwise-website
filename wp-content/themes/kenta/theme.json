@@ -255,7 +255,7 @@
   },
   "styles": {
     "color": {
-      "background": "var(--wp--preset--color--kenta-base-100)",
+      "background": "transparent",
       "text": "var(--kenta-content-base-color)"
     },
     "spacing": {

@@ -2,6 +2,15 @@
 
 ## Changelog
 
+## v2.0.21
+
+* Ref: Update google-fonts list
+
+## v2.0.20
+
+* Ref: Update fontawesome icons to the latest version
+* Fix: Theme live preview error
+
 ## v2.0.19
 
 * Ref: Avoiding Invalid Typography values

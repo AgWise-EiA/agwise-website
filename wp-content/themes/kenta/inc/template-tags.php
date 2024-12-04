@@ -331,9 +331,8 @@ if ( ! function_exists( 'kenta_post_metas' ) ) {
 		$options = $options ?? CZ::getFacadeRoot();
 
 		extract( array_merge( $default_args, $args ) );
-		$date_format = $options->get( 'kenta_' . $id . '_published_format', $settings );
-		$divider     = $options->get( 'kenta_' . $id . '_meta_items_divider', $settings );
-		$icon        = $options->get( 'kenta_' . $id . '_meta_items_style', $settings ) === 'icon';
+		$divider = $options->get( 'kenta_' . $id . '_meta_items_divider', $settings );
+		$icon    = $options->get( 'kenta_' . $id . '_meta_items_style', $settings ) === 'icon';
 
 		echo $before;
 
@@ -350,10 +349,16 @@ if ( ! function_exists( 'kenta_post_metas' ) ) {
 					echo '<span class="byline meta-item"> ' . ( $icon ? IconsManager::render( $options->get( 'kenta_' . $id . '_byline_icon' ) ) : '' ) . $byline . '</span>';
 				}
 			} elseif ( $item === 'published' ) {
+				$date_format   = $options->get( 'kenta_' . $id . '_published_format', $settings );
+				$show_modified = $options->checked( 'kenta_' . $id . '_show_modified_date', $settings );
 
 				$time_string = '<time class="published updated" datetime="%1$s">%2$s</time>';
 				if ( get_the_time( 'U' ) !== get_the_modified_time( 'U' ) ) {
-					$time_string = '<time class="published" datetime="%1$s">%2$s</time><time class="updated hidden" datetime="%3$s">%4$s</time>';
+					if ( $show_modified ) {
+						$time_string = '<time class="published hidden" datetime="%1$s">%2$s</time><time class="updated" datetime="%3$s">%4$s</time>';
+					} else {
+						$time_string = '<time class="published" datetime="%1$s">%2$s</time><time class="updated hidden" datetime="%3$s">%4$s</time>';
+					}
 				}
 
 				$time_string = sprintf( $time_string,
