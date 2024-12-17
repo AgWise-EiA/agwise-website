@@ -11,6 +11,7 @@ $dotenv->load();
 $dotenv->required(['DB_HOST', 'DB_NAME', 'DB_USER', 'DB_PASSWORD']);
 
 $dotenv->ifPresent('DEBUG')->isBoolean();
+
 /**
  * The base configuration for WordPress
  *
