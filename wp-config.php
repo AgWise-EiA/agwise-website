@@ -1,16 +1,15 @@
 <?php
 
+require_once 'vendor/autoload.php';
 
-require_once('vendor/autoload.php');
-
-$dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
-#$dotenv = Dotenv::createImmutable(__DIR__ . '/../agwise_config/.env');
-
-$dotenv->load();
-
-$dotenv->required(['DB_HOST', 'DB_NAME', 'DB_USER', 'DB_PASSWORD']);
-
-$dotenv->ifPresent('DEBUG')->isBoolean();
+// Conditionally load Dotenv for non-WP-CLI environments
+if (!defined('WP_CLI') || !WP_CLI) {
+    $dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
+    # $dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/../agwise_config/.env');
+    $dotenv->load();
+    $dotenv->required(['DB_HOST', 'DB_NAME', 'DB_USER', 'DB_PASSWORD']);
+    $dotenv->ifPresent('DEBUG')->isBoolean();
+}
 
 /**
  * The base configuration for WordPress
@@ -33,16 +32,16 @@ $dotenv->ifPresent('DEBUG')->isBoolean();
 
 // ** Database settings - You can get this info from your web host ** //
 /** The name of the database for WordPress */
-define('DB_NAME', $_ENV['DB_NAME']);
+define('DB_NAME', $_ENV['DB_NAME'] ?? 'agwise');
 
 /** Database username */
-define('DB_USER', $_ENV['DB_USER']);
+define('DB_USER', $_ENV['DB_USER'] ?? 'agwise');
 
 /** Database password */
-define('DB_PASSWORD', $_ENV['DB_PASSWORD']);
+define('DB_PASSWORD', $_ENV['DB_PASSWORD'] ?? 'andalite6');
 
 /** Database hostname */
-define('DB_HOST', $_ENV['DB_HOST']);
+define('DB_HOST', $_ENV['DB_HOST'] ?? 'localhost');
 
 /** Database charset to use in creating database tables. */
 define('DB_CHARSET', 'utf8mb4');
@@ -50,9 +49,9 @@ define('DB_CHARSET', 'utf8mb4');
 /** The database collate type. Don't change this if in doubt. */
 define('DB_COLLATE', '');
 
-/** enables caching for WordPress sites **/
-define( 'WP_CACHE', true );
-define( 'CONCATENATE_SCRIPTS', true );
+/** Enables caching for WordPress sites */
+define('WP_CACHE', true);
+define('CONCATENATE_SCRIPTS', true);
 
 /**#@+
  * Authentication unique keys and salts.
@@ -89,21 +88,21 @@ $table_prefix = 'wp_';
  *
  * Change this to true to enable the display of notices during development.
  * It is strongly recommended that plugin and theme developers use WP_DEBUG
- * in their development $_ENVironments.
+ * in their development environments.
  *
  * For information on other constants that can be used for debugging,
  * visit the documentation.
  *
  * @link https://wordpress.org/documentation/article/debugging-in-wordpress/
  */
-define('WP_DEBUG', $_ENV['DEBUG']);
-define('WP_DEBUG_LOG', $_ENV['DEBUG']);
-define('WP_DEBUG_DISPLAY', $_ENV['DEBUG']);
+define('WP_DEBUG', filter_var($_ENV['DEBUG'] ?? false, FILTER_VALIDATE_BOOLEAN));
+define('WP_DEBUG_LOG', WP_DEBUG);
+define('WP_DEBUG_DISPLAY', WP_DEBUG);
+
 /* Add any custom values between this line and the "stop editing" line. */
 define('FS_METHOD', 'direct');
 define('FS_CHMOD_DIR', 0755);
 define('FS_CHMOD_FILE', 0644);
-
 
 /* That's all, stop editing! Happy publishing. */
 
