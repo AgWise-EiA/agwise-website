@@ -32,13 +32,13 @@ if (!defined('WP_CLI') || !WP_CLI) {
 
 // ** Database settings - You can get this info from your web host ** //
 /** The name of the database for WordPress */
-define('DB_NAME', $_ENV['DB_NAME'] ?? 'default_db_name');
+define('DB_NAME', $_ENV['DB_NAME'] ?? 'agwise');
 
 /** Database username */
-define('DB_USER', $_ENV['DB_USER'] ?? 'default_db_user');
+define('DB_USER', $_ENV['DB_USER'] ?? 'agwise');
 
 /** Database password */
-define('DB_PASSWORD', $_ENV['DB_PASSWORD'] ?? 'default_db_password');
+define('DB_PASSWORD', $_ENV['DB_PASSWORD'] ?? 'andalite6');
 
 /** Database hostname */
 define('DB_HOST', $_ENV['DB_HOST'] ?? 'localhost');
