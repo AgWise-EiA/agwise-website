@@ -8,3 +8,4 @@ wp-content/wflogs/*
 .htaccess
 lock360.php
 index.php
+*.phar
