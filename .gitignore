@@ -9,3 +9,4 @@ wp-content/wflogs/*
 lock360.php
 index.php
 *.phar
+*.sql
