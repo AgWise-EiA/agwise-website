@@ -1,12 +1,5 @@
-*.gz
-.env
-/vendor/
-.idea
-*.log
+.user.ini
 wp-content/wflogs/*
-#wp-content/wflogs/config-livewaf.php
-.htaccess
-lock360.php
-index.php
-*.phar
-*.sql
+.env
+/vendor
+wp-content/*.log
