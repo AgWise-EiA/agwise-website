@@ -1,6 +1,6 @@
 <?php
 /**
- * Kognetiks Chatbot for WordPress - Options Exporter - Ver 2.0.6
+ * Kognetiks Chatbot - Options Exporter - Ver 2.0.6
  *
  * This file contains the code for exporting the chatbot options.
  * 
@@ -19,14 +19,19 @@ function chatbot_chatgpt_download_options_data() {
 
     global $wpdb;
 
-    // Ensure the current user has the capability to export options
-    if (!current_user_can('manage_options')) {
-        wp_die(__('You do not have sufficient permissions to access this page.', 'chatbot-chatgpt'));
+    // Security: Check capability
+    if ( ! current_user_can( 'manage_options' ) ) {
+        wp_die( esc_html__( 'You do not have sufficient permissions to access this page.', 'chatbot-chatgpt' ), 403 );
+    }
+
+    // Security: Verify nonce for CSRF protection
+    if ( ! isset( $_REQUEST['_wpnonce'] ) || ! wp_verify_nonce( wp_unslash( $_REQUEST['_wpnonce'] ), 'chatbot_chatgpt_download_options_data' ) ) {
+        wp_die( esc_html__( 'Security check failed. Please refresh the page and try again.', 'chatbot-chatgpt' ), 403 );
     }
 
     // Ensure no output is sent before headers
     if (headers_sent()) {
-        wp_die(__('Headers already sent. Cannot proceed with the download.', 'chatbot-chatgpt'));
+        wp_die( esc_html__( 'Headers already sent. Cannot proceed with the download.', 'chatbot-chatgpt' ) );
     }
 
     $debug_dir_path = $chatbot_chatgpt_plugin_dir_path . 'debug/';
@@ -34,7 +39,7 @@ function chatbot_chatgpt_download_options_data() {
     // Create debug directory if it doesn't exist
     if (!file_exists($debug_dir_path)) {
         if (!mkdir($debug_dir_path, 0777, true)) {
-            wp_die(__('Failed to create debug directory.', 'chatbot-chatgpt'));
+            wp_die( esc_html__( 'Failed to create debug directory.', 'chatbot-chatgpt' ) );
         }
     }
 
@@ -42,34 +47,28 @@ function chatbot_chatgpt_download_options_data() {
 
     $options_file = $debug_dir_path . 'chatbot-chatgpt-options.' . $output_choice;
 
-    // DIAG - Diagnostics - Ver 2.0.7
-    // back_trace( 'NOTICE', '$output_choice: ' . $output_choice);
-    // back_trace( 'NOTICE', '$options_file: ' . $options_file);
-
     // Fetch options from the database
     $options = $wpdb->get_results("SELECT * FROM {$wpdb->prefix}options WHERE option_name LIKE 'chatbot%' AND option_name != 'chatbot_chatgpt_api_key'", ARRAY_A);
 
     // Write options to file
     if ($output_choice == 'json') {
 
-        // back_trace( 'NOTICE', 'JSON output choice');
 
         // Write options to JSON file
         $options_data = json_encode($options, JSON_PRETTY_PRINT);
         if (file_put_contents($options_file, $options_data) === false) {
-            wp_die(__('Failed to write options to file.', 'chatbot-chatgpt'));
+            wp_die( esc_html__( 'Failed to write options to file.', 'chatbot-chatgpt' ) );
         }
 
     } elseif ($output_choice == 'csv') {
 
-        // back_trace( 'NOTICE', 'CSV output choice');
 
         // Open the file for writing
         $fileHandle = fopen($options_file, 'w');
 
         // Check if the file was opened successfully
         if ($fileHandle === false) {
-            wp_die(__('Failed to open file for writing', 'chatbot-chatgpt'));
+            wp_die( esc_html__( 'Failed to open file for writing', 'chatbot-chatgpt' ) );
         }
 
         // Write the CSV header
@@ -101,13 +100,14 @@ function chatbot_chatgpt_download_options_data() {
     // Read file contents
     $options_data = file_get_contents($options_file);
     if ($options_data === false) {
-        wp_die(__('Failed to read options file.', 'chatbot-chatgpt'));
+        wp_die( esc_html__( 'Failed to read options file.', 'chatbot-chatgpt' ) );
     }
 
     // Deliver the file for download
     if ($output_choice === 'json') {
         header('Content-Type: application/json');
         header('Content-Disposition: attachment; filename="chatbot-chatgpt-options.json"');
+        // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- JSON output for file download, escaping would corrupt the data.
         echo $options_data;
     } elseif ($output_choice === 'csv') {
         header('Content-Type: text/csv');

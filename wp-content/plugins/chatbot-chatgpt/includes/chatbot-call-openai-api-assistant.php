@@ -1,0 +1,1593 @@
+<?php
+/**
+ * Kognetiks Chatbot - Assistants - Ver 1.6.9
+ *
+ * This file contains the code for access the OpenAI Assistants API.
+ * 
+ *
+ * @package chatbot-chatgpt
+ */
+
+// If this file is called directly, abort.
+if ( ! defined( 'WPINC' ) ) {
+    die();
+}
+
+// Helper function to get appropriate timeout for assistant operations
+function chatbot_chatgpt_get_assistant_timeout() {
+    $base_timeout = intval(esc_attr(get_option('chatbot_chatgpt_timeout_setting', '30')));
+    
+    // Assistant operations often take longer, so increase the base timeout
+    // but cap it at a reasonable maximum to prevent extremely long waits
+    $assistant_timeout = min($base_timeout + 60, 180); // Add 60s but max 180s (3 minutes)
+    
+    return $assistant_timeout;
+}
+
+// Helper function to temporarily increase PHP max_execution_time for long-running API calls - Ver 2.4.5
+function chatbot_chatgpt_increase_execution_time($timeout, $retry_count = 0, $max_sleep_time = 0) {
+    $current_max_execution_time = ini_get('max_execution_time');
+    
+    // Calculate required execution time
+    if ($retry_count > 0 && $max_sleep_time > 0) {
+        // For retry loops: (timeout * retries) + (sleep time accumulation) + buffer
+        $required_execution_time = ($timeout * 2) + ($max_sleep_time * $retry_count) + 30;
+    } else {
+        // For single requests: timeout + buffer
+        $required_execution_time = $timeout + 10;
+    }
+    
+    // Only increase if needed and if current limit is set (> 0 means unlimited)
+    if ($current_max_execution_time > 0 && $required_execution_time > $current_max_execution_time) {
+        @set_time_limit($required_execution_time);
+        return $current_max_execution_time; // Return original value for restoration
+    }
+    
+    return false; // No change needed
+}
+
+// Helper function to restore PHP max_execution_time - Ver 2.4.5
+function chatbot_chatgpt_restore_execution_time($original_time) {
+    if ($original_time !== false && $original_time > 0) {
+        @set_time_limit($original_time);
+    }
+}
+
+// -------------------------------------------------------------------------
+// Step 1: Create a thread
+// -------------------------------------------------------------------------
+function createAnAssistant($api_key) {
+
+    // Set your API key and assistant ID here:
+    $api_key = esc_attr(get_option('chatbot_chatgpt_api_key', ''));
+    // Decrypt the API key - Ver 2.2.6
+    $api_key = chatbot_chatgpt_decrypt_api_key($api_key);
+
+    // Base URL for the beta threads endpoints
+    // $url = "https://api.openai.com/v1/threads";
+    $url = get_threads_api_url();
+
+    $assistant_beta_version = esc_attr(get_option('chatbot_chatgpt_assistant_beta_version', 'v2'));
+    if ( $assistant_beta_version == 'v2' ) {
+        $beta_version = "assistants=v2";
+    } else {
+        $beta_version = "assistants=v1";
+    }
+
+    // Prepare common headers
+    $headers = [
+        "Content-Type"  => "application/json",
+        "OpenAI-Beta"   => $beta_version,
+        "Authorization" => "Bearer " . $api_key,
+    ];
+
+    $response = wp_remote_post($url, [
+        "headers"       => $headers,
+        "timeout"       => 30,
+    ]);
+
+    // Retrieve API response
+    $body = wp_remote_retrieve_body($response);
+
+    $thread_response = json_decode($body, true);
+
+    // Handle API errors
+    if (isset($thread_response['error'])) {
+        return "Error: " . $thread_response['error']['message'];
+    }
+
+    // Ensure thread ID is present
+    if (!isset($thread_response["id"])) {
+        return "Error: Thread ID not returned.";
+    }
+
+    return $thread_response;
+
+}
+
+// -------------------------------------------------------------------------
+// Step 2: EMPTY STEP
+// -------------------------------------------------------------------------
+
+// -------------------------------------------------------------------------
+// Step 3: Add a message
+// -------------------------------------------------------------------------
+function addAMessage($thread_id, $prompt, $context, $api_key, $file_id = null, $message_uuid = null) {
+
+    global $session_id;
+
+    // Set your API key and assistant ID here:
+    $api_key = esc_attr(get_option('chatbot_chatgpt_api_key', ''));
+    // Decrypt the API key - Ver 2.2.6
+    $api_key = chatbot_chatgpt_decrypt_api_key($api_key);
+
+    // Base URL for the beta threads endpoints
+    // $url = "https://api.openai.com/v1/threads";
+    $url = get_threads_api_url() . '/' . $thread_id . '/messages';
+
+    $assistant_beta_version = esc_attr(get_option('chatbot_chatgpt_assistant_beta_version', 'v2'));
+    if ( $assistant_beta_version == 'v2' ) {
+        $beta_version = "assistants=v2";
+    } else {
+        $beta_version = "assistants=v1";
+    }
+
+    // Prepare common headers
+    $headers = [
+        "Content-Type"  => "application/json",
+        "OpenAI-Beta"   => $beta_version,
+        "Authorization" => "Bearer " . $api_key,
+    ];
+
+    // *********************************************************************************
+    // FILE ID IS NULL
+    // *********************************************************************************
+    if ( empty($file_id) ) {
+
+        // No files attached, just send the prompt
+        $data = [
+            'role' => 'user',
+            'content' => [
+                [
+                    'type' => 'text',
+                    'text' => $prompt,
+                ]
+            ],
+        ];
+        
+        // Add message UUID to metadata if provided
+        if ($message_uuid) {
+            $data['metadata'] = ['message_uuid' => $message_uuid];
+        }
+
+    }
+
+    if ( !empty($file_id) ) {
+
+        // *********************************************************************************
+        // Decide which helper to use
+        // *********************************************************************************
+
+        // FIXME - Retrieve the first item file type - assumes they are all the same, not mixed
+        $file_type = get_chatbot_chatgpt_transients_files('chatbot_chatgpt_assistant_file_types', $session_id, 0);
+        $file_type = $file_type ? $file_type : 'unknown';
+        
+        // *********************************************************************************
+        // NON-IMAGE ATTACHMENTS - Ver 2.0.3
+        // *********************************************************************************
+
+        if ( $file_type == 'assistants' ) {
+            $data = chatbot_chatgpt_text_attachment($prompt, $file_id, $beta_version);
+        }
+
+        // *********************************************************************************
+        // IMAGE ATTACHMENTS - Ver 2.0.3
+        // *********************************************************************************
+
+        if ( $file_type == 'vision' ) {
+            $data = chatbot_chatgpt_image_attachment($prompt, $file_id, $beta_version);
+        }
+        
+        // Add message UUID to metadata if provided
+        if ($message_uuid && isset($data)) {
+            $data['metadata'] = ['message_uuid' => $message_uuid];
+        }
+
+    }
+
+    // POST request using WordPress HTTP API
+    $response = wp_remote_post($url, [
+        'headers'       => $headers, 
+        'body'          => json_encode($data), 
+        'timeout'       => 30,
+    ]);
+
+    // Check for WP_Error
+    if (is_wp_error($response)) {
+        prod_trace('ERROR', 'WP_Error: ' . $response->get_error_message());
+        return null;
+    }
+
+    // Retrieve response body
+    $response_body = wp_remote_retrieve_body($response);
+
+    // Return the API response
+    return json_decode($response_body, true);
+
+}
+
+// -------------------------------------------------------------------------
+// Step 4: Run the Assistant
+// -------------------------------------------------------------------------
+function runTheAssistant($thread_id, $assistant_id, $context, $api_key, $message_uuid = null) {
+
+    global $kchat_settings;
+    
+    // $url = "https://api.openai.com/v1/threads/" . $thread_id . "/runs";
+    $url = get_threads_api_url() . '/' . $thread_id . '/runs';
+
+    $assistant_beta_version = esc_attr(get_option('chatbot_chatgpt_assistant_beta_version', 'v2'));
+    if ( $assistant_beta_version == 'v2' ) {
+        $beta_version = "assistants=v2";
+    } else {
+        $beta_version = "assistants=v1";
+    }
+
+    // Prepare common headers
+    $headers = [
+        "Content-Type"  => "application/json",
+        "OpenAI-Beta"   => $beta_version,
+        "Authorization" => "Bearer " . $api_key,
+    ];
+
+    // Get the max prompt and completion tokens - Ver 2.0.1
+    // https://platform.openai.com/docs/assistants/how-it-works/max-completion-and-max-prompt-tokens
+    
+    // Request body additional features - Ver 2.2.3
+    // https://platform.openai.com/docs/api-reference/runs/createRun
+
+    $max_prompt_tokens = (int) esc_attr(get_option('chatbot_chatgpt_max_prompt_tokens', 20000));
+    $max_completion_tokens = (int) esc_attr(get_option('chatbot_chatgpt_max_completion_tokens', 20000));
+    $temperature = (float) esc_attr(get_option('chatbot_chatgpt_temperature', 0.5));
+    $top_p = (float) esc_attr(get_option('chatbot_chatgpt_top_p', 1.0));
+
+    // Additional instructions - Ver 2.2.3
+    $additional_instruction = null;
+    if (isset($kchat_settings['additional_instructions']) && $kchat_settings['additional_instructions'] !== null) {
+        $additional_instructions = $kchat_settings['additional_instructions'];
+    }
+
+    $data = array(
+        "assistant_id" => $assistant_id,
+        "max_prompt_tokens" => $max_prompt_tokens,
+        "max_completion_tokens" => $max_completion_tokens,
+        "temperature" => $temperature,
+        "top_p" => $top_p,
+        "truncation_strategy" => array(
+            "type" => "auto",
+            "last_messages" => null,
+        ),
+        "additional_instructions" => $additional_instructions,
+    );
+    
+    // Add message UUID to run metadata for end-to-end idempotency
+    if (isset($message_uuid)) {
+        $data["metadata"] = ["message_uuid" => $message_uuid];
+    }
+
+    $response = wp_remote_post($url, [
+        "headers"       => $headers,
+        "body"          => json_encode($data),
+        "ignore_errors" => true,
+        "timeout"       => 30,
+    ]);
+    
+    // Ensure the response is valid
+    if (is_wp_error($response)) {
+        $error_message = $response->get_error_message();
+        // DIAG - Diagnostics - Ver 2.4.5
+        prod_trace('ERROR', "Error fetching response: {$error_message}");
+        return "Error: Unable to fetch response. {$error_message}";
+    }
+    
+    // Retrieve the response body
+    $response_body = wp_remote_retrieve_body($response);
+    
+    // Decode the JSON response
+    $response_data = json_decode($response_body, true);
+
+    // Retrieve the HTTP response code
+    $http_code = wp_remote_retrieve_response_code($response);
+    
+    // Handle non-200 responses
+    // if ($http_code !== 200) {
+    //     prod_trace('ERROR', "HTTP response code: {$http_code}");
+    //     return "Error: HTTP response code {$http_code}";
+    // }
+    
+    // Check if an error exists in the API response
+    if (isset($response_data['error'])) {
+        $errorMessage = $response_data['error']['message'] ?? 'Unknown error';
+        $errorType = $response_data['error']['type'] ?? 'Unknown type';
+    
+        prod_trace('ERROR', "OpenAI API Error: {$errorMessage}");
+        prod_trace('ERROR', "Error Type: {$errorType}");
+    
+        // Return user-friendly message for "already has an active run" error
+        if (strpos($errorMessage, 'already has an active run') !== false) {
+            global $chatbot_chatgpt_fixed_literal_messages;
+            $default_message = "The system is currently busy processing requests. Please try again in a few moments.";
+            $locked_message = isset($chatbot_chatgpt_fixed_literal_messages[19]) 
+                ? $chatbot_chatgpt_fixed_literal_messages[19] 
+                : $default_message;
+            return $locked_message;
+        }
+    
+        return "Error: {$errorMessage}";
+    }
+    
+    // ✅ If no errors, return the decoded response
+    return $response_data;    
+
+}
+
+// -------------------------------------------------------------------------
+// Step 5: Get the Run's Status
+// -------------------------------------------------------------------------
+function getTheRunsStatus($thread_id, $runId, $api_key) {
+
+    global $sleepTime;
+
+    // Build the API URL
+    $url = get_threads_api_url() . '/' . $thread_id . '/runs/' . $runId;
+
+    $assistant_beta_version = esc_attr(get_option('chatbot_chatgpt_assistant_beta_version', 'v2'));
+    if ( $assistant_beta_version == 'v2' ) {
+        $beta_version = "assistants=v2";
+    } else {
+        $beta_version = "assistants=v1";
+    }
+
+    // Prepare common headers
+    $headers = [
+        "Content-Type"  => "application/json",
+        "OpenAI-Beta"   => $beta_version,
+        "Authorization" => "Bearer " . $api_key,
+    ];
+
+    $status = "";
+
+    // Fix for timeout exceeding PHP max_execution_time - Ver 2.4.5
+    // Retry loop can take a long time (100 retries * up to 30s = 3000+ seconds)
+    $assistant_timeout = chatbot_chatgpt_get_assistant_timeout();
+    $max_sleep_time_seconds = 30; // Maximum sleep time in seconds
+    $original_execution_time = chatbot_chatgpt_increase_execution_time($assistant_timeout, 100, $max_sleep_time_seconds);
+
+    // Exponential backoff parameters - Ver 2.2.0 (Enhanced for slow servers)
+    $initialSleep = 2000000;       // Initial sleep time in microseconds (2 seconds) - increased for slow servers
+    $maxSleep = 30000000;          // Maximum sleep time in microseconds (30 seconds) - increased for slow servers
+    $sleepTime = $initialSleep;
+    $retryCount = 0;
+    $maxRetriesBeforeReset = 3;    // Number of retries before resetting the sleep time (reduced for faster adaptation)
+    $resetRangeMin = 2000000;      // Minimum reset sleep time in microseconds (2 seconds) - increased
+    $resetRangeMax = 5000000;      // Maximum reset sleep time in microseconds (5 seconds) - increased
+    $maxTotalRetries = 100;        // Maximum total retries to prevent infinite loops (increased for slow servers)
+    $totalRetryCount = 0;          // Total retry counter
+
+    while ($status != "completed" && $totalRetryCount < $maxTotalRetries) {
+
+        $response = wp_remote_get($url, [
+            "headers"       => $headers,
+            "timeout"       => chatbot_chatgpt_get_assistant_timeout(),
+        ]);
+    
+        // ✅ Check if `wp_remote_post()` returned an error
+        if (is_wp_error($response)) {
+            prod_trace('ERROR', 'HTTP Request failed: ' . $response->get_error_message());
+            return "Error: Failed to communicate with the API.";
+        }
+    
+        // ✅ Extract the body safely
+        $response_body = wp_remote_retrieve_body($response);
+    
+        // ✅ Ensure response body is a string before decoding
+        if (!is_string($response_body) || empty($response_body)) {
+            prod_trace('ERROR', 'Error: API returned an empty or invalid response.');
+            return "Error: Empty API response.";
+        }
+    
+        // ✅ Decode JSON response safely
+        $responseArray = json_decode($response_body, true);
+    
+        // ✅ Handle JSON decoding errors explicitly
+        if ($responseArray === null && json_last_error() !== JSON_ERROR_NONE) {
+            prod_trace('ERROR', 'JSON decode error: ' . json_last_error_msg());
+            return "Error: Failed to parse API response.";
+        }
+        
+        // ✅ Check if 'status' exists in the response
+        if (isset($responseArray["status"])) {
+            $status = $responseArray["status"];
+    
+            // Handle 'failed' status indicating rate limit reached
+            if ($status == "failed") {
+                prod_trace('ERROR', "Error - Step 5: " . $status);
+                prod_trace('ERROR', '$responseArray: ' . print_r($responseArray, true));
+    
+                // ✅ Handle rate limiting
+                if (isset($responseArray['last_error']) && $responseArray['last_error']['code'] === 'rate_limit_exceeded') {
+                    $message = $responseArray['last_error']['message'] ?? '';
+    
+                    if (preg_match('/Please try again in (\d+\.\d+)s/', $message, $matches)) {
+                        $sleepTime = (int) ceil(($matches[1] + 0.5) * 1000000);
+                        prod_trace('ERROR', 'ALERT - RATE LIMIT REACHED - Sleeping for ' . $sleepTime . ' microseconds');
+                        // Don't break here - continue retrying
+                    } else {
+                        prod_trace('ERROR', 'Exiting Step 5 - UNABLE TO PARSE RETRY TIME');
+                        chatbot_chatgpt_restore_execution_time($original_execution_time);
+                        return "Error: Rate limit exceeded. Please try again later.";
+                    }
+                }
+            }
+    
+            // Handle 'incomplete' status
+            if ($status == "incomplete") {
+                if (isset($responseArray["incomplete_details"])) {
+                    prod_trace('ERROR', "Error - Step 5: " . print_r($responseArray["incomplete_details"], true));
+                    // Continue retrying, don't break
+                }
+            }
+    
+        }
+    
+        // ✅ Handle exponential backoff if status is not "completed"
+        if ($status != "completed") {
+            usleep($sleepTime);
+            $retryCount++;
+            $totalRetryCount++;
+    
+            if ($retryCount >= $maxRetriesBeforeReset) {
+                $sleepTime = wp_rand( $resetRangeMin, $resetRangeMax );
+                $retryCount = 0;
+            } else {
+                $sleepTime = min($sleepTime * 2, $maxSleep);
+            }
+    
+            if ($totalRetryCount >= $maxTotalRetries) {
+                prod_trace('ERROR', 'Error - GPT Assistant - Step 5: Maximum retries reached. Exiting loop.');
+                break;
+            }
+        }
+    }
+    
+    // Restore original execution time limit - Ver 2.4.5
+    chatbot_chatgpt_restore_execution_time($original_execution_time);
+    
+    return $status;
+    
+
+}
+
+// -------------------------------------------------------------------------
+// Step 6: Get the Run's Steps
+// -------------------------------------------------------------------------
+function getTheRunsSteps($thread_id, $runId, $api_key) {
+
+    // Construct the API URL
+    $url = get_threads_api_url() . '/' . $thread_id . '/runs/' . $runId . '/steps';
+
+    // Determine API version
+    $assistant_beta_version = esc_attr(get_option('chatbot_chatgpt_assistant_beta_version', 'v2'));
+    if ( $assistant_beta_version == 'v2' ) {
+        $beta_version = "assistants=v2";
+    } else {
+        $beta_version = "assistants=v1";
+    }
+
+    // Prepare request headers
+    $headers = [
+        "Content-Type"  => "application/json",
+        "OpenAI-Beta"   => $beta_version,
+        "Authorization" => "Bearer " . $api_key
+    ];
+
+    $response = wp_remote_get($url, [
+        "headers"       => $headers,
+        "timeout"       => chatbot_chatgpt_get_assistant_timeout(),
+    ]);
+
+    // ✅ Handle request errors
+    if (is_wp_error($response)) {
+        prod_trace('ERROR', 'HTTP Request failed: ' . $response->get_error_message());
+        return "Error: Failed to communicate with the API.";
+    }
+
+    // ✅ Extract response body safely
+    $response_body = wp_remote_retrieve_body($response);
+
+    // ✅ Ensure response body is a valid string before decoding
+    if (!is_string($response_body) || empty($response_body)) {
+        prod_trace('ERROR', 'Error: API returned an empty or invalid response.');
+        return "Error: Empty API response.";
+    }
+
+    // ✅ Decode JSON response safely
+    $response_data = json_decode($response_body, true);
+
+    // ✅ Handle JSON decoding errors explicitly
+    if ($response_data === null && json_last_error() !== JSON_ERROR_NONE) {
+        prod_trace('ERROR', 'JSON decode error: ' . json_last_error_msg());
+        return "Error: Failed to parse API response.";
+    }
+
+    return $response_data;
+
+}
+
+// -------------------------------------------------------------------------
+// Step 7: Get the Step's Status
+// -------------------------------------------------------------------------
+function getTheStepsStatus($thread_id, $runId, $api_key) {
+
+    // $url = "https://api.openai.com/v1/threads/" . $thread_id . "/runs/" . $runId . "/steps";
+    $url = get_threads_api_url() . '/' . $thread_id . '/runs/' . $runId . '/steps';
+
+    $assistant_beta_version = esc_attr(get_option('chatbot_chatgpt_assistant_beta_version', 'v2'));
+    if ( $assistant_beta_version == 'v2' ) {
+        $beta_version = "assistants=v2";
+    } else {
+        $beta_version = "assistants=v1";
+    }
+
+    // Prepare request headers
+    $headers = [
+        "Content-Type"  => "application/json",
+        "OpenAI-Beta"   => $beta_version,
+        "Authorization" => "Bearer " . $api_key
+    ];
+
+    // Fix for timeout exceeding PHP max_execution_time - Ver 2.4.5
+    // Retry loop can take a long time (60 retries * up to 10s = 600+ seconds)
+    // Temporarily increase PHP's max_execution_time to prevent fatal errors
+    $current_max_execution_time = ini_get('max_execution_time');
+    $assistant_timeout = chatbot_chatgpt_get_assistant_timeout();
+    // Calculate worst-case scenario: (timeout * retries) + (sleep time accumulation)
+    // Simplified: timeout per request + max sleep time * retries + buffer
+    $max_sleep_time = 10; // Maximum sleep time in seconds
+    $required_execution_time = ($assistant_timeout * 2) + ($max_sleep_time * 60) + 30; // Add 30s buffer
+    if ($current_max_execution_time > 0 && $required_execution_time > $current_max_execution_time) {
+        @set_time_limit($required_execution_time);
+    }
+
+    // Retry settings (Enhanced for slow servers)
+    $max_retries = 60; // Max retries before giving up (increased for slow servers)
+    $retry_count = 0;
+    $sleep_time = 2000000; // 2 seconds (increased for slow servers)
+
+    while ($retry_count < $max_retries) {
+
+        $response = wp_remote_get($url, [
+            "headers"       => $headers,
+            "timeout"       => chatbot_chatgpt_get_assistant_timeout(),
+        ]);
+
+        // ✅ Handle request errors
+        if (is_wp_error($response)) {
+            prod_trace('ERROR', 'HTTP Request failed: ' . $response->get_error_message());
+            return "Error: Failed to communicate with the API.";
+        }
+
+        // ✅ Extract response body safely
+        $response_body = wp_remote_retrieve_body($response);
+
+        // ✅ Ensure response body is valid before decoding
+        if (!is_string($response_body) || empty($response_body)) {
+            prod_trace('ERROR', 'Error: API returned an empty or invalid response.');
+            return "Error: Empty API response.";
+        }
+
+        // ✅ Decode JSON response safely
+        $responseArray = json_decode($response_body, true);
+
+        // ✅ Handle JSON decoding errors explicitly
+        if ($responseArray === null && json_last_error() !== JSON_ERROR_NONE) {
+            prod_trace('ERROR', 'JSON decode error: ' . json_last_error_msg());
+            return "Error: Failed to parse API response.";
+        }
+
+        // ✅ Check for "data" field
+        if (isset($responseArray["data"]) && is_array($responseArray["data"])) {
+            foreach ($responseArray["data"] as $item) {
+                if (isset($item["status"]) && $item["status"] === "completed") {
+                    // Restore original execution time limit before returning - Ver 2.4.5
+                    if ($current_max_execution_time > 0 && $required_execution_time > $current_max_execution_time) {
+                        @set_time_limit($current_max_execution_time);
+                    }
+                    return "completed";
+                }
+            }
+        } else {
+            // ✅ Log and return failure if "data" field is missing
+            prod_trace('ERROR', 'Error - GPT Assistant - Step 7: Invalid API response.');
+            return "Error: Missing 'data' in API response.";
+        }
+
+        // Sleep before retrying with progressive increase for slow servers
+        usleep($sleep_time);
+        $retry_count++;
+        
+        // Increase sleep time progressively (2s, 4s, 6s, 8s, 10s max)
+        $sleep_time = min($sleep_time + 2000000, 10000000); // Add 2s each time, max 10s
+    }
+
+    // Restore original execution time limit - Ver 2.4.5
+    if ($current_max_execution_time > 0 && $required_execution_time > $current_max_execution_time) {
+        @set_time_limit($current_max_execution_time);
+    }
+
+    // ✅ Log and return failure if retries exceeded
+    prod_trace('ERROR', 'Error - GPT Assistant - Step 7: Maximum retries reached.');
+    return "Error: Maximum retries reached.";
+
+}
+
+// -------------------------------------------------------------------------
+// Step 8: Get the Message
+// -------------------------------------------------------------------------
+function getTheMessage($thread_id, $api_key, $run_id = null) {
+
+    $url = get_threads_api_url() . '/' . $thread_id . '/messages';
+    
+    // Add run_id filter if provided to only get messages from the current run
+    if ($run_id) {
+        $url .= '?run_id=' . $run_id . '&order=asc';
+    }
+
+    $assistant_beta_version = esc_attr(get_option('chatbot_chatgpt_assistant_beta_version', 'v2'));
+    if ( $assistant_beta_version == 'v2' ) {
+        $beta_version = "assistants=v2";
+    } else {
+        $beta_version = "assistants=v1";
+    }
+
+    $headers = [
+        'Content-Type'  => 'application/json',
+        'OpenAI-Beta'   => $beta_version,
+        'Authorization' => 'Bearer ' . $api_key
+    ];
+
+    $response = wp_remote_get($url, [
+        "headers"       => $headers,
+        "timeout"       => chatbot_chatgpt_get_assistant_timeout(),
+    ]);
+
+    // ✅ Handle request errors
+    if (is_wp_error($response)) {
+        prod_trace('ERROR', 'HTTP Request failed: ' . $response->get_error_message());
+        return "Error: Failed to communicate with the API.";
+    }
+
+    // ✅ Extract response body
+    $response_body = wp_remote_retrieve_body($response);
+
+    // ✅ Ensure the response is a valid JSON string before decoding
+    $response_data = json_decode($response_body, true);
+    if ($response_data === null) {
+        prod_trace('ERROR', 'JSON Decode Error: ' . json_last_error_msg());
+        return "Error: Invalid JSON response from API.";
+    }
+
+    // Download any file attachments - Ver 2.0.3
+    if (isset($response_data['data']) && is_array($response_data['data'])) {
+        foreach ($response_data['data'] as &$message) {
+            // Check attachments
+            if (isset($message['attachments']) && is_array($message['attachments'])) {
+                foreach ($message['attachments'] as $attachment) {
+                    if (isset($attachment['file_id'])) {
+                        $file_id = $attachment['file_id'];
+
+                        // If $annotation is not defined or not an array, skip this iteration
+                        if (!isset($annotation) || !is_array($annotation)) {
+                            continue;
+                        }
+
+                        // Access array offset here
+                        if (isset($annotation['offset_key'])) {
+                            $value = $annotation['offset_key'];
+                        } else {
+                            // Handle the error appropriately
+                            continue;
+                        }
+
+                        // If $path is not defined or not a string, skip this iteration
+                        if (!isset($path) || !is_string($path)) {
+                            continue;
+                        }
+
+                        $basename = basename($path);
+
+                        $file_name = 'download_' . generate_random_string() . '_' . basename($annotation['text']); // Extract the filename
+
+                        // Call the function to download the file
+                        $file_url = download_openai_file($file_id, $file_name);
+
+                        if ($file_url) {
+                            // Append the local URL to the message (modify as needed for your use case)
+                            $message['file_url'] = $file_url;
+                        }
+
+                        // Set a transient that expires in 2 hours
+                        $timeFrameForDelete = time() + 2 * 60 * 60;
+                        set_transient('chatbot_chatgpt_delete_uploaded_file_' . $file_id, $file_id, $timeFrameForDelete);
+
+                        // Set a cron job to delete the file in 1 hour 45 minutes
+                        $shorterTimeFrameForDelete = time() + 1 * 60 * 60 + 45 * 60;
+                        if (!wp_next_scheduled('delete_uploaded_file', array($file_id))) {
+                            wp_schedule_single_event($shorterTimeFrameForDelete, 'delete_uploaded_file', array($file_id));
+                        }
+
+                    }
+                }
+            }
+
+            // Check content annotations
+            if (isset($message['content']) && is_array($message['content'])) {
+                foreach ($message['content'] as &$content) { // Note the change here to modify the content
+                    if (isset($content['text']['annotations']) && is_array($content['text']['annotations'])) {
+                        foreach ($content['text']['annotations'] as $annotation) {
+                            if (isset($annotation['file_path']['file_id']) && isset($annotation['text'])) {
+                                $file_id = $annotation['file_path']['file_id'];
+                                $file_name = 'download_' . generate_random_string() . '_' . basename($annotation['text']); // Extract the filename
+
+                                // Call the function to download the file
+                                $file_url = download_openai_file($file_id, $file_name);
+
+                                if ($file_url) {
+                                    // Replace the placeholder link with the actual URL
+                                    $content['text']['value'] = str_replace($annotation['text'], $file_url, $content['text']['value']);
+                                }
+                                
+                                // Set a transient that expires in 2 hours
+                                $timeFrameForDelete = time() + 2 * 60 * 60;
+                                set_transient('chatbot_chatgpt_delete_uploaded_file_' . $file_id, $file_id, $timeFrameForDelete);
+
+                                // Set a cron job to delete the file in 1 hour 45 minutes
+                                $shorterTimeFrameForDelete = time() + 1 * 60 * 60 + 45 * 60;
+                                if (!wp_next_scheduled('delete_uploaded_file', array($file_id))) {
+                                    wp_schedule_single_event($shorterTimeFrameForDelete, 'delete_uploaded_file', array($file_id));
+                                }
+                        
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    } else {
+
+    }
+
+    return $response_data;
+
+}
+
+// Add this new function before chatbot_chatgpt_custom_gpt_call_api
+function cancel_active_run($thread_id, $api_key) {
+    
+    $url = get_threads_api_url() . '/' . $thread_id . '/runs';
+    $assistant_beta_version = esc_attr(get_option('chatbot_chatgpt_assistant_beta_version', 'v2'));
+    $beta_version = ($assistant_beta_version == 'v2') ? "assistants=v2" : "assistants=v1";
+    
+    $headers = [
+        "Content-Type"  => "application/json",
+        "OpenAI-Beta"   => $beta_version,
+        "Authorization" => "Bearer " . $api_key
+    ];
+
+    // First, try to get the current run status
+    $current_run_url = $url . '?limit=1&order=desc';
+    $response = wp_remote_get($current_run_url, [
+        "headers" => $headers,
+        "timeout" => 30,
+    ]);
+
+    if (is_wp_error($response)) {
+        return false;
+    }
+
+    $response_data = json_decode(wp_remote_retrieve_body($response), true);
+    
+    if (!isset($response_data['data']) || !is_array($response_data['data']) || empty($response_data['data'])) {
+        return true;
+    }
+
+    // Get the most recent run
+    $current_run = $response_data['data'][0];
+    
+    if (isset($current_run['status']) && in_array($current_run['status'], ['in_progress', 'queued'])) {
+        
+        // Cancel the run
+        $cancel_url = $url . '/' . $current_run['id'] . '/cancel';
+        $cancel_response = wp_remote_post($cancel_url, [
+            "headers" => $headers,
+            "timeout" => 30,
+        ]);
+
+        if (is_wp_error($cancel_response)) {
+            return false;
+        }
+
+        // Wait for the cancellation to take effect
+        $max_wait = 5;
+        $wait_count = 0;
+        $wait_time = 1000000; // 1 second in microseconds
+
+        while ($wait_count < $max_wait) {
+            usleep($wait_time);
+            
+            // Check if the run is cancelled by polling the run status endpoint
+            $run_status_url = get_threads_api_url() . '/' . $thread_id . '/runs/' . $current_run['id'];
+            $check_response = wp_remote_get($run_status_url, [
+                "headers" => $headers,
+                "timeout" => 30,
+            ]);
+            
+            if (!is_wp_error($check_response)) {
+                $check_data = json_decode(wp_remote_retrieve_body($check_response), true);
+                if (isset($check_data['status']) && $check_data['status'] === 'cancelled') {
+                    return true;
+                }
+            }
+            
+            $wait_count++;
+        }
+
+        return false;
+    }
+
+    return true;
+}
+
+// CustomGPT - Assistants - Ver 1.7.2
+function chatbot_chatgpt_custom_gpt_call_api($api_key, $message, $assistant_id, $thread_id, $session_id, $user_id, $page_id, $client_message_id = null) {
+
+    // Globals - Ver 2.3.6
+    global $learningMessages;
+    global $errorResponses;
+    global $stopWords;
+
+    // DIAG - Diagnostics - Ver 2.4.5
+    // back_trace("NOTICE", "Starting OpenAI Assistant API call");
+    // back_trace("NOTICE", "Message: " . $message);
+    // back_trace("NOTICE", "User ID: " . $user_id);
+    // back_trace("NOTICE", "Page ID: " . $page_id);
+    // back_trace("NOTICE", "Session ID: " . $session_id);
+    // back_trace("NOTICE", "Assistant ID: " . $assistant_id);
+    // back_trace("NOTICE", "Client Message ID: " . $client_message_id);
+
+    // Use client_message_id if provided, otherwise generate a unique message UUID for idempotency
+    $message_uuid = $client_message_id ? $client_message_id : wp_generate_uuid4();
+    
+    // Lock the conversation BEFORE thread resolution to prevent empty-thread vs real-thread lock split
+    $conv_lock = 'chatgpt_conv_lock_' . wp_hash($assistant_id . '|' . $user_id . '|' . $page_id . '|' . $session_id);
+    $lock_timeout = 60; // 60 seconds timeout
+    
+    // Check for duplicate message UUID in conversation log
+    $duplicate_key = 'chatgpt_message_uuid_' . $message_uuid;
+    if (get_transient($duplicate_key)) {
+        return "Error: Duplicate request detected. Please try again.";
+    }
+    
+    // Lock check removed - main send function handles locking
+    
+    // Lock setting removed - main send function handles locking
+    set_transient($duplicate_key, true, 120); // 2 minutes to prevent duplicates - Ver 2.3.7
+    
+    // Log the start of the request
+    // DIAG - Diagnostics - Ver 2.4.5
+    // prod_trace('NOTICE', 'Starting API call - Assistant: ' . $assistant_id . ', User: ' . $user_id . ', Page: ' . $page_id . ', Session: ' . $session_id . ', Message UUID: ' . $message_uuid);
+
+    // Globals already declared at top of function - Ver 2.3.6
+
+    // See if there is a $thread_id
+    if (empty($thread_id)) {
+        $thread_id = get_chatbot_chatgpt_threads($user_id, $session_id, $page_id, $assistant_id);
+        if (empty($thread_id)) {
+        } else {
+        }
+    } else {
+    }
+
+    // If the thread_id is not set, create a new thread
+    if (empty($thread_id)) {
+
+        // Step 1 - Create an Assistant
+        $api_key = esc_attr(get_option('chatbot_chatgpt_api_key', ''));
+        // Decrypt the API key - Ver 2.2.6
+        $api_key = chatbot_chatgpt_decrypt_api_key($api_key);
+
+        $assistants_response = createAnAssistant($api_key);
+
+        // Step 2 - Get The Thread ID
+        $thread_id = $assistants_response["id"];
+        $kchat_settings['thread_id'] = $thread_id; // ADDED FOR VER 2.1.1.1 - 2024-08-26
+        set_chatbot_chatgpt_threads($thread_id, $assistant_id, $user_id, $page_id);
+        
+        // Thread lock check removed - main send function handles locking
+        
+    } else {
+
+        $thread_id = get_chatbot_chatgpt_threads($user_id, $session_id, $page_id, $assistant_id);
+        
+        // Thread lock check removed - main send function handles locking
+
+    }
+
+    // Conversation Context - Ver 2.2.3
+    $context = "";
+    $context = esc_attr(get_option('chatbot_chatgpt_conversation_context', 'You are a versatile, friendly, and helpful assistant designed to support me in a variety of tasks that responds in Markdown.'));
+ 
+    // Step 3: Add a Message to a Thread
+    $prompt = $message;
+        
+    // Fetch the file id - Ver 2.23
+    $file_id = chatbot_chatgpt_retrieve_file_id($user_id, $page_id);
+    
+    for ($i = 0; $i < count($file_id); $i++) {
+        if (isset($file_id[$i])) {
+        } else {
+            // Handle the error appropriately
+            unset($file_id[$i]); // Remove the non-existent key
+        }
+    }
+
+    // ENHANCED CONTEXT - Select some context to send with the message - Ver 2.2.4
+    $use_enhanced_content_search = esc_attr(get_option('chatbot_chatgpt_use_advanced_content_search', 'No'));
+
+    // ENHANCED CONTEXT - Select some context to send with the message - Ver 2.2.4 - Updated Ver 2.2.9
+    // if ($use_enhanced_content_search == 'Yes') {
+    //     $search_results = chatbot_chatgpt_content_search($message);
+    //     if (!empty($search_results) && isset($search_results['results'])) {
+    //         // Format the search results into a readable string
+    //         $formatted_results = '';
+    //         foreach ($search_results['results'] as $result) {
+    //             $formatted_results .= "\nTitle: " . $result['title'] . "\n";
+    //             if (isset($result['excerpt'])) {
+    //                 $formatted_results .= "Content: " . $result['excerpt'] . "\n";
+    //             }
+    //             $formatted_results .= "URL: " . $result['url'] . "\n";
+    //         }
+    //         // Append the formatted search results to the prompt
+    //         $prompt = $prompt . ' When answering the prompt, please consider the following information: ' . $formatted_results;
+    //     }
+    // }
+
+    if ($use_enhanced_content_search == 'Yes') {
+
+        $search_results = chatbot_chatgpt_content_search($message);
+        If ( !empty ($search_results) ) {
+            // Extract relevant content from search results array
+            $content_texts = [];
+            foreach ($search_results['results'] as $result) {
+                if (!empty($result['excerpt'])) {
+                    $content_texts[] = $result['excerpt'];
+                }
+            }
+            // Join the content texts and append to context
+            if (!empty($content_texts)) {
+                $prompt = $prompt . ' When answering the prompt, please consider the following information: ' . implode(' ', $content_texts);
+            }
+        }
+
+    } else {
+
+        // When Advanced Content Search is disabled, send only the basic context - Ver 2.3.5.2
+        // Initialize variables to prevent undefined variable warnings
+        $sys_message = '';
+        $chatgpt_last_response = '';
+        $context = $sys_message . ' ' . $chatgpt_last_response . ' ' . $context;
+
+    }
+
+    if (empty($file_id)) {
+        $assistants_response = addAMessage($thread_id, $prompt, $context, $api_key, '', $message_uuid);
+    } else {
+        $assistants_response = addAMessage($thread_id, $prompt, $context, $api_key, $file_id, $message_uuid);
+    }
+
+    $retries = 0;
+    $maxRetries = 10;
+    $consecutive_failures = 0; // Track consecutive failures to prevent infinite loops - Ver 2.4.0
+    $max_consecutive_failures = 3; // Stop after 3 consecutive failures - Ver 2.4.0
+    $sleepTime = $sleepTime ?? 500000; // Default to 500 milliseconds if not set
+
+    do {
+
+        $run_status = '';
+
+        // Step 4: Run the Assistant
+        
+        // Check for active runs before creating a new one
+        $run_status_url = get_threads_api_url() . '/' . $thread_id . '/runs?limit=1&order=desc';
+        $assistant_beta_version = esc_attr(get_option('chatbot_chatgpt_assistant_beta_version', 'v2'));
+        $beta_version = ($assistant_beta_version == 'v2') ? "assistants=v2" : "assistants=v1";
+        
+        $headers = [
+            "Content-Type"  => "application/json",
+            "OpenAI-Beta"   => $beta_version,
+            "Authorization" => "Bearer " . $api_key
+        ];
+        
+        $latest = wp_remote_get($run_status_url, [
+            'headers' => $headers,
+            'timeout' => 30
+        ]);
+        
+        $active = false;
+        if (!is_wp_error($latest)) {
+            $j = json_decode(wp_remote_retrieve_body($latest), true);
+            $active = !empty($j['data'][0]) && in_array($j['data'][0]['status'], ['in_progress', 'queued', 'requires_action']);
+        }
+        
+        if ($active) {
+            // Clear locks and return friendly message
+            $thread_lock = 'chatgpt_run_lock_' . $thread_id;
+            delete_transient($thread_lock);
+            delete_transient($conv_lock);
+            // DIAG - Diagnostics - Ver 2.4.5
+            // prod_trace('NOTICE', 'Active run detected, returning friendly message');
+            global $chatbot_chatgpt_fixed_literal_messages;
+            $default_message = "The system is currently busy processing requests. Please try again in a few moments.";
+            $locked_message = isset($chatbot_chatgpt_fixed_literal_messages[19]) 
+                ? $chatbot_chatgpt_fixed_literal_messages[19] 
+                : $default_message;
+            return $locked_message;
+        }
+        
+        $assistants_response = runTheAssistant($thread_id, $assistant_id, $context, $api_key, $message_uuid);
+
+        // Check if the response is not an array or is a string indicating an error
+        if (!is_array($assistants_response) || is_string($assistants_response)) {
+            // Clear both locks before returning error
+            $thread_lock = 'chatgpt_run_lock_' . $thread_id;
+            delete_transient($thread_lock);
+            delete_transient($conv_lock);
+            return "Error: Invalid response format or error occurred.";
+        }
+
+        // Check if the 'id' key exists in the response
+        if (isset($assistants_response["id"])) {
+            $runId = $assistants_response["id"];
+            // Log the run creation
+            // DIAG - Diagnostics - Ver 2.4.5
+            // prod_trace('NOTICE', 'Run created - Thread: ' . $thread_id . ', Run ID: ' . $runId . ', Message UUID: ' . $message_uuid);
+        } else {
+            // Clear both locks before returning error
+            $thread_lock = 'chatgpt_run_lock_' . $thread_id;
+            delete_transient($thread_lock);
+            delete_transient($conv_lock);
+            return "Error: 'id' key not found in response.";
+        }
+
+        // Monitor the run and handle tool calls if needed
+        $max_status_checks = 30; // Maximum number of status checks
+        $check_count = 0;
+        $run_completed = false;
+        $tool_used = false;
+
+        while (!$run_completed && $check_count < $max_status_checks) {
+            // Wait before checking status again
+            usleep($sleepTime);
+            $check_count++;
+            
+            // Get the current run status
+            $run_status_url = get_threads_api_url() . '/' . $thread_id . '/runs/' . $runId;
+            
+            $assistant_beta_version = esc_attr(get_option('chatbot_chatgpt_assistant_beta_version', 'v2'));
+            $beta_version = ($assistant_beta_version == 'v2') ? "assistants=v2" : "assistants=v1";
+            
+            $headers = [
+                "Content-Type"  => "application/json",
+                "OpenAI-Beta"   => $beta_version,
+                "Authorization" => "Bearer " . $api_key
+            ];
+            
+            $status_response = wp_remote_get($run_status_url, [
+                "headers" => $headers,
+                "timeout" => 30,
+            ]);
+            
+            if (is_wp_error($status_response)) {
+                continue;
+            }
+            
+            $status_body = wp_remote_retrieve_body($status_response);
+            $status_data = json_decode($status_body, true);
+            
+            if (json_last_error() !== JSON_ERROR_NONE) {
+                continue;
+            }
+            
+            
+            // Check if the run requires action (tool execution)
+            if (isset($status_data['status']) && $status_data['status'] === 'requires_action') {
+                $tool_used = check_assistant_tool_usage($assistant_id, $thread_id, $runId, $api_key);
+                if ($tool_used) {
+                }
+            }
+            // Check if the run has completed
+            else if (isset($status_data['status']) && $status_data['status'] === 'completed') {
+                $run_completed = true;
+                $run_status = "completed";
+                $consecutive_failures = 0; // Reset consecutive failures on success - Ver 2.4.0
+                // Log run completion
+                // DIAG - Diagnostics - Ver 2.4.5
+                // prod_trace('NOTICE', 'Run completed - Thread: ' . $thread_id . ', Run ID: ' . $runId . ', Message UUID: ' . $message_uuid);
+                break;
+            }
+            // Check if the run has failed
+            else if (isset($status_data['status']) && ($status_data['status'] === 'failed' || $status_data['status'] === 'expired')) {
+                $run_status = $status_data['status'];
+                $consecutive_failures++; // Increment consecutive failures - Ver 2.4.0
+                break;
+            }
+        }
+
+        // Check if we reached the maximum number of status checks
+        if ($check_count >= $max_status_checks && !$run_completed) {
+            $run_status = "timeout";
+            // Timeout is not counted as a consecutive failure, but we should still track it
+        }
+
+        $retries++;
+
+        // Check for consecutive failures to prevent infinite loops - Ver 2.4.0
+        if ($run_status == "failed" || $run_status == "expired") {
+            if ($consecutive_failures >= $max_consecutive_failures) {
+                // Clear both locks before returning error
+                $thread_lock = 'chatgpt_run_lock_' . $thread_id;
+                delete_transient($thread_lock);
+                delete_transient($conv_lock);
+                return "Error: Run failed after " . $consecutive_failures . " consecutive failures. Status: " . $run_status;
+            }
+        } else if ($run_status != "completed") {
+            // Reset consecutive failures for non-failed statuses (timeout, incomplete, etc.)
+            $consecutive_failures = 0;
+        }
+
+        if ($run_status == "failed" || $run_status == "incomplete" || $run_status == "timeout" || $run_status == "expired") {
+            usleep($sleepTime);
+        }
+
+    } while ($run_status != "completed" && $retries < $maxRetries);
+
+    // Failed after multiple retries
+    if ($run_status != "completed") {
+        // Clear both locks before returning error
+        // Lock clearing removed - main send function handles locking
+        return "Error: Run failed after maximum retries. Status: " . $run_status;
+    }
+
+    // Step 6: Get the Run's Steps
+    $assistants_response = getTheRunsSteps($thread_id, $runId, $api_key);
+    
+    // Add the usage to the conversation tracker
+    if (is_array($assistants_response) && 
+        isset($assistants_response["data"]) && 
+        is_array($assistants_response["data"]) && 
+        isset($assistants_response["data"][0]) && 
+        isset($assistants_response["data"][0]["usage"])) {
+        append_message_to_conversation_log($session_id, $user_id, $page_id, 'Prompt Tokens', $thread_id, $assistant_id, null, $assistants_response["data"][0]["usage"]["prompt_tokens"]);
+        append_message_to_conversation_log($session_id, $user_id, $page_id, 'Completion Tokens', $thread_id, $assistant_id, null, $assistants_response["data"][0]["usage"]["completion_tokens"]);
+        append_message_to_conversation_log($session_id, $user_id, $page_id, 'Total Tokens', $thread_id, $assistant_id, null, $assistants_response["data"][0]["usage"]["total_tokens"]);
+    }
+
+    // Step 7: Get the Step's Status
+    getTheStepsStatus($thread_id, $runId, $api_key);
+
+    // Step 8: Get the Message - Filter to only show current run results
+    $assistants_response = getTheMessage($thread_id, $api_key, $runId);
+    
+    // Log message retrieval
+    if (isset($assistants_response["data"][0]["id"])) {
+        $message_id = $assistants_response["data"][0]["id"];
+        // DIAG - Diagnostics - Ver 2.4.5
+        // prod_trace('NOTICE', 'Message retrieved - Thread: ' . $thread_id . ', Run ID: ' . $runId . ', Message ID: ' . $message_id . ', Message UUID: ' . $message_uuid);
+    }
+
+    // Interaction Tracking - Ver 1.6.3
+    update_interaction_tracking();
+
+    // Remove citations from the response
+    if (is_array($assistants_response) && 
+        isset($assistants_response["data"]) && 
+        is_array($assistants_response["data"]) && 
+        isset($assistants_response["data"][0]) && 
+        isset($assistants_response["data"][0]["content"]) && 
+        is_array($assistants_response["data"][0]["content"]) && 
+        isset($assistants_response["data"][0]["content"][0]) && 
+        isset($assistants_response["data"][0]["content"][0]["text"]) && 
+        isset($assistants_response["data"][0]["content"][0]["text"]["value"])) {
+        $assistants_response["data"][0]["content"][0]["text"]["value"] = preg_replace('/\【.*?\】/', '', $assistants_response["data"][0]["content"][0]["text"]["value"]);
+    }
+
+    // Check for missing $thread_id in $kchat_settings
+    if (!isset($kchat_settings['thread_id'])) {
+        $kchat_settings['thread_id'] = $thread_id;
+    }
+
+    // Add a check here to see if the response [data][0][content][0][text][value] contains the string "[conversation_transcript]"
+    // First validate that $assistants_response is an array with the expected structure
+    if (is_array($assistants_response) && 
+        isset($assistants_response["data"]) && 
+        is_array($assistants_response["data"]) && 
+        isset($assistants_response["data"][0]) && 
+        isset($assistants_response["data"][0]["content"]) && 
+        is_array($assistants_response["data"][0]["content"]) && 
+        isset($assistants_response["data"][0]["content"][0]) && 
+        isset($assistants_response["data"][0]["content"][0]["text"]) && 
+        isset($assistants_response["data"][0]["content"][0]["text"]["value"]) && 
+        strpos($assistants_response["data"][0]["content"][0]["text"]["value"], "[conversation_transcript]") !== false) {
+        
+        // Build the conversation transcript by gathering all messages in reverse order
+        $conversation_transcript = '';
+        if (isset($assistants_response['data']) && is_array($assistants_response['data'])) {
+            // Reverse the array to get messages in chronological order (oldest to newest)
+            $messages = array_reverse($assistants_response['data']);
+            
+            foreach ($messages as $message) {
+                if (isset($message['content'][0]['text']['value'])) {
+                    $role = isset($message['role']) ? ucfirst($message['role']) : 'Unknown';
+                    $content = $message['content'][0]['text']['value'];
+                    $conversation_transcript .= "[{$role}]: {$content}\n\n";
+                }
+            }
+        }
+        
+        // Now send the $conversation_transcript via email to the email address specified in the option
+        $email_address = esc_attr(get_option('chatbot_chatgpt_conversation_transcript_email', ''));
+        if (!empty($email_address)) {
+            // Use safe wrapper to prevent timeout errors (e.g., on localhost without SMTP)
+            chatbot_chatgpt_safe_wp_mail($email_address, 'Conversation Transcript', $conversation_transcript);
+        }
+        
+        // Then remove the "[conversation_transcript]" from the response
+        $assistants_response["data"][0]["content"][0]["text"]["value"] = str_replace("[conversation_transcript]", '', $assistants_response["data"][0]["content"][0]["text"]["value"]);
+    } else {
+        // Do nothing
+    }
+
+    // Clear both locks before returning
+    // Lock clearing removed - main send function handles locking
+    
+    // Mark uploaded files for deletion after successful processing - Ver 2.3.5.2
+    if (!empty($file_id)) {
+        $counter = 0;
+        $current_file_id = get_chatbot_chatgpt_transients_files('chatbot_chatgpt_assistant_file_ids', $session_id, $counter);
+        
+        while (!empty($current_file_id)) {
+            // Set a transient that expires in 2 hours
+            $timeFrameForDelete = time() + 2 * 60 * 60;
+            set_transient('chatbot_chatgpt_delete_uploaded_file_' . $current_file_id, $current_file_id, $timeFrameForDelete);
+
+            // Set a cron job to delete the file in 1 hour 45 minutes
+            $shorterTimeFrameForDelete = time() + 1 * 60 * 60 + 45 * 60;
+            if (!wp_next_scheduled('delete_uploaded_file', array($current_file_id))) {
+                wp_schedule_single_event($shorterTimeFrameForDelete, 'delete_uploaded_file', array($current_file_id));
+            }
+            
+            // Increment counter and get next file
+            $counter++;
+            $current_file_id = get_chatbot_chatgpt_transients_files('chatbot_chatgpt_assistant_file_ids', $session_id, $counter);
+        }
+    }
+    
+    // Log the completion of the request
+    // prod_trace('NOTICE', 'Completed API call - Thread: ' . $thread_id . ', Message UUID: ' . $message_uuid);
+
+    // Return the response text, checking for the fallback content[1][text] if available
+    if (is_array($assistants_response) && 
+        isset($assistants_response["data"]) && 
+        is_array($assistants_response["data"]) && 
+        isset($assistants_response["data"][0]) && 
+        isset($assistants_response["data"][0]["content"]) && 
+        is_array($assistants_response["data"][0]["content"])) {
+        
+        // Check for content[1][text] first (fallback)
+        if (isset($assistants_response["data"][0]["content"][1]["text"]["value"])) {
+            return $assistants_response["data"][0]["content"][1]["text"]["value"];
+        } 
+        // Check for content[0][text] (primary)
+        elseif (isset($assistants_response["data"][0]["content"][0]["text"]["value"])) {
+            return $assistants_response["data"][0]["content"][0]["text"]["value"];
+        }
+    }
+    
+    // If $assistants_response is not an array or doesn't have the expected structure, 
+    // it might be an error message string, so return it
+    if (is_string($assistants_response)) {
+        return $assistants_response;
+    }
+    
+    // Return a default value if none exist
+    return 'Error: Unable to retrieve response from API.';
+
+}
+
+// -------------------------------------------------------------------------
+// Retrieve the first file id - Ver 2.2.3
+// -------------------------------------------------------------------------
+function chatbot_chatgpt_retrieve_file_id( $user_id, $page_id ) {
+
+    global $session_id;
+    global $user_id;
+    global $page_id;
+    global $thread_id;
+    global $assistant_id;
+
+    $counter = 0;
+    $file_ids = [];
+    $file_types = [];
+
+    $file_id = get_chatbot_chatgpt_transients_files('chatbot_chatgpt_assistant_file_ids', $session_id, $counter);
+    $file_types = get_chatbot_chatgpt_transients_files('chatbot_chatgpt_assistant_file_types', $session_id, $counter);
+
+    while (!empty($file_id)) {
+        // Add the file id to the list
+        $file_ids[] = $file_id;
+        $file_ids[$file_id] = $file_types;
+
+        // Increment the counter
+        $counter++;
+
+        // Retrieve the next file id
+        $file_id = get_chatbot_chatgpt_transients_files('chatbot_chatgpt_assistant_file_ids', $session_id, $counter);
+        $file_types = get_chatbot_chatgpt_transients_files('chatbot_chatgpt_assistant_file_types', $session_id, $counter);
+
+    }
+
+    // Join the file ids into a comma-separated string and return it
+    // return implode(',', $file_ids);
+
+    return $file_ids;
+
+}
+
+// -------------------------------------------------------------------------
+// Cleanup in Aisle 4 on OpenAI - Ver 2.2.3
+// -------------------------------------------------------------------------
+function deleteUploadedFile($file_id) {
+
+    // Get the API key
+    $api_key = esc_attr(get_option('chatbot_chatgpt_api_key'));
+    // Decrypt the API key - Ver 2.2.6
+    $api_key = chatbot_chatgpt_decrypt_api_key($api_key);
+
+    // Construct the API URL
+    // $url = 'https://api.openai.com/v1/files/' . $file_id;
+    $url = get_files_api_url() . '/' . $file_id;
+
+    // Send DELETE request using WP functions
+    $response = wp_remote_request($url, [
+        'method'    => 'DELETE',
+        'timeout'   => 15,
+        'headers'   => [
+            'Authorization'  => 'Bearer ' . $api_key,
+            'Content-Type'   => 'application/json',
+        ]
+    ]);
+
+    // Handle errors
+    if (is_wp_error($response)) {
+        prod_trace( 'ERROR', 'Error deleting file from OpenAI: ' . $response->get_error_message());
+        return false;
+    }
+
+    // Get the HTTP status code
+    $http_status_code = wp_remote_retrieve_response_code($response);
+    
+    if ($http_status_code == 200 || $http_status_code == 204) {
+        // Do nothing
+    } else {
+        // DIAG - Diagnostics - Ver 2.4.5
+        prod_trace( 'ERROR', 'HTTP status code: ' . $http_status_code );
+        prod_trace( 'ERROR', 'Response: ' . print_r($response, true) );
+    }
+
+}
+add_action( 'delete_uploaded_file', 'deleteUploadedFile' );
+
+// Check for Tool Usage by OpenAI Assistant - Ver 2.2.7
+function check_assistant_tool_usage($assistant_id, $thread_id, $run_id, $api_key) {
+
+    try {
+
+        // Construct the API URL for run steps
+        $url = get_threads_api_url() . '/' . $thread_id . '/runs/' . $run_id;
+
+        // Determine API version
+        $assistant_beta_version = esc_attr(get_option('chatbot_chatgpt_assistant_beta_version', 'v2'));
+        $beta_version = ($assistant_beta_version == 'v2') ? "assistants=v2" : "assistants=v1";
+
+        // Prepare request headers
+        $headers = [
+            "Content-Type"  => "application/json",
+            "OpenAI-Beta"   => $beta_version,
+            "Authorization" => "Bearer " . $api_key
+        ];
+
+        // Get the run status first
+        $response = wp_remote_get($url, [
+            "headers" => $headers,
+            "timeout" => 30,
+        ]);
+
+        // Handle request errors
+        if (is_wp_error($response)) {
+
+            return false;
+
+        }
+
+        // Extract response body
+        $response_body = wp_remote_retrieve_body($response);
+        $run_data = json_decode($response_body, true);
+
+        if (json_last_error() !== JSON_ERROR_NONE) {
+
+            return false;
+
+        }
+
+        // Check if the run requires action
+        if (isset($run_data['status']) && $run_data['status'] === 'requires_action') {
+            
+            if (isset($run_data['required_action']) && 
+                isset($run_data['required_action']['type']) && 
+                $run_data['required_action']['type'] === 'submit_tool_outputs') {
+                
+                $tool_calls = $run_data['required_action']['submit_tool_outputs']['tool_calls'] ?? [];
+                
+                if (empty($tool_calls)) {
+
+                    return false;
+
+                }
+                
+                // Process each tool call
+                $tool_outputs = [];
+                
+                foreach ($tool_calls as $tool_call) {
+                    if (isset($tool_call['function']['name']) && $tool_call['function']['name'] === 'query_wordpress_api') {
+                        
+                        try {
+                            // Parse the function arguments
+                            $args = json_decode($tool_call['function']['arguments'], true);
+                            if (json_last_error() !== JSON_ERROR_NONE) {
+                                continue;
+                            }
+                            
+                            // Set default values if not provided
+                            $query = isset($args['query']) ? $args['query'] : '';
+                            $include_excerpt = isset($args['include_excerpt']) ? (bool)$args['include_excerpt'] : true;
+                            $page = isset($args['page']) ? (int)$args['page'] : 1;
+                            $per_page = isset($args['per_page']) ? (int)$args['per_page'] : 5;
+                            
+                            // Make the WordPress API call directly to our endpoint
+                            $request_url = rest_url('assistant/v1/search');
+                            $request_args = [
+                                'method' => 'GET',
+                                'timeout' => 30,
+                                'headers' => [
+                                    'Content-Type' => 'application/json',
+                                    'X-Assistant-ID' => $assistant_id, // Added header for endpoint security
+                                ],
+                                // FIXME - REMOVE THIS FOR PRODUCTION
+                                'sslverify' => false,
+                            ];
+                            
+                            // Add the query parameters
+                            $request_url = add_query_arg([
+                                'endpoint' => 'search',
+                                'query' => $query,
+                                'include_excerpt' => $include_excerpt ? 'true' : 'false',
+                                'page' => $page,
+                                'per_page' => $per_page
+                            ], $request_url);
+                            
+                            // Execute the request
+                            $search_response = wp_remote_get($request_url, $request_args);
+                            
+                            if (is_wp_error($search_response)) {
+
+                                $tool_outputs[] = [
+                                    'tool_call_id' => $tool_call['id'],
+                                    'output' => json_encode(['error' => 'Search request failed', 'message' => $search_response->get_error_message()])
+                                ];
+                                continue;
+
+                            }
+                            
+                            $search_body = wp_remote_retrieve_body($search_response);
+                            $search_results = json_decode($search_body, true);
+                            
+                            if (json_last_error() !== JSON_ERROR_NONE) {
+
+                                $tool_outputs[] = [
+                                    'tool_call_id' => $tool_call['id'],
+                                    'output' => json_encode(['error' => 'Failed to parse search results'])
+                                ];
+                                continue;
+
+                            }
+                            
+                            // Add this tool output to our collection
+                            $tool_outputs[] = [
+                                'tool_call_id' => $tool_call['id'],
+                                'output' => json_encode($search_results)
+                            ];
+                            
+                        } catch (Exception $e) {
+
+                            $tool_outputs[] = [
+                                'tool_call_id' => $tool_call['id'],
+                                'output' => json_encode(['error' => 'Exception processing tool call', 'message' => $e->getMessage()])
+                            ];
+
+                        }
+
+                    } else {
+
+                        $tool_outputs[] = [
+                            'tool_call_id' => $tool_call['id'],
+                            'output' => json_encode(['error' => 'Unknown tool type'])
+                        ];
+                    }
+
+                }
+                
+                // Submit all tool outputs at once
+                if (!empty($tool_outputs)) {
+                    $submit_url = get_threads_api_url() . '/' . $thread_id . '/runs/' . $run_id . '/submit_tool_outputs';
+                    $submit_data = [
+                        'tool_outputs' => $tool_outputs
+                    ];
+                    
+                    $submit_response = wp_remote_post($submit_url, [
+                        'headers' => $headers,
+                        'body' => json_encode($submit_data),
+                        'timeout' => 30,
+                    ]);
+                    
+                    if (is_wp_error($submit_response)) {
+
+                        return false;
+
+                    }
+                    
+                    $submit_body = wp_remote_retrieve_body($submit_response);
+                    $submit_data = json_decode($submit_body, true);
+                    $submit_status = wp_remote_retrieve_response_code($submit_response);
+                    
+                    if ($submit_status >= 400) {
+
+                        return false;
+
+                    } else {
+
+                        return true;
+
+                    }
+                }
+            }
+        }
+
+        return false;
+
+    } catch (Exception $e) {
+
+        return false;
+        
+    }
+
+}

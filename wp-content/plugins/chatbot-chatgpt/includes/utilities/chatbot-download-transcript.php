@@ -1,6 +1,6 @@
 <?php
 /**
- * Kognetiks Chatbot for WordPress - Download Transcript - Ver 1.9.9
+ * Kognetiks Chatbot - Download Transcript - Ver 1.9.9
  *
  * This file contains the code for uploading files as part
  * in support of Custom GPT Assistants via the Chatbot.
@@ -14,6 +14,12 @@ if ( ! defined( 'WPINC' ) ) {
 }
 
 function chatbot_chatgpt_download_transcript() {
+
+    // Security: Verify nonce for CSRF protection
+    if (!isset($_POST['chatbot_nonce']) || !wp_verify_nonce($_POST['chatbot_nonce'], 'chatbot_transcript_nonce')) {
+        wp_send_json_error('Security check failed. Please refresh the page and try again.', 403);
+        return;
+    }
 
     global $chatbot_chatgpt_plugin_dir_path;
 
@@ -37,16 +43,12 @@ function chatbot_chatgpt_download_transcript() {
     // Ensure the directory exists or attempt to create it
     if (!create_directory_and_index_file($transcript_dir)) {
         // Error handling, e.g., log the error or handle the failure appropriately
-        // back_trace( 'ERROR', 'Failed to create directory.');
         return;
     }
 
     // Create the filename
     $transcriptFileName = 'transcript_' . generate_random_string() . '_' . date('Y-m-d_H-i-s') . '.txt';
     $transcriptFile = $transcript_dir . $transcriptFileName;
-
-    // DIAG - Diagnostics - Ver 1.9.9
-    // back_trace( 'Notice', 'Transcript File: ' . $transcriptFile );
 
     // Attempt to write the content to the file
     if (file_put_contents($transcriptFile, $conversation_content) === false) {
@@ -56,9 +58,6 @@ function chatbot_chatgpt_download_transcript() {
 
     // Construct the URL for download
     $url = plugins_url('transcripts/' . $transcriptFileName, $chatbot_chatgpt_plugin_dir_path . 'chatbot-chatgpt');
-
-    // DIAG - Diagnostics - Ver 1.9.9
-    // back_trace( 'Notice', 'Transcript URL: ' . $url );
 
     wp_send_json_success($url);
 

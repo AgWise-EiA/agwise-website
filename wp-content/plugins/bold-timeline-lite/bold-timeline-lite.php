@@ -3,12 +3,19 @@
 /**
  * Plugin Name: Bold Timeline Lite
  * Description: Bold Timeline Lite by BoldThemes.
- * Version: 1.2.3
+ * Version: 1.3.0
  * Author: BoldThemes
  * Author URI: https://bold-themes.com/
+ * License: GPL v2 or later
+ * License URI: https://www.gnu.org/licenses/gpl-2.0.html
+ * Text Domain: bold-timeline-lite
  */
 
-if( !in_array( 'bold-timeline/bold-timeline.php', apply_filters('active_plugins', get_option('active_plugins')))){ 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
+if( !in_array( 'bold-timeline/bold-timeline.php', apply_filters('active_plugins', get_option('active_plugins')))){
 
 	if ( ! class_exists( 'Bold_Timeline' ) ) {
 
@@ -24,16 +31,17 @@ if( !in_array( 'bold-timeline/bold-timeline.php', apply_filters('active_plugins'
 		require_once( 'assets-general/php/bold_timeline_helpers.php' );
 
 		// Page builder elements
+		
+		add_action( 'init', function() {
+			define( 'BOLD_TIMELINE_ELEMENT_NAME', esc_html__( 'BoldThemes Bold Timeline', 'bold-timeline' ) );
+			define( 'BOLD_TIMELINE_ELEMENT_DESCRIPTION', esc_html__( 'Shortcode outputs BoldThemes Bold Timeline.', 'bold-timeline' ) );
+			define( 'BOLD_TIMELINE_ELEMENT_CLASS', 'bold-timeline' );
 
-		define( 'BOLD_TIMELINE_ELEMENT_NAME', esc_html__( 'BoldThemes Bold Timeline', 'bold-timeline' ) );
-		define( 'BOLD_TIMELINE_ELEMENT_DESCRIPTION', esc_html__( 'Shortcode outputs BoldThemes Bold Timeline.', 'bold-timeline' ) );
-		define( 'BOLD_TIMELINE_ELEMENT_CLASS', 'bold-timeline' );
+			define( 'BOLD_TIMELINE_FIELD_TITLE', esc_html__( 'Bold Timelines', 'bold-timeline' ) );
+			define( 'BOLD_TIMELINE_FIELD_DESCRIPTION', esc_html__( 'This is bold timeline to show in the shortcode', 'bold-timeline' ) );
 
-		define( 'BOLD_TIMELINE_FIELD_TITLE', esc_html__( 'Bold Timelines', 'bold-timeline' ) );
-		define( 'BOLD_TIMELINE_FIELD_DESCRIPTION', esc_html__( 'This is bold timeline to show in the shortcode', 'bold-timeline' ) );
-
-		define( 'BOLD_TIMELINE_ELEMENTOR_CATEGORY', esc_html__( 'BoldThemes Widgets', 'bold-timeline' ) );
-
+			define( 'BOLD_TIMELINE_ELEMENTOR_CATEGORY', esc_html__( 'BoldThemes Widgets', 'bold-timeline' ) );
+		} );
 		require_once( 'assets-general/php/page-builder-elements/elementor.php' );
 		require_once( 'assets-general/php/page-builder-elements/bt_bb_bold_timeline.php' );
 
@@ -68,23 +76,23 @@ if( !in_array( 'bold-timeline/bold-timeline.php', apply_filters('active_plugins'
 		}
 
 		// BB Light
-
-		Bold_Timeline::$builder = new BTBB_Light(
-			array(
-				'slug' => 'bold-timeline',
-				'single_name' => esc_html__( 'Bold Timeline', 'bold-timeline' ),
-				'plural_name' => esc_html__( 'Bold Timelines', 'bold-timeline' ),
-				'icon' => 'dashicons-clock',
-				'home_url' => '//bold-themes.com',
-				'doc_url' => '//documentation.bold-themes.com/bold-timeline-lite',
-				'support_url' => '',
-				'changelog_url' => '',
-				'shortcode' => 'bold_timeline',
-				'product_id' => '',
-				'plugin_file_path' => __FILE__
-			)
-		);
-
+		add_action( 'init', function() {
+			Bold_Timeline::$builder = new BTBB_Light(
+				array(
+					'slug' => 'bold-timeline',
+					'single_name' => esc_html__( 'Bold Timeline', 'bold-timeline' ),
+					'plural_name' => esc_html__( 'Bold Timelines', 'bold-timeline' ),
+					'icon' => 'dashicons-clock',
+					'home_url' => '//bold-themes.com',
+					'doc_url' => '//documentation.bold-themes.com/bold-timeline-lite',
+					'support_url' => '',
+					'changelog_url' => '',
+					'shortcode' => 'bold_timeline',
+					'product_id' => '',
+					'plugin_file_path' => __FILE__
+				)
+			);
+		} );
 		/**
 		 * Enqueue scripts and styles.
 		 *
@@ -132,8 +140,8 @@ if( !in_array( 'bold-timeline/bold-timeline.php', apply_filters('active_plugins'
 			wp_enqueue_style( 'bt-bb-light-override', plugins_url( 'bt_bbl_override.css', __FILE__ ) );
 		}
 
-		if ( isset( $_GET['page'] ) && $_GET['page'] == 'bold-timeline-edit' ) {
-			add_action( 'admin_enqueue_scripts', 'bold_timeline_admin_style' );	
+		if ( isset( $_GET['page'] ) && 'bold-timeline-edit' === sanitize_text_field( wp_unslash( $_GET['page'] ) ) ) {
+			add_action( 'admin_enqueue_scripts', 'bold_timeline_admin_style' );
 		}
 
 		/**
@@ -155,11 +163,11 @@ if( !in_array( 'bold-timeline/bold-timeline.php', apply_filters('active_plugins'
 				}
 			}
 		}
-
-		foreach( $elements as $key => $value ) {
-			require( $value );
-		}
-
+		add_action( 'init', function() use ( $elements ) {
+			foreach( $elements as $key => $value ) {
+				require( $value );
+			}
+		} );
 		/**
 		 * Map shortcodes.
 		 *
@@ -310,7 +318,7 @@ if( !in_array( 'bold-timeline/bold-timeline.php', apply_filters('active_plugins'
 		}	
 	}
 
-	if ( isset( $_GET['page'] ) && $_GET['page'] == 'bold-timeline-edit' ) {
+	if ( isset( $_GET['page'] ) && 'bold-timeline-edit' === sanitize_text_field( wp_unslash( $_GET['page'] ) ) ) {
 		add_action( 'admin_enqueue_scripts', 'bold_timeline_admin_enqueue', 100 );
 	}
 }

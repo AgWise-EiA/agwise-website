@@ -7,23 +7,20 @@ namespace Composer\Autoload;
 class ComposerStaticInit7c36326cdc3d12a2e164e0a7ec717039
 {
     public static $prefixLengthsPsr4 = array (
-        'A' => 
+        'A' =>
         array (
             'Appsero\\' => 8,
         ),
     );
 
     public static $prefixDirsPsr4 = array (
-        'Appsero\\' => 
+        'Appsero\\' =>
         array (
             0 => __DIR__ . '/..' . '/appsero/client/src',
         ),
     );
 
     public static $classMap = array (
-        'Appsero\\Client' => __DIR__ . '/..' . '/appsero/client/src/Client.php',
-        'Appsero\\Insights' => __DIR__ . '/..' . '/appsero/client/src/Insights.php',
-        'Appsero\\License' => __DIR__ . '/..' . '/appsero/client/src/License.php',
         'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
     );
 

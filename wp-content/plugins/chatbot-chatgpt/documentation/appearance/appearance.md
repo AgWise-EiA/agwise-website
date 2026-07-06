@@ -2,7 +2,7 @@
 
 The Appearance Settings allow you to customize the visual aspects of your chatbot, ensuring it matches your website's design and branding. Follow these steps to configure these options:
 
-![Appearance Settings](appearance.png)
+<img src="appearance.png" alt="Appearance Settings" style="width:auto;height:auto;">
 
 1. **Chatbot Background Color**:
    - **Description**: Sets the background color of the chatbot window.
@@ -58,6 +58,14 @@ The Appearance Settings allow you to customize the visual aspects of your chatbo
 13. **Custom CSS**:
     - **Description**: Allows you to add custom CSS to further style the chatbot.
     - **Input**: Enter any custom CSS rules to override the default styles and achieve specific design requirements.
+
+14. **Enable Glyph Rendering**:
+
+   - **Description**: Allows you to enable/disable glyph rendering for responses that include mathematical formulas.
+   - **Options**: `Yes` or `No`.
+   - **Selection**: Choose `Yes` (default) to enable glyph rendering or choose `No` to disable glyph rendering.
+
+<img src="glyph-rendering.png" alt="Glyph Rendering" style="width:auto;height:auto;">
 
 ## Steps to Configure
 

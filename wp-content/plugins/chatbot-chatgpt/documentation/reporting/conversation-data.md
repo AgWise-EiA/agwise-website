@@ -1,8 +1,8 @@
 # Using the Conversation Data
 
-The Conversation Data settings allow you to manage and export the interaction data collected by the **Kognetiks Chatbot for WordPress**. This data includes both visitor inputs and chatbot responses, amd token usages which can be useful for analysis and improving the chatbot's performance. Follow these steps to understand and use these settings:
+The Conversation Data settings allow you to manage and export the interaction data collected by the **Kognetiks Chatbot**. This data includes both visitor inputs and chatbot responses, amd token usages which can be useful for analysis and improving the chatbot's performance. Follow these steps to understand and use these settings:
 
-![Conversation Data](conversation-data.png)
+<img src="conversation-data.png" alt="Conversation Data" style="width:auto;height:auto;">
 
 1. **Conversation Data Overview**:
    - **Description**: This section provides a summary of the conversation data stored in your database.
@@ -35,4 +35,5 @@ By using these settings, you can effectively manage and analyze the conversation
 
 ---
 
+- **[Back to Reporting Overview](reporting.md)**
 - **[Back to the Overview](/overview.md)**

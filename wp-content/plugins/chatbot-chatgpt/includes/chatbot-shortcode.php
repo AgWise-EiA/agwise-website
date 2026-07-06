@@ -1,6 +1,6 @@
 <?php
 /**
- * Kognetiks Chatbot for WordPress - [chatbot_chatgpt] Shortcode Registration
+ * Kognetiks Chatbot - [chatbot_chatgpt] Shortcode Registration
  *
  * This file contains the code for registering the shortcode used
  * to display the Chatbot on the website.
@@ -48,81 +48,53 @@ function chatbot_chatgpt_shortcode( $atts = [], $content = null, $tag = '' ) {
     // header("Cache-Control: no-cache, must-revalidate, max-age=0");
     // header("Pragma: no-cache");
 
-    // Fetch the User ID - Updated Ver 2.0.6 - 2024 07 11
+    // Fetch the User ID - Updated Ver 2.3.6
+    // For anonymous users, user_id should be 0 (session_id is used in transient key via set_chatbot_chatgpt_transients)
+    // For logged-in users, user_id should be > 0 (WordPress user ID)
     $user_id = get_current_user_id();
     // Fetch the Kognetiks cookie
     $session_id = kognetiks_get_unique_id();
-    if (empty($user_id) || $user_id == 0) {
-        $user_id = $session_id;
-    }
-
-    // DIAG - Diagnostics - Ver 2.1.0
-    // back_trace( 'NOTICE', '$user_id: ' . $user_id);
-    // back_trace( 'NOTICE', '$session_id: ' . $session_id);
-    // back_trace( 'NOTICE', 'Shortcode tag: ' . $tag);
-    // back_trace( 'NOTICE', 'Shortcode atts: ' . print_r($atts, true));
-
-    // DIAG - Diagnostics - Ver 1.9.3
-    // back_trace( 'NOTICE', '========================================');
-    // back_trace( 'NOTICE', 'Shortcode tag: ' . $tag);
-    // back_trace( 'NOTICE', 'Shortcode atts: ' . print_r($atts, true));
-    // back_trace( 'NOTICE', '$user_id: ' . $user_id);
-    // back_trace( 'NOTICE', '$page_id: ' . $page_id);
-    // back_trace( 'NOTICE', '$session_id: ' . $session_id);
-    // back_trace( 'NOTICE', '$thread_id: ' . $thread_id);
-    // back_trace( 'NOTICE', '$assistant_id: ' . $assistant_id);
-    // back_trace( 'NOTICE', '$kchat_settings: ' . print_r($kchat_settings, true));
-    // back_trace( 'NOTICE', 'Shortcode Attributes: ' . print_r($atts, true));
-    // back_trace( 'NOTICE', 'get_the_id(): ' . get_the_id());
-    // back_trace( 'NOTICE', '$model: ' . $model);
-    // back_trace( 'NOTICE', 'Browser: ' . $_SERVER['HTTP_USER_AGENT']);
-    // back_trace( 'NOTICE', '========================================');
-    // foreach ($atts as $key => $value) {
-    //     // back_trace( 'NOTICE', '$atts - Key: ' . $key . ' Value: ' . $value);
-    // }
-    // back_trace( 'NOTICE', '========================================');
+    // Keep user_id as 0 for anonymous users - don't replace with session_id
    
     // BELT & SUSPENDERS - Ver 1.9.4 - Updated Ver 2.1.8 - 2024 10 26
     if (esc_attr(get_option('chatbot_nvidia_api_enabled', 'No')) == 'Yes') {
-        // DIAG - Diagnostics - Ver 2.1.8
-        // back_trace( 'NOTICE', 'NVIDIA chatbot is enabled');
         $model_choice = esc_attr(get_option('chatbot_nvidia_model_choice', 'nvidia/llama-3.1-nemotron-51b-instruct'));
         $kchat_settings['chatbot_chatgpt_model'] = $model_choice;
         $voice_choice = esc_attr(get_option('chatbot_nvidia_voice_option', 'none'));
+    } elseif (esc_attr(get_option('chatbot_anthropic_api_enabled', 'No')) == 'Yes') {
+        $model_choice = esc_attr(get_option('chatbot_anthropic_model_choice', 'claude-3-5-sonnet-latest'));
+        $kchat_settings['chatbot_chatgpt_model'] = $model_choice;
+        $voice_choice = esc_attr(get_option('chatbot_anthropic_voice_option', 'none'));
+    } elseif (esc_attr(get_option('chatbot_google_api_enabled', 'No')) == 'Yes') {
+        $model_choice = esc_attr(get_option('chatbot_google_model_choice', 'gemini-2.0-flash'));
+        $kchat_settings['chatbot_chatgpt_model'] = $model_choice;
+        $voice_choice = esc_attr(get_option('chatbot_google_voice_option', 'none'));
+    } elseif (esc_attr(get_option('chatbot_deepseek_api_enabled', 'No')) == 'Yes') {
+        $model_choice = esc_attr(get_option('chatbot_deepseek_model_choice', 'deepseek-chat'));
+        $kchat_settings['chatbot_chatgpt_model'] = $model_choice;
+        $voice_choice = esc_attr(get_option('chatbot_deepseek_voice_option', 'none'));
+    } elseif (esc_attr(get_option('chatbot_mistral_api_enabled', 'No')) == 'Yes') {
+        $model_choice = esc_attr(get_option('chatbot_mistral_model_choice', 'mistral-small-latest'));
+        $kchat_settings['chatbot_chatgpt_model'] = $model_choice;
+        $voice_choice = esc_attr(get_option('chatbot_mistral_voice_option', 'none'));
     } elseif (esc_attr(get_option('chatbot_markov_chain_api_enabled', 'No')) == 'Yes') {
-        // DIAG - Diagnostics - Ver 2.1.8
-        // back_trace( 'NOTICE', 'Markov Chain chatbot is enabled');
-        $model_choice = esc_attr(get_option('chatbot_markov_chain_model_choice', 'markov-chain-2024-09-17'));
+        $model_choice = esc_attr(get_option('chatbot_markov_chain_model_choice', 'markov-chain-flask'));
         $kchat_settings['chatbot_chatgpt_model'] = $model_choice;
         $voice_choice = esc_attr(get_option('chatbot_markov_chain_voice_option', 'none'));
     } elseif (esc_attr(get_option('chatbot_transformer_model_api_enabled', 'No')) == 'Yes') {
-        // DIAG - Diagnostics - Ver 2.2.0
-        // back_trace( 'NOTICE', 'Transformer chatbot is enabled');
         $model_choice = esc_attr(get_option('chatbot_transformer_model_choice', 'sentential-context-model'));
         $kchat_settings['chatbot_chatgpt_model'] = $model_choice;
         $voice_choice = esc_attr(get_option('chatbot_transformer_model_voice_option', 'none'));
+    } elseif (esc_attr(get_option('chatbot_local_api_enabled', 'No')) == 'Yes') {
+        $model_choice = esc_attr(get_option('chatbot_local_model_choice', ''));
+        $kchat_settings['chatbot_chatgpt_model'] = $model_choice;
+        $voice_choice = esc_attr(get_option('chatbot_local_voice_option', 'none'));
     } else {
-        // DIAG - Diagnostics - Ver 2.1.8
-        // back_trace( 'NOTICE', 'OpenAI chatbot is enabled');
         $model_choice = esc_attr(get_option('chatbot_chatgpt_model_choice', 'gpt-3.5-turbo'));
         $kchat_settings['chatbot_chatgpt_model'] = $model_choice;
         $voice_choice = esc_attr(get_option('chatbot_chatgpt_voice_option', 'alloy'));    
     }
 
-    // DIAG - Diagnostics - Ver 2.0.6
-    // back_trace( 'NOTICE', '========================================');
-    // back_trace( 'NOTICE', '$user_id: ' . $user_id);
-    // back_trace( 'NOTICE', '$page_id: ' . $page_id);
-    // back_trace( 'NOTICE', '$session_id: ' . $session_id);
-    // back_trace( 'NOTICE', '$thread_id: ' . $thread_id);
-    // back_trace( 'NOTICE', '$assistant_id: ' . $assistant_id);
-    // back_trace( 'NOTICE', 'Shortcode Attributes: ' . print_r($atts, true));
-    // back_trace( 'NOTICE', '$kchat_settings: ' . print_r($kchat_settings, true));
-    // back_trace( 'NOTICE', '========================================');
-    // foreach ($kchat_settings as $key => $value) {
-    //     // back_trace( 'NOTICE', '$kchat_settings - Key: ' . $key . ' Value: ' . $value);
-    // }
-    // back_trace( 'NOTICE', '========================================');
 
     // EXAMPLE - Shortcode Attributes
     // [chatbot] - Default values, floating style, uses OpenAI's ChatGPT
@@ -155,22 +127,21 @@ function chatbot_chatgpt_shortcode( $atts = [], $content = null, $tag = '' ) {
     // Cross Site Scripting (XSS) vulnerability patch for 62801a58-b1ba-4c5a-bf93-7315d3553bb8
     foreach ($atts as $key => $value) {
         $atts[$key] = sanitize_text_field($value);
-        $atts[$key] = htmlspecialchars(strip_tags($atts[$key] ?? ''), ENT_QUOTES, 'UTF-8');
-        // DIAG - Diagnostics - Ver 2.0.6
-        // back_trace( 'NOTICE', '$atts - Key: ' . $key . ' Value: ' . $value);
+        $atts[$key] = htmlspecialchars(wp_strip_all_tags($atts[$key] ?? ''), ENT_QUOTES, 'UTF-8');
     }
 
-    // If (strpos($atts['assistant'], 'asst_') === false && $atts['assistant'] != 'original' && $atts['assistant'] != 'primary' && $atts['assistant'] != 'alternate') {
-    // If (strpos($atts['assistant'], 'asst_') === false ) {
+    // Normalize [assistant-#] to [chatbot-#] - Ver 2.2.6 - 2025 03 07
+    if (strpos($tag, 'assistant-') === 0) {
+        $tag = str_replace('assistant-', 'chatbot-', $tag);
+    }
 
-    // DIAG - Diagnostics - Ver 2.0.8
-    // back_trace( 'NOTICE', 'Tag Processing: ' . $tag);
+    // Normalize [agent-#] to [chatbot-#] - Ver 2.2.6 - 2025 03 07
+    if (strpos($tag, 'agent-') === 0) {
+        $tag = str_replace('agent-', 'chatbot-', $tag);
+    }
 
     // Tag Processing - Ver 2.0.6
     if (strpos($tag, 'chatbot-') !== false) {
-        
-        // DIAG - Diagnostics - Ver 2.0.6
-        // back_trace( 'NOTICE', 'Tag Processing: ' . $tag);
 
         // Extract the Assistant ID from the tag
         $assistant_key = str_replace('chatbot-', '', $tag);
@@ -181,8 +152,6 @@ function chatbot_chatgpt_shortcode( $atts = [], $content = null, $tag = '' ) {
         // For each key in $assistant_details, set the $atts value
         foreach ($assistant_details as $key => $value) {
             $atts[$key] = $value;
-            // DIAG - Diagnostics - Ver 2.0.9
-            // back_trace( 'ERROR', '$key: ' . $key . ' Value: ' . $value);
         }
 
         // If the assistant_id is null, then set it to original
@@ -209,12 +178,10 @@ function chatbot_chatgpt_shortcode( $atts = [], $content = null, $tag = '' ) {
             $atts['assistant'] = null; // Or set a default value
         }
 
-        // back_trace( 'NOTICE', '$assistant_details: ' . print_r($atts['assistant'], true));
-        // back_trace( 'NOTICE', '$assistant_details: ' . print_r($assistant_details, true));
     }
 
     // If the assistant is not set to 'original', 'primary', or 'alternate' then try to fetch the Assistant details
-    if ( !empty($atts['assistant']) && strpos($atts['assistant'], 'asst_') === false ) {
+    if ( !empty($atts['assistant']) && strpos($atts['assistant'], 'asst_') === false && strpos($atts['assistant'], 'pmpt_') === false && strpos($atts['assistant'], 'ag:') === false && strpos($atts['assistant'], 'websearch') === false) {
 
         // Initialize the Assistant details
         $assistant_details = [];
@@ -228,26 +195,14 @@ function chatbot_chatgpt_shortcode( $atts = [], $content = null, $tag = '' ) {
         // If no match is found, then the $assistant_details will be an empty array
         if (empty($assistant_details)) {
 
-            // DIAG - Diagnostics - Ver 2.0.5
-            // back_trace( 'NOTICE', 'No match found for the Assistant: ' . $assistantCommonName);
-
             // Set to original
             $chatbot_chatgpt_assistant_alias = 'original'; // default value
 
         } else {
 
-            // DIAG - Diagnostics - Ver 2.0.5
-            // back_trace( 'NOTICE', 'Match found for the Assistant: ' . $assistantCommonName);
-
-            // DIAG - Diagnostics - Ver 2.0.4
-            // back_trace( 'NOTICE', '$assistant_details: ' . print_r($assistant_details, true));
-
             foreach ($assistant_details as $key => $value) {
                 $atts[$key] = $value;
             }
-
-            // DIAG - Diagnostics - Ver 2.0.4
-            // back_trace( 'NOTICE', 'AFTER $atts: ' . print_r($atts, true));
 
             // Set the assistant_id
             $atts['assistant'] = $assistant_details['assistant_id'];
@@ -256,7 +211,7 @@ function chatbot_chatgpt_shortcode( $atts = [], $content = null, $tag = '' ) {
 
         }
 
-    } elseif ( !empty($atts['assistant']) && strpos($atts['assistant'], 'asst_') !== false ) {
+    } elseif ( !empty($atts['assistant']) && ((strpos($atts['assistant'], 'asst_') !== false || strpos($atts['assistant'], 'pmpt_') !== false) || strpos($atts['assistant'], 'ag:') !== false || strpos($atts['assistant'], 'websearch') !== false) ) {
 
         // Set the assistant_id
         $chatbot_chatgpt_assistant_alias = $atts['assistant'];
@@ -267,18 +222,6 @@ function chatbot_chatgpt_shortcode( $atts = [], $content = null, $tag = '' ) {
             $chatbot_chatgpt_assistant_alias = 'original'; // default value
 
     }
-
-    // DIAG - Diagnostics - Ver 2.0.6
-    // back_trace( 'NOTICE', '========================================');
-    // back_trace( 'NOTICE', '$user_id: ' . $user_id);
-    // back_trace( 'NOTICE', '$page_id: ' . $page_id);
-    // back_trace( 'NOTICE', '$session_id: ' . $session_id);
-    // back_trace( 'NOTICE', '$thread_id: ' . $thread_id);
-    // back_trace( 'NOTICE', '$assistant_id: ' . $assistant_id);
-    // back_trace( 'NOTICE', '$atts: ' . print_r($atts, true));
-    // back_trace( 'NOTICE', '$kchat_settings: ' . print_r($kchat_settings, true));
-    // back_trace( 'NOTICE', '$kchat_settings: ' . print_r($kchat_settings, true));
-    // back_trace( 'NOTICE', '$assistant_details: ' . print_r($assistant_details, true));
 
     // Validate and sanitize the style parameter - Ver 1.9.9
     $valid_styles = ['floating', 'embedded'];
@@ -291,13 +234,10 @@ function chatbot_chatgpt_shortcode( $atts = [], $content = null, $tag = '' ) {
             // Sanitize and set the display style
             $chatbot_chatgpt_display_style = sanitize_text_field($atts['style']);
             $kchat_settings['chatbot_chatgpt_display_style'] = $chatbot_chatgpt_display_style;
-            // back_trace( 'NOTICE', '$chatbot_chatgpt_display_style: ' . $chatbot_chatgpt_display_style);
         } else {
             // Handle invalid style by logging an error or taking other actions
             $chatbot_chatgpt_display_style = 'floating'; // default value
             $kchat_settings['chatbot_chatgpt_display_style'] = $chatbot_chatgpt_display_style;
-            // back_trace( 'ERROR', 'Invalid display style: ' . sanitize_text_field($atts['style']));
-            // back_trace( 'ERROR', 'Invalid display style: ' . $chatbot_chatgpt_display_style);
         }
         // Remove the 'style' key from the $atts array
         unset($atts['style']);
@@ -308,7 +248,6 @@ function chatbot_chatgpt_shortcode( $atts = [], $content = null, $tag = '' ) {
 
     // One bot per page, embedded over floating - Ver 2.1.6
     // if ($kchat_settings['chatbot_chatgpt_display_style'] == 'floating' && $temp_chatbot_chatgpt_display_style == 'embedded') {
-    //     // back_trace( 'NOTICE', 'Embedded style selected over floating style');
     //     // End the shortcode processing
     //     // return;
     //     // $atts['style'] = 'embedded';
@@ -319,18 +258,15 @@ function chatbot_chatgpt_shortcode( $atts = [], $content = null, $tag = '' ) {
     // Set the sanitized display style in $atts and $kchat_settings
     $atts['chatbot_chatgpt_display_style'] = $chatbot_chatgpt_display_style;
     $kchat_settings['chatbot_chatgpt_display_style'] = $chatbot_chatgpt_display_style;
-    // back_trace( 'NOTICE', '$chatbot_chatgpt_display_style: ' . $chatbot_chatgpt_display_style);
 
     // Validate and sanitize the assistant parameter and set the assistant_id - Ver 1.9.9
     $valid_ids = ['original', 'primary', 'alternate'];
     $chatbot_chatgpt_assistant_alias = 'original'; // default value
     if (array_key_exists('assistant', $atts)) {
         $sanitized_assistant = sanitize_text_field($atts['assistant']);
-        if (in_array($sanitized_assistant, $valid_ids) || strpos($sanitized_assistant, 'asst_') === 0) {
+        if (in_array($sanitized_assistant, $valid_ids) || strpos($sanitized_assistant, 'asst_') === 0 || strpos($sanitized_assistant, 'pmpt_') === 0 || strpos($sanitized_assistant, 'ag:') === 0 || strpos($sanitized_assistant, 'websearch') === 0 ) {
             $chatbot_chatgpt_assistant_alias = $sanitized_assistant;
-            // back_trace( 'NOTICE', '$assistant_id: ' . $chatbot_chatgpt_assistant_alias);
         } else {
-            // back_trace( 'ERROR', 'Invalid $assistant_id: ' . $sanitized_assistant);
         }
     }
     $assistant_id = $chatbot_chatgpt_assistant_alias;
@@ -344,12 +280,10 @@ function chatbot_chatgpt_shortcode( $atts = [], $content = null, $tag = '' ) {
         if (in_array($sanitized_audience, $valid_audiences)) {
             $chatbot_chatgpt_audience_choice = $sanitized_audience;
             $kchat_settings['chatbot_chatgpt_audience_choice'] = $chatbot_chatgpt_audience_choice;
-            // back_trace( 'NOTICE', '$chatbot_chatgpt_audience_choice: ' . $chatbot_chatgpt_audience_choice);
         } else {
             $chatbot_chatgpt_audience_choice = $chatbot_chatgpt_audience_choice_global;
             $atts['audience'] = $chatbot_chatgpt_audience_choice_global;
             $kchat_settings['chatbot_chatgpt_audience_choice'] = $chatbot_chatgpt_audience_choice_global;
-            // back_trace( 'ERROR', 'Invalid audience choice: ' . $sanitized_audience);
         }
     }
     
@@ -357,10 +291,8 @@ function chatbot_chatgpt_shortcode( $atts = [], $content = null, $tag = '' ) {
     $chatbot_chatgpt_hot_bot_prompt = ''; // default value
     if (array_key_exists('prompt', $atts)) {
         $chatbot_chatgpt_hot_bot_prompt = sanitize_text_field($atts['prompt']);
-        // back_trace( 'NOTICE', 'chatbot_chatgpt_hot_bot_prompt: ' . $chatbot_chatgpt_hot_bot_prompt);
     } elseif (isset($_GET['chatbot_prompt'])) {
         $chatbot_chatgpt_hot_bot_prompt = sanitize_text_field($_GET['chatbot_prompt']);
-        // back_trace( 'NOTICE', 'chatbot_chatgpt_hot_bot_prompt: ' . $chatbot_chatgpt_hot_bot_prompt);
     }
     If (!empty($chatbot_chatgpt_hot_bot_prompt)) {
         $chatbot_chatgpt_hot_bot_prompt = preg_replace("/^\\\\'|\\\\'$/", '', $chatbot_chatgpt_hot_bot_prompt);
@@ -371,28 +303,54 @@ function chatbot_chatgpt_shortcode( $atts = [], $content = null, $tag = '' ) {
     if (array_key_exists('additional_instructions', $atts)) {
         $additional_instructions = sanitize_text_field($atts['additional_instructions']);
         $kchat_settings['chatbot_chatgpt_additional_instructions'] = $additional_instructions;
-        // back_trace( 'NOTICE', '$additional_instructions: ' . $additional_instructions);
     }
 
     // Validate and sanitize the model parameter - Ver 1.9.9
     if (!isset($atts['model'])) {
-        if (esc_attr(get_option('chatbot_nvidia_api_enabled')) == 'Yes') {
-            $model = esc_attr(get_option('chatbot_nvidia_model_choice', 'nvidia/llama-3.1-nemotron-51b-instruct'));
-        } else if (esc_attr(get_option('chatbot_markov_chain_api_enabled')) == 'Yes') {
-            $model = esc_attr(get_option('chatbot_markov_chain_model_choice', 'markov-chain-2024-09-17'));
-        } else if (esc_attr(get_option('chatbot_transformer_model_api_enabled')) == 'Yes') {
-            $model = esc_attr(get_option('chatbot_transformer_model_choice', 'sentential-context-model'));
-        } else {
-            $model = esc_attr(get_option('chatbot_chatgpt_model_choice', 'gpt-3.5-turbo'));
+
+        $chatbot_ai_platform_choice = esc_attr(get_option('chatbot_ai_platform_choice', 'OpenAI'));
+
+        switch ($chatbot_ai_platform_choice) {
+            case 'OpenAI':
+                $model = esc_attr(get_option('chatbot_chatgpt_model_choice', 'gpt-3.5-turbo'));
+                break;
+            case 'NVIDIA':
+                $model = esc_attr(get_option('chatbot_nvidia_model_choice', 'nvidia/llama-3.1-nemotron-51b-instruct'));
+                break;
+            case 'Anthropic':
+                $model = esc_attr(get_option('chatbot_anthropic_model_choice', 'claude-3-5-sonnet-latest'));
+                break;
+            case 'Google':
+                $model = esc_attr(get_option('chatbot_google_model_choice', 'gemini-2.0-flash'));
+                break;
+            case 'DeepSeek':
+                $model = esc_attr(get_option('chatbot_deepseek_model_choice', 'deepseek-chat'));
+                break;
+            case 'Mistral':
+                $model = esc_attr(get_option('chatbot_mistral_model_choice', 'mistral-small-latest'));
+                break;
+            case 'Markov Chain':
+                $model = esc_attr(get_option('chatbot_markov_chain_model_choice', 'markov-chain-flask'));
+                break;
+            case 'Transformer':
+                $model = esc_attr(get_option('chatbot_transformer_model_choice', 'lexical-context-model'));
+                break;
+            case 'Local Server':
+                $model = esc_attr(get_option('chatbot_local_model_choice', 'llama3.2-3b-instruct'));
+                break;
+            default:
+                $model = esc_attr(get_option('chatbot_chatgpt_model_choice', 'gpt-3.5-turbo'));
         }
+
         $kchat_settings['model'] = $model;
         $kchat_settings['chatbot_chatgpt_model_choice'] = $model;
         $assistant_details['model'] = $model;
         $assistant_details['chatbot_chatgpt_model_choice'] = $model;
         $kchat_settings['model'] = $model;
         $kchat_settings['chatbot_chatgpt_model_choice'] = $model;
-        // back_trace( 'NOTICE', 'Model (defaulting): ' . $model);
+
     } else {
+
         $model = sanitize_text_field($atts['model']);
         $kchat_settings['model'] = $model;
         $kchat_settings['chatbot_chatgpt_model_choice'] = $model;
@@ -400,7 +358,7 @@ function chatbot_chatgpt_shortcode( $atts = [], $content = null, $tag = '' ) {
         $assistant_details['chatbot_chatgpt_model_choice'] = $model;
         $kchat_settings['model'] = $model;
         $kchat_settings['chatbot_chatgpt_model_choice'] = $model;
-        // back_trace( 'NOTICE', 'Model: ' . $model);
+
     }
 
     // Validate and sanitize the voice parameter - Ver 1.9.9
@@ -416,7 +374,6 @@ function chatbot_chatgpt_shortcode( $atts = [], $content = null, $tag = '' ) {
             $assistant_details['chatbot_chatgpt_voice_option'] = $voice;
             $kchat_settings['voice'] = $voice;
             $kchat_settings['chatbot_chatgpt_voice_option'] = $voice;
-            // back_trace( 'NOTICE', '$voice: ' . $voice);
         } else {
             $voice = esc_attr(get_option('chatbot_chatgpt_voice_option', 'alloy'));
             $kchat_settings['voice'] = $voice;
@@ -425,7 +382,6 @@ function chatbot_chatgpt_shortcode( $atts = [], $content = null, $tag = '' ) {
             $assistant_details['chatbot_chatgpt_voice_option'] = $voice;
             $kchat_settings['voice'] = $voice;
             $kchat_settings['chatbot_chatgpt_voice_option'] = $voice;
-            // back_trace( 'NOTICE', 'Voice (defaulting): ' . $voice);
         }
     } else {
         $voice = esc_attr(get_option('chatbot_chatgpt_voice_option', 'alloy'));
@@ -435,19 +391,7 @@ function chatbot_chatgpt_shortcode( $atts = [], $content = null, $tag = '' ) {
         $assistant_details['chatbot_chatgpt_voice_option'] = $voice;
         $kchat_settings['voice'] = $voice;
         $kchat_settings['chatbot_chatgpt_voice_option'] = $voice;
-        // back_trace( 'NOTICE', 'Voice (defaulting): ' . $voice);
     }
-
-    // DIAG - Diagnostics - Ver 2.0.6
-    // back_trace( 'NOTICE', '========================================');
-    // back_trace( 'NOTICE', '$user_id: ' . $user_id);
-    // back_trace( 'NOTICE', '$page_id: ' . $page_id);
-    // back_trace( 'NOTICE', '$session_id: ' . $session_id);
-    // back_trace( 'NOTICE', '$thread_id: ' . $thread_id);
-    // back_trace( 'NOTICE', '$assistant_id: ' . $assistant_id);
-    // back_trace( 'NOTICE', '$chatbot_chatgpt_assistant_alias: ' . $chatbot_chatgpt_assistant_alias);
-    // back_trace( 'NOTICE', '$kchat_settings: ' . print_r($kchat_settings, true));
-    // back_trace( 'NOTICE', '$kchat_settings: ' . print_r($kchat_settings, true));
 
     // Determine if the user is logged in
     $user_logged_in = is_user_logged_in();
@@ -456,7 +400,6 @@ function chatbot_chatgpt_shortcode( $atts = [], $content = null, $tag = '' ) {
             // Ok to proceed
         } else {
             // Not ok to proceed
-            // back_trace( 'NOTICE', 'User is logged in but the audience choice is not set to "all"');
             return;
         }
     } else {
@@ -464,20 +407,17 @@ function chatbot_chatgpt_shortcode( $atts = [], $content = null, $tag = '' ) {
             // Ok to proceed
         } else {
             // Not ok to proceed
-            // back_trace( 'NOTICE', 'User is not logged in but the audience choice is not set to "all"');
             return;
         }
     }
 
-    // Fetch the User ID - Updated Ver 2.0.6 - 2024 07 11
+    // Fetch the User ID - Updated Ver 2.3.6
+    // For anonymous users, user_id should be 0 (session_id is used in transient key via set_chatbot_chatgpt_transients)
+    // For logged-in users, user_id should be > 0 (WordPress user ID)
     $user_id = get_current_user_id();
     // Fetch the Kognetiks cookie
     $session_id = kognetiks_get_unique_id();
-    if (empty($user_id) || $user_id == 0) {
-        $user_id = $session_id;
-    }
-    // back_trace( 'NOTICE', '$user_id: ' . $user_id);
-    // back_trace( 'NOTICE', '$session_id: ' . $session_id);
+    // Keep user_id as 0 for anonymous users - don't replace with session_id
 
     // Fetch the Page ID
     $page_id = get_the_id(); // Get current page ID
@@ -508,9 +448,6 @@ function chatbot_chatgpt_shortcode( $atts = [], $content = null, $tag = '' ) {
     //Do this for additional instructions - Ver 2.0.9
     if (array_key_exists('additional_instructions', $atts)) {
 
-        // DIAG - Diagnostics - Ver 2.0.9
-        // back_trace( 'NOTICE', 'additional_instructions: ' . $atts['additional_instructions']);
-
         $sanitized_additional_instructions = sanitize_text_field($atts['additional_instructions']);
 
         if (is_user_logged_in()) {
@@ -521,7 +458,6 @@ function chatbot_chatgpt_shortcode( $atts = [], $content = null, $tag = '' ) {
             // Determine what the field name is between the brackets
             $user_field_name = '';
             $user_field_name = substr($sanitized_additional_instructions, strpos($sanitized_additional_instructions, '[') + 1, strpos($sanitized_additional_instructions, ']') - strpos($sanitized_additional_instructions, '[') - 1);
-            // back_trace( 'NOTICE', '$user_field_name: ' . $user_field_name);
             // If $additional_instructions contains "[$user_field_name]" then replace with field from DB
             if (strpos($sanitized_additional_instructions, '[' . $user_field_name . ']') !== false) {
                 $sanitized_additional_instructions = str_replace('[' . $user_field_name . ']', $current_user->$user_field_name, $sanitized_additional_instructions);
@@ -537,7 +473,6 @@ function chatbot_chatgpt_shortcode( $atts = [], $content = null, $tag = '' ) {
 
             $user_field_name = '';
             $user_field_name = substr($sanitized_additional_instructions, strpos($sanitized_additional_instructions, '[') + 1, strpos($sanitized_additional_instructions, ']') - strpos($sanitized_additional_instructions, '[') - 1);
-            // back_trace( 'NOTICE', '$user_field_name: ' . $user_field_name);
             $sanitized_additional_instructions = str_replace('[' . $user_field_name . ']', '', $sanitized_additional_instructions);
             // Remove the extra space when two spaces are present
             $sanitized_additional_instructions = str_replace('  ', ' ', $sanitized_additional_instructions);
@@ -550,21 +485,16 @@ function chatbot_chatgpt_shortcode( $atts = [], $content = null, $tag = '' ) {
         $assistant_details['additional_instructions'] = $sanitized_additional_instructions;
         $kchat_settings['additional_instructions'] = $sanitized_additional_instructions;
         $additional_instructions = $sanitized_additional_instructions;
-
-        // DIAG - Diagnostics - Ver 2.0.9
-        // back_trace( 'NOTICE', '$sanitized_additional_instructions: ' . $sanitized_additional_instructions);
     
     }    
 
-    // Fetch the User ID - Updated Ver 2.0.6 - 2024 07 11
+    // Fetch the User ID - Updated Ver 2.3.6
+    // For anonymous users, user_id should be 0 (session_id is used in transient key via set_chatbot_chatgpt_transients)
+    // For logged-in users, user_id should be > 0 (WordPress user ID)
     $user_id = get_current_user_id();
     // Fetch the Kognetiks cookie
     $session_id = kognetiks_get_unique_id();
-    if (empty($user_id) || $user_id == 0) {
-        $user_id = $session_id;
-    }
-    // back_trace( 'NOTICE', '$user_id: ' . $user_id);
-    // back_trace( 'NOTICE', '$session_id: ' . $session_id);
+    // Keep user_id as 0 for anonymous users - don't replace with session_id
 
     // Check that $page_id is not empty or null - Ver 2.1.1.1
     if (empty($page_id) || is_null($page_id)) {
@@ -572,9 +502,7 @@ function chatbot_chatgpt_shortcode( $atts = [], $content = null, $tag = '' ) {
     }
 
     // FIXME - Check for the presence of an embedded chatbot - Ver 2.1.7
-    // back_trace( 'NOTICE', 'get_chatbot_chatgpt_transients: ' . get_chatbot_chatgpt_transients('display_style', $user_id, $page_id, $session_id));
     // if (get_chatbot_chatgpt_transients('display_style', $user_id, $page_id, $session_id) == 'embedded') {
-    //     // back_trace( 'NOTICE', 'Embedded chatbot detected');
     //     $chatbot_chatgpt_display_style = 'embedded';
     //     return;
     // }
@@ -587,17 +515,16 @@ function chatbot_chatgpt_shortcode( $atts = [], $content = null, $tag = '' ) {
 
     set_chatbot_chatgpt_transients( 'additional_instructions', $additional_instructions, $user_id, $page_id, $session_id, null);
 
-    // back_trace( 'NOTICE', 'LINE 528 - $chatbot_chatgpt_display_style: ' . $chatbot_chatgpt_display_style);
 
     // Set visitor and logged in user limits - Ver 2.0.1
     if (is_user_logged_in()) {
-        // back_trace( 'NOTICE', 'User is logged in');
         $kchat_settings['chatbot_chatgpt_message_limit_setting'] = esc_attr(get_option('chatbot_chatgpt_user_message_limit_setting', '999'));
         $kchat_settings['chatbot_chatgpt_message_limit_period_setting'] = esc_attr(get_option('chatbot_chatgpt_user_message_limit_period_setting', 'Lifetime'));
+        $kchat_settings['chatbot_chatgpt_display_message_count'] = esc_attr(get_option('chatbot_chatgpt_display_message_count', 'No'));
     } else {
-        // back_trace( 'NOTICE', 'User is NOT logged in');
         $kchat_settings['chatbot_chatgpt_message_limit_setting'] = esc_attr(get_option('chatbot_chatgpt_visitor_message_limit_setting', '999'));
         $kchat_settings['chatbot_chatgpt_message_limit_period_setting'] = esc_attr(get_option('chatbot_chatgpt_visitor_message_limit_period_setting', 'Lifetime'));
+        $kchat_settings['chatbot_chatgpt_display_message_count'] = esc_attr(get_option('chatbot_chatgpt_display_message_count', 'No'));
     }
 
     // Localize the data for the chatbot - Ver 2.1.1.1 - 2024 08 28 - THIS IS THE SPOT
@@ -620,38 +547,31 @@ function chatbot_chatgpt_shortcode( $atts = [], $content = null, $tag = '' ) {
         'chatbot_chatgpt_avatar_greeting_setting' => esc_attr(get_option('chatbot_chatgpt_avatar_greeting_setting', 'Howdy!!! Great to see you today! How can I help you?')),
         'chatbot_chatgpt_force_page_reload' => esc_attr(get_option('chatbot_chatgpt_force_page_reload', 'No')),
         'chatbot_chatgpt_custom_error_message' => esc_attr(get_option('chatbot_chatgpt_custom_error_message', 'Your custom error message goes here.')),
-        // 'chatbot_chatgpt_message_limit_setting' => esc_attr(get_option('chatbot_chatgpt_message_limit_setting', '999')),
-        // 'chatbot_chatgpt_message_limit_period_setting' => esc_attr(get_option('chatbot_chatgpt_message_limit_period_setting', 'Lifetime')),
+        'chatbot_chatgpt_appearance_open_icon' => esc_attr(get_option('chatbot_chatgpt_appearance_open_icon', '')),
+        'chatbot_chatgpt_appearance_collapse_icon' => esc_attr(get_option('chatbot_chatgpt_appearance_collapse_icon', '')),
+        'chatbot_chatgpt_appearance_erase_icon' => esc_attr(get_option('chatbot_chatgpt_appearance_erase_icon', '')),
+        'chatbot_chatgpt_appearance_mic_enabled_icon' => esc_attr(get_option('chatbot_chatgpt_appearance_mic_enabled_icon', '')),
+        'chatbot_chatgpt_appearance_mic_disabled_icon' => esc_attr(get_option('chatbot_chatgpt_appearance_mic_disabled_icon', '')),
     ));
 
-    // back_trace( 'NOTICE', '$kchat_settings after array_merge: ' . print_r($kchat_settings, true));
-
-    // DIAG - Diagnostics - Ver 1.8.6
-    // back_trace( 'NOTICE', '========================================');
-    // back_trace( 'NOTICE', '$user_id: ' . $user_id);
-    // back_trace( 'NOTICE', '$page_id: ' . $page_id);
-    // back_trace( 'NOTICE', '$session_id: ' . $session_id);
-    // back_trace( 'NOTICE', '$thread_id: ' . $thread_id);
-    // back_trace( 'NOTICE', '$assistant_id: ' . $assistant_id);
-    // back_trace( 'NOTICE', '$chatbot_chatgpt_assistant_alias: ' . $chatbot_chatgpt_assistant_alias);
-    // back_trace( 'NOTICE', '$kchat_settings: ' . print_r($kchat_settings, true));
-    // back_trace( 'NOTICE', '$kchat_settings: ' . print_r($kchat_settings, true));
-    // back_trace( 'NOTICE', '$voice: ' . $voice);
-    // back_trace( 'NOTICE', '$model: ' . $model);
-
     // Retrieve the bot name - Ver 2.0.5
-    $use_assistant_name = esc_attr(get_option('chatbot_chatgpt_display_custom_gpt_assistant_name', 'Yes'));
+    $chatbot_ai_platform_choice = esc_attr(get_option('chatbot_ai_platform_choice', 'OpenAI'));
+    if ($chatbot_ai_platform_choice == 'OpenAI'){
+        $use_assistant_name = esc_attr(get_option('chatbot_chatgpt_display_custom_gpt_assistant_name', 'Yes'));
+    } elseif ($chatbot_ai_platform_choice == 'Azure OpenAI'){
+        $use_assistant_name = esc_attr(get_option('chatbot_azure_display_custom_gpt_assistant_name', 'Yes'));
+    } elseif ($chatbot_ai_platform_choice == 'Claude'){
+    } else {
+        $use_assistant_name = 'No';
+    }
 
     // Assistant's Table Override - Ver 2.0.4
     if (!empty($assistant_details['show_assistant_name'])) {
         $use_assistant_name = $assistant_details['show_assistant_name'];
     }
 
-    // DIAG - Diagnostics - Ver 2.0.5
-    // back_trace( 'NOTICE', '$use_assistant_name: ' . $use_assistant_name);
-
-    if ($use_assistant_name == 'Yes' && !empty($assistant_id)) {
-        // FIXME - CAN I AVOID THIS CALL TO OPENAI?
+    // FIXME - $assistant_id is empty - Ver 2.2.6
+    if ($use_assistant_name == 'Yes' && !empty($assistant_id) && $assistant_id !== 'original') {
         $assistant_name = esc_attr(get_chatbot_chatgpt_assistant_name($assistant_id));
         $bot_name = !empty($assistant_name) ? $assistant_name : esc_attr(get_option('chatbot_chatgpt_bot_name', 'Kognetiks Chatbot'));
     } else {
@@ -667,11 +587,15 @@ function chatbot_chatgpt_shortcode( $atts = [], $content = null, $tag = '' ) {
 
     $chatbot_chatgpt_bot_prompt = esc_attr(get_option('chatbot_chatgpt_bot_prompt', 'Enter your question ...'));
 
-    // back_trace( 'NOTICE', '$chatbot_chatgpt_hot_bot_prompt: ' . $chatbot_chatgpt_hot_bot_prompt);
+
+    // Define $kchat_settings_json before it's used in Hot Prompt block - Fix for undefined variable warning
+    // Ver 2.4.0 - Fix for undefined $kchat_settings_json variable
+    if (!isset($kchat_settings_json)) {
+        $kchat_settings_json = wp_json_encode($kchat_settings);
+    }
 
     // Hot Prompt the Chatbot - Ver 1.9.0
     if (!empty($chatbot_chatgpt_hot_bot_prompt)) {
-        // back_trace( 'NOTICE', 'Hot Prompting the Chatbot');
             wp_add_inline_script('chatbot-chatgpt-js', '
             if (typeof kchat_settings === "undefined") { 
                 var kchat_settings = ' . $kchat_settings_json . '; 
@@ -726,6 +650,9 @@ function chatbot_chatgpt_shortcode( $atts = [], $content = null, $tag = '' ) {
         $chatbot_chatgpt_allow_mp3_uploads = 'No';
     }
 
+    // FIXME - Allow File Uploads - Ver 2.2.6
+    // $chatbot_chatgpt_allow_file_uploads = 'Yes';
+
     // Allow Upload Files - Ver 2.0.4
     $chatbot_chatgpt_allow_file_uploads = !empty($assistant_details['allow_file_uploads']) ? $assistant_details['allow_file_uploads'] : $chatbot_chatgpt_allow_file_uploads;
 
@@ -751,14 +678,9 @@ function chatbot_chatgpt_shortcode( $atts = [], $content = null, $tag = '' ) {
     // Assume that the chatbot is NOT using KFlow - Ver 1.9.5
     $kflow_enabled = false;
     $kflow_enabled = esc_attr(get_option( 'kflow_flow_mode', false ));
-    // back_trace( 'NOTICE', '$kflow_enabled: ' . esc_attr(get_option( 'kflow_flow_mode', false )));
 
     // Retrieve the custom buttons on/off setting - Ver 1.6.5
     // $chatbot_chatgpt_enable_custom_buttons = esc_attr(get_option('chatbot_chatgpt_enable_custom_buttons', 'Off'));
-
-    // DIAG - Diagnostics - Ver 2.0.9
-    // back_trace( 'NOTICE', 'kflow_prompt_and_response function status: ' . function_exists('kflow_prompt_and_response'));
-    // back_trace( 'NOTICE', '$atts[\'sequence\']: ' . $atts['sequence']);
 
     // KFlow - Call kflow_prompt_and_response() - Ver 1.9.5
     if (function_exists('kflow_prompt_and_response') && !empty($atts['sequence']) && $kflow_enabled) {
@@ -782,11 +704,6 @@ function chatbot_chatgpt_shortcode( $atts = [], $content = null, $tag = '' ) {
 
         // Get the first prompt
         $kflow_prompt = $kflow_data['Prompts'][0];
-
-        // // DIAG - Diagnostics - Ver 1.9.5
-        // back_trace( 'NOTICE', '$kflow_data: ' . print_r($kflow_data, true));
-        // back_trace( 'NOTICE', '$kchat_settings: ' . print_r($kchat_settings, true));
-        // back_trace( 'NOTICE', '$kflow_prompt: ' . $kflow_prompt);
 
         // A prompt was returned
         if ( $kflow_prompt != '' ) {
@@ -825,8 +742,7 @@ function chatbot_chatgpt_shortcode( $atts = [], $content = null, $tag = '' ) {
 
         // Handle the case where the function does not exist
         // Throw an error or return a default value, etc.
-        // DIAG - Diagnostics - Ver 1.9.5
-        // back_trace( 'ERROR', 'kflow modules not installed');
+        // Do nothing
 
     }
     
@@ -863,42 +779,22 @@ function chatbot_chatgpt_shortcode( $atts = [], $content = null, $tag = '' ) {
     $assistant_details['chatbot_chatgpt_subsequent_greeting'] = $assistant_details['subsequent_greeting'];
     $kchat_settings['chatbot_chatgpt_subsequent_greeting'] = $assistant_details['subsequent_greeting'];
 
-    // DIAG - Diagnostics - Ver 2.0.5
-    // back_trace( 'NOTICE', '$modified_greetings: ' . print_r($modified_greetings, true));
-
-    // DiAG - Diagnostics - Ver 2.0.9
-    // back_trace( 'ERROR', '========================================');
-    // back_trace( 'ERROR', '$assistant_details[\'style\']: ' . $assistant_details['style']);
-    // back_trace( 'ERROR', '$kchat_settings[\'chatbot_chatgpt_display_style\']: ' . $kchat_settings['chatbot_chatgpt_display_style']);
-    // back_trace( 'ERROR', '$assistant_details[\'audience\']: ' . $assistant_details['audience']);
-    // back_trace( 'ERROR', '$kchat_settings[\'chatbot_chatgpt_audience_choice\']: ' . $kchat_settings['chatbot_chatgpt_audience_choice']);
-
     // Last chance to set localStorage - Ver 2.0.5
-    // back_trace( 'NOTICE', 'BEFORE: $assistant_details[\'style\']: ' . $assistant_details['style']);
     // $assistant_details['style'] = !empty($assistant_details['style']) ? $assistant_details['style'] : esc_attr(get_option('chatbot_chatgpt_display_style', 'floating'));
-    // back_trace( 'NOTICE', 'AFTER: $assistant_details[\'style\']: ' . $assistant_details['style']);
     // $kchat_settings['chatbot_chatgpt_display_style'] = $assistant_details['style'];
 
     $assistant_details['audience'] = !empty($assistant_details['audience']) ? $assistant_details['audience'] : esc_attr(get_option('chatbot_chatgpt_audience_choice', 'All'));
     $kchat_settings['chatbot_chatgpt_audience_choice'] = $assistant_details['audience'];
-    
-    // DIAG - Diagnostics - Ver 2.0.5
-    // back_trace( 'NOTICE', 'BEFORE: $assistant_details[\'voice\']: ' . $assistant_details['voice']);
-    // back_trace( 'NOTICE', 'BEFORE: $kchat_settings[\'chatbot_chatgpt_voice_option\']: ' . $kchat_settings['chatbot_chatgpt_voice_option']);
-    // back_trace( 'NOTICE', 'BEFORE: $kchat_settings[\'voice\']: ' . $kchat_settings['voice']);
     
     $assistant_details['voice'] = !empty($assistant_details['voice']) ? $assistant_details['voice'] : esc_attr(get_option('chatbot_chatgpt_voice_option', 'alloy'));
     $kchat_settings['chatbot_chatgpt_voice_option'] = $assistant_details['voice'];
     $kchat_settings['voice'] = $assistant_details['voice'];
     set_chatbot_chatgpt_transients('voice', $assistant_details['voice'], $user_id, $page_id, $session_id, null);
 
-    // DIAG - Diagnostics - Ver 2.0.5
-    // back_trace( 'NOTICE', 'AFTER: $assistant_details[\'voice\']: ' . $assistant_details['voice']);
-    // back_trace( 'NOTICE', 'AFTER: $kchat_settings[\'chatbot_chatgpt_voice_option\']: ' . $kchat_settings['chatbot_chatgpt_voice_option']);
-    // back_trace( 'NOTICE', 'AFTER: $kchat_settings[\'voice\']: ' . $kchat_settings['voice']);
-
     $assistant_details['allow_file_uploads'] = !empty($assistant_details['allow_file_uploads']) ? $assistant_details['allow_file_uploads'] : esc_attr(get_option('chatbot_chatgpt_allow_file_uploads', 'No'));
     $kchat_settings['chatbot_chatgpt_allow_file_uploads'] = $assistant_details['allow_file_uploads'];
+
+    $chatbot_chatgpt_allow_file_uploads = $assistant_details['allow_file_uploads'];
 
     $assistant_details['allow_mp3_uploads'] = !empty($assistant_details['allow_mp3_uploads']) ? $assistant_details['allow_mp3_uploads'] : esc_attr(get_option('chatbot_chatgpt_allow_mp3_uploads', 'No'));
     $kchat_settings['chatbot_chatgpt_allow_mp3_uploads'] = $assistant_details['allow_mp3_uploads'];
@@ -930,12 +826,6 @@ function chatbot_chatgpt_shortcode( $atts = [], $content = null, $tag = '' ) {
     $kchat_settings_json = wp_json_encode($kchat_settings);
     wp_add_inline_script('chatbot-chatgpt-local-js', 'if (typeof kchat_settings === "undefined") { var kchat_settings = ' . $kchat_settings_json . '; } else { kchat_settings = ' . $kchat_settings_json . '; }', 'before');
     wp_add_inline_script('chatbot-chatgpt-js', 'if (typeof kchat_settings === "undefined") { var kchat_settings = ' . $kchat_settings_json . '; } else { kchat_settings = ' . $kchat_settings_json . '; }', 'before');
-    
-    // DIAG - Diagnostics - Ver 2.1.0
-    // back_trace( 'NOTICE', '========================================');
-    // back_trace( 'NOTICE', '$atts: ' . print_r($atts, true));
-    // back_trace( 'NOTICE', '$assistant_details: ' . print_r($assistant_details, true));
-    // back_trace( 'NOTICE', '$kchat_settings: ' . print_r($kchat_settings, true));
 
     $kchat_settings['chatbot_chatgpt_avatar_icon_setting'] = esc_attr(get_option('chatbot_chatgpt_avatar_icon_setting', ''));
     $kchat_settings['chatbot_chatgpt_custom_avatar_icon_setting'] = esc_attr(get_option('chatbot_chatgpt_custom_avatar_icon_setting', ''));
@@ -949,6 +839,7 @@ function chatbot_chatgpt_shortcode( $atts = [], $content = null, $tag = '' ) {
                 const includeKeys = [
                     'chatbot_chatgpt_last_reset',
                     'chatbot_chatgpt_message_count',
+                    'chatbot_chatgpt_display_message_count',
                     'chatbot_chatgpt_message_limit_setting',
                     'chatbot_chatgpt_message_limit_period_setting',
                     'chatbot_chatgpt_start_status',
@@ -959,7 +850,7 @@ function chatbot_chatgpt_shortcode( $atts = [], $content = null, $tag = '' ) {
                 Object.keys(kchat_settings).forEach(function(key) {
                     if (includeKeys.includes(key)) {
                         localStorage.setItem(key, kchat_settings[key]);
-                        // DiAG - Ver 2.1.1.1
+                        // DiAG - Diagnostics - Ver 2.4.5
                         // console.log("Chatbot: NOTICE: chatbot-shortcode.php - Key: " + key + " Value: " + kchat_settings[key]);
                     }
                 });
@@ -970,15 +861,13 @@ function chatbot_chatgpt_shortcode( $atts = [], $content = null, $tag = '' ) {
     </script>
     <?php
 
-    // Fetch the User ID - Updated Ver 2.0.6 - 2024 07 11
+    // Fetch the User ID - Updated Ver 2.3.6
+    // For anonymous users, user_id should be 0 (session_id is used in transient key via set_chatbot_chatgpt_transients)
+    // For logged-in users, user_id should be > 0 (WordPress user ID)
     $user_id = get_current_user_id();
     // Fetch the Kognetiks cookie
     $session_id = kognetiks_get_unique_id();
-    if (empty($user_id) || $user_id == 0) {
-        $user_id = $session_id;
-    }
-    // back_trace( 'NOTICE', '$user_id: ' . $user_id);
-    // back_trace( 'NOTICE', '$session_id: ' . $session_id);
+    // Keep user_id as 0 for anonymous users - don't replace with session_id
 
     // Generate a unique cache-busting parameter
     $cache_buster = '?cb=' . time();
@@ -986,7 +875,6 @@ function chatbot_chatgpt_shortcode( $atts = [], $content = null, $tag = '' ) {
     // Speech Recognition - Ver 2.1.5.1
     $chatbot_chatgpt_speech_recognition = esc_attr(get_option('chatbot_chatgpt_speech_recognition', 'No'));
 
-    // back_trace( 'NOTICE', '$chatbot_chatgpt_display_style: ' . $chatbot_chatgpt_display_style);
 
     // Depending on the style, adjust the output - Ver 1.7.1
     if ($chatbot_chatgpt_display_style == 'embedded') {
@@ -1008,15 +896,15 @@ function chatbot_chatgpt_shortcode( $atts = [], $content = null, $tag = '' ) {
         </script>
         <!-- REMOVED FOR EMBEDDED -->
         <?php
-        if ( $use_assistant_name == 'Yes' ) {
+        // if ( $use_assistant_name == 'Yes' ) {
+        //     echo '<div id="chatbot-chatgpt-header-embedded">';
+        //     echo '<div id="chatbot-chatgpt-title" class="title">' . strip_tags($bot_name) . '</div>';
+        //     echo '</div>';
+        // } else {
             echo '<div id="chatbot-chatgpt-header-embedded">';
-            echo '<div id="chatbot-chatgpt-title" class="title">' . strip_tags($bot_name) . '</div>';
+            echo '<div id="chatbot-chatgpt-title" class="title">' . esc_html( wp_strip_all_tags( $bot_name ) ) . '</div>';
             echo '</div>';
-        } else {
-            echo '<div id="chatbot-chatgpt-header-embedded">';
-            // DO NOTHING
-            echo '</div>';
-        }
+        // }
         ?>
         <div id="chatbot-chatgpt-conversation"></div>
         <div id="chatbot-chatgpt-input">
@@ -1026,8 +914,6 @@ function chatbot_chatgpt_shortcode( $atts = [], $content = null, $tag = '' ) {
                     // FIXME - ADD THIS TO FLOATING STYLE BELOW - Ver 1.9.5
                     // Kick off Flow - Ver 1.9.5
                     if ($kflow_enabled == true and !empty($sequence_id)) {
-                        // back_trace( 'NOTICE', 'Kick off Flow');
-                        // back_trace( 'NOTICE', 'chatbot_chatgpt_hot_bot_prompt: ' . $chatbot_chatgpt_hot_bot_prompt);
                         // Store the prompt in a hidden input instead of directly in the textarea
                         echo "<input type='hidden' id='chatbot-chatgpt-message' value='" . htmlspecialchars($chatbot_chatgpt_hot_bot_prompt, ENT_QUOTES) . "'>";
                         // echo "<textarea id='chatbot-chatgpt-message' rows='2' placeholder='$chatbot_chatgpt_bot_prompt' style='width: 95%;'></textarea>";
@@ -1051,8 +937,7 @@ function chatbot_chatgpt_shortcode( $atts = [], $content = null, $tag = '' ) {
                     }
                     // Preload with a prompt if it is set - Ver 1.9.5
                     if ($kflow_enabled != true and !empty($chatbot_chatgpt_hot_bot_prompt)) {
-                        // DIAG - Diagnostics - Ver 1.9.0
-                        // back_trace( 'NOTICE', 'PRELOAD: $chatbot_chatgpt_hot_bot_prompt: ' . $chatbot_chatgpt_hot_bot_prompt);
+                        // DIAG - Diagnostics - Ver 2.4.5
                         $rows = esc_attr(get_option('chatbot_chatgpt_input_rows', '2'));
                         $chatbot_chatgpt_bot_prompt = esc_attr(sanitize_text_field($chatbot_chatgpt_bot_prompt));
                         $chatbot_chatgpt_hot_bot_prompt = esc_attr(sanitize_text_field($chatbot_chatgpt_hot_bot_prompt));
@@ -1072,8 +957,7 @@ function chatbot_chatgpt_shortcode( $atts = [], $content = null, $tag = '' ) {
                         });
                         </script>";
                     } else {
-                        // DIAG - Diagnostics - Ver 1.9.5
-                        // back_trace( 'NOTICE', 'chatbot_chatgpt_bot_prompt: ' . $chatbot_chatgpt_bot_prompt);
+                        // DIAG - Diagnostics - Ver 2.4.5
                         $rows = esc_attr(get_option('chatbot_chatgpt_input_rows', '2'));
                         $chatbot_chatgpt_bot_prompt = esc_attr(sanitize_text_field($chatbot_chatgpt_bot_prompt));
                         // Assistant's Table Override - Ver 2.0.4
@@ -1088,12 +972,12 @@ function chatbot_chatgpt_shortcode( $atts = [], $content = null, $tag = '' ) {
         </div>
         <div id="chatbot-chatgpt-buttons-container">
             <button id="chatbot-chatgpt-submit" title="Send Message">
-                <img src="<?php echo plugins_url('../assets/icons/send_FILL0_wght400_GRAD0_opsz24.png', __FILE__); ?>" alt="Send">
+                <img decoding="async" src="<?php echo chatbot_chatgpt_appearance_icon_path('send_icon'); ?>" alt="Send">
             </button>
             <?php if ($chatbot_chatgpt_allow_file_uploads == 'Yes'): ?>
                 <input type="file" id="chatbot-chatgpt-upload-file-input" name="file[]" style="display: none;" multiple="multiple" />
                 <button id="chatbot-chatgpt-upload-file" title="Upload Files">
-                    <img src="<?php echo plugins_url('../assets/icons/attach_file_FILL0_wght400_GRAD0_opsz24.png', __FILE__); ?>" alt="Upload File">
+                    <img decoding="async" src="<?php echo chatbot_chatgpt_appearance_icon_path('attach_icon'); ?>" alt="Upload File">
                 </button>
                 <script type="text/javascript">
                     document.getElementById('chatbot-chatgpt-upload-file').addEventListener('click', function() {
@@ -1104,7 +988,7 @@ function chatbot_chatgpt_shortcode( $atts = [], $content = null, $tag = '' ) {
             <?php if ($chatbot_chatgpt_allow_mp3_uploads == 'Yes'): ?>
                 <input type="file" id="chatbot-chatgpt-upload-mp3-input" name="file[]" style="display: none;" />
                 <button id="chatbot-chatgpt-upload-mp3" title="Upload an Audio/Video">
-                    <img src="<?php echo plugins_url('../assets/icons/attach_file_FILL0_wght400_GRAD0_opsz24.png', __FILE__); ?>" alt="Upload MP3">
+                    <img decoding="async" src="<?php echo chatbot_chatgpt_appearance_icon_path('attach_icon'); ?>" alt="Upload MP3">
                 </button>
                 <script type="text/javascript">
                     document.getElementById('chatbot-chatgpt-upload-mp3').addEventListener('click', function() {
@@ -1113,21 +997,21 @@ function chatbot_chatgpt_shortcode( $atts = [], $content = null, $tag = '' ) {
                 </script>
             <?php endif; ?>
             <button id="chatbot-chatgpt-erase-btn" title="Clear Conversation">
-                <img src="<?php echo plugins_url('../assets/icons/delete_FILL0_wght400_GRAD0_opsz24.png', __FILE__); ?>" alt="Erase Conversation">
+                <img decoding="async" src="<?php echo chatbot_chatgpt_appearance_icon_path('erase_icon'); ?>" alt="Erase Conversation">
             </button>
             <?php if ($chatbot_chatgpt_read_aloud_option == 'yes' && $voice != 'none'): ?>
                 <button id="chatbot-chatgpt-text-to-speech-btn" title="Read Aloud">
-                    <img src="<?php echo plugins_url('../assets/icons/text_to_speech_FILL0_wght400_GRAD0_opsz24.png', __FILE__); ?>" alt="Read Out Loud">
+                    <img decoding="async" src="<?php echo chatbot_chatgpt_appearance_icon_path('read_aloud_icon'); ?>" alt="Read Out Loud">
                 </button>
             <?php endif; ?>
             <?php if ($chatbot_chatgpt_speech_recognition == 'Yes'): ?>
                 <button id="chatbot-chatgpt-speech-recognition-btn" title="Use your microphone">
-                    <img src="<?php echo plugins_url('../assets/icons/mic_24dp_000000_FILL0_wght400_GRAD0_opsz24.png', __FILE__); ?>" alt="Speech Recognition">
+                    <img decoding="async" src="<?php echo chatbot_chatgpt_appearance_icon_path('mic_enabled_icon'); ?>" alt="Speech Recognition">
                 </button>
             <?php endif; ?>
             <?php if ($chatbot_chatgpt_allow_download_transcript == 'Yes'): ?>
                 <button id="chatbot-chatgpt-download-transcript-btn" title="Download Transcript">
-                    <img src="<?php echo plugins_url('../assets/icons/download_FILL0_wght400_GRAD0_opsz24.png', __FILE__); ?>" alt="Download Transcript">
+                    <img decoding="async" src="<?php echo chatbot_chatgpt_appearance_icon_path('download_icon'); ?>" alt="Download Transcript">
                 </button>
             <?php endif; ?>
             </div>
@@ -1167,8 +1051,6 @@ function chatbot_chatgpt_shortcode( $atts = [], $content = null, $tag = '' ) {
                     <?php
                         // Kick off Flow - Ver 1.9.5
                         if ($kflow_enabled == true and !empty($sequence_id)) {
-                            // back_trace( 'NOTICE', 'Kick off Flow');
-                            // back_trace( 'NOTICE', 'chatbot_chatgpt_hot_bot_prompt: ' . $chatbot_chatgpt_hot_bot_prompt);
                             // Store the prompt in a hidden input instead of directly in the textarea
                             echo "<input type='hidden' id='chatbot-chatgpt-message' value='" . htmlspecialchars($chatbot_chatgpt_hot_bot_prompt, ENT_QUOTES) . "'>";
                             // echo "<textarea id='chatbot-chatgpt-message' rows='2' placeholder='$chatbot_chatgpt_bot_prompt' style='width: 95%;'></textarea>";
@@ -1192,7 +1074,6 @@ function chatbot_chatgpt_shortcode( $atts = [], $content = null, $tag = '' ) {
                         }
                         // Preload with a prompt if it is set - Ver 1.9.5
                         if ($kflow_enabled != true and !empty($chatbot_chatgpt_hot_bot_prompt)) {
-                            // back_trace( 'NOTICE', 'PRELOAD: $chatbot_chatgpt_hot_bot_prompt: ' . $chatbot_chatgpt_hot_bot_prompt);
                             $rows = esc_attr(get_option('chatbot_chatgpt_input_rows', '2'));
                             $chatbot_chatgpt_bot_prompt = esc_attr(sanitize_text_field($chatbot_chatgpt_bot_prompt));
                             $chatbot_chatgpt_hot_bot_prompt = esc_attr(sanitize_text_field($chatbot_chatgpt_hot_bot_prompt));
@@ -1223,12 +1104,12 @@ function chatbot_chatgpt_shortcode( $atts = [], $content = null, $tag = '' ) {
             </div>
             <div id="chatbot-chatgpt-buttons-container">
                 <button id="chatbot-chatgpt-submit" title="Send Message">
-                    <img src="<?php echo plugins_url('../assets/icons/send_FILL0_wght400_GRAD0_opsz24.png', __FILE__); ?>" alt="Send">
+                <img decoding="async" src="<?php echo chatbot_chatgpt_appearance_icon_path('send_icon'); ?>" alt="Send">
                 </button>
                 <?php if ($chatbot_chatgpt_allow_file_uploads == 'Yes'): ?>
                     <input type="file" id="chatbot-chatgpt-upload-file-input" name="file[]" style="display: none;" multiple="multiple" />
                     <button id="chatbot-chatgpt-upload-file" title="Upload Files">
-                        <img src="<?php echo plugins_url('../assets/icons/attach_file_FILL0_wght400_GRAD0_opsz24.png', __FILE__); ?>" alt="Upload File">
+                        <img decoding="async" src="<?php echo chatbot_chatgpt_appearance_icon_path('attach_icon'); ?>" alt="Upload File">
                     </button>
                     <script type="text/javascript">
                         document.getElementById('chatbot-chatgpt-upload-file').addEventListener('click', function() {
@@ -1239,7 +1120,7 @@ function chatbot_chatgpt_shortcode( $atts = [], $content = null, $tag = '' ) {
                 <?php if ($chatbot_chatgpt_allow_mp3_uploads == 'Yes'): ?>
                     <input type="file" id="chatbot-chatgpt-upload-mp3-input" name="file[]" style="display: none;" />
                     <button id="chatbot-chatgpt-upload-mp3" title="Upload MP3">
-                        <img src="<?php echo plugins_url('../assets/icons/attach_file_FILL0_wght400_GRAD0_opsz24.png', __FILE__); ?>" alt="Upload MP3">
+                        <img decoding="async" src="<?php echo chatbot_chatgpt_appearance_icon_path('attach_icon'); ?>" alt="Upload MP3">
                     </button>
                     <script type="text/javascript">
                         document.getElementById('chatbot-chatgpt-upload-mp3').addEventListener('click', function() {
@@ -1248,21 +1129,21 @@ function chatbot_chatgpt_shortcode( $atts = [], $content = null, $tag = '' ) {
                     </script>
                 <?php endif; ?>
                 <button id="chatbot-chatgpt-erase-btn" title="Clear Conversation">
-                    <img src="<?php echo plugins_url('../assets/icons/delete_FILL0_wght400_GRAD0_opsz24.png', __FILE__); ?>" alt="Erase Conversation">
+                    <img decoding="async" src="<?php echo chatbot_chatgpt_appearance_icon_path('erase_icon'); ?>" alt="Erase Conversation">
                 </button>
                 <?php if ($chatbot_chatgpt_read_aloud_option == 'yes' && $voice != 'none'): ?>
                     <button id="chatbot-chatgpt-text-to-speech-btn" title="Read Aloud">
-                        <img src="<?php echo plugins_url('../assets/icons/text_to_speech_FILL0_wght400_GRAD0_opsz24.png', __FILE__); ?>" alt="Read Out Loud">
+                        <img decoding="async" src="<?php echo chatbot_chatgpt_appearance_icon_path('read_aloud_icon'); ?>" alt="Read Out Loud">
                     </button>
                 <?php endif; ?>
                 <?php if ($chatbot_chatgpt_speech_recognition == 'Yes'): ?>
                     <button id="chatbot-chatgpt-speech-recognition-btn" title="Use your microphone">
-                        <img src="<?php echo plugins_url('../assets/icons/mic_24dp_000000_FILL0_wght400_GRAD0_opsz24.png', __FILE__); ?>" alt="Speech Recognition">
+                        <img decoding="async" src="<?php echo chatbot_chatgpt_appearance_icon_path('mic_enabled_icon'); ?>" alt="Speech Recognition">
                     </button>
                 <?php endif; ?>
                 <?php if ($chatbot_chatgpt_allow_download_transcript == 'Yes'): ?>
                     <button id="chatbot-chatgpt-download-transcript-btn" title="Download Transcript">
-                        <img src="<?php echo plugins_url('../assets/icons/download_FILL0_wght400_GRAD0_opsz24.png', __FILE__); ?>" alt="Download Transcript">
+                        <img decoding="async" src="<?php echo chatbot_chatgpt_appearance_icon_path('download_icon'); ?>" alt="Download Transcript">
                     </button>
                 <?php endif; ?>
             </div>
@@ -1285,14 +1166,8 @@ function chatbot_chatgpt_shortcode( $atts = [], $content = null, $tag = '' ) {
     }
 
 }
-// add_shortcode('chatbot', 'chatbot_chatgpt_shortcode');
-// add_shortcode('chatbot_chatgpt', 'chatbot_chatgpt_shortcode');
-// add_shortcode('kognetiks_chatbot', 'chatbot_chatgpt_shortcode');
-// add_shortcode('chatbot-1', 'chatbot_chatgpt_shortcode');
-// add_shortcode('chatbot-2', 'chatbot_chatgpt_shortcode');
-// add_shortcode('chatbot-3', 'chatbot_chatgpt_shortcode');
 
-// Dynamic Shortcode - Ver 2.0.6
+// Dynamic Shortcode - Ver 2.0.6 - - Ver 2.3.0 Update 2025 04 23
 function register_chatbot_shortcodes($number_of_shortcodes = null) {
 
     // Make sure the number of shortcodes is set
@@ -1316,30 +1191,52 @@ function register_chatbot_shortcodes($number_of_shortcodes = null) {
         $number_of_shortcodes = 0;
     }
 
+    // Update the option with the number of shortcodes
     update_option('chatbot_chatgpt_number_of_shortcodes', $number_of_shortcodes);
 
-    // Fetch the number of shortcodes to 
-    $number_of_shortcodes = $number_of_shortcodes ?? esc_attr(get_option('chatbot_chatgpt_number_of_shortcodes', 1));
-
-    // Base shortcode names
+    // Base shortcode names - only register if not already registered
     $base_shortcodes = [
         'chatbot',
         'chatbot_chatgpt',
         'kognetiks_chatbot'
     ];
 
-    // Register base shortcodes
+    // Register base shortcodes only if not already registered
     foreach ($base_shortcodes as $shortcode) {
-        add_shortcode($shortcode, 'chatbot_chatgpt_shortcode');
+        if (!shortcode_exists($shortcode)) {
+            add_shortcode($shortcode, 'chatbot_chatgpt_shortcode');
+        }
     }
 
-    // Register numbered shortcodes dynamically
+    // Register numbered shortcodes dynamically using [chatbot-#] syntax
+    // Only register if not already registered and within the valid range
     for ($i = 1; $i <= $number_of_shortcodes; $i++) {
-        add_shortcode('chatbot-' . $i, 'chatbot_chatgpt_shortcode');
-        // error_log ('Registered shortcodes: ' . 'chatbot-' . $i );
+        $shortcode = 'chatbot-' . $i;
+        if (!shortcode_exists($shortcode)) {
+            add_shortcode($shortcode, 'chatbot_chatgpt_shortcode');
+            // error_log('[Chatbot] [chatbot-shortcode.php] Registered shortcode: ' . $shortcode);
+        }
     }
 
-    // error_log ('chatbot_chatgpt_number_of_shortcodes: ' . $number_of_shortcodes );
+    // Register numbered shortcodes dynamically using [assistant-#] syntax
+    // Only register if not already registered and within the valid range
+    for ($i = 1; $i <= $number_of_shortcodes; $i++) {
+        $shortcode = 'assistant-' . $i;
+        if (!shortcode_exists($shortcode)) {
+            add_shortcode($shortcode, 'chatbot_chatgpt_shortcode');
+            // error_log('[Chatbot] [chatbot-shortcode.php]Registered shortcode: ' . $shortcode);
+        }
+    }
+
+    // Register numbered shortcodes dynamically using [agent-#] syntax
+    // Only register if not already registered and within the valid range
+    for ($i = 1; $i <= $number_of_shortcodes; $i++) {
+        $shortcode = 'agent-' . $i;
+        if (!shortcode_exists($shortcode)) {
+            add_shortcode($shortcode, 'chatbot_chatgpt_shortcode');
+            // error_log('[Chatbot] [chatbot-shortcode.php]Registered shortcode: ' . $shortcode);
+        }
+    }
     
 }
 // Try to register the shortcodes on init - Ver 2.0.6 - 2024 07 11
@@ -1356,8 +1253,8 @@ function chatbot_chatgpt_custom_buttons_display() {
 
         // Initialize and set button names and URLs
         for ($i = 1; $i <= $button_count; $i++) {
-            $button_names[$i] = get_option("chatbot_chatgpt_custom_button_name_$i");
-            $button_urls[$i] = get_option("chatbot_chatgpt_custom_button_url_$i");
+            $button_names[$i] = esc_attr(get_option("chatbot_chatgpt_custom_button_name_$i"));
+            $button_urls[$i] = esc_attr(get_option("chatbot_chatgpt_custom_button_url_$i"));
         }
 
         // Generate buttons
@@ -1380,14 +1277,12 @@ function chatbot_chatgpt_attribution() {
 
     $chatbot_chatgpt_suppress_attribution = esc_attr(get_option('chatbot_chatgpt_suppress_attribution', 'On'));
     $chatbot_chatgpt_custom_attribution = esc_attr(get_option('chatbot_chatgpt_custom_attribution', 'Your custom attribution message goes here.'));
-    // DIAG - Diagnostics - Ver 1.6.5
-    // back_trace( 'NOTICE', 'chatbot_chatgpt_suppress_attribution: ' . $chatbot_chatgpt_suppress_attribution);
     
     if ($chatbot_chatgpt_suppress_attribution == 'Off') {
         if ($chatbot_chatgpt_custom_attribution == 'Your custom attribution message goes here.' || empty($chatbot_chatgpt_custom_attribution)) { 
             ?>
             <div class="chatbot-attribution">
-                <a href="https://kognetiks.com/wordpress-plugins/kognetiks-chatbot/?utm_source=chatbot&utm_medium=website&utm_campaign=powered_by&utm_id=plugin" target="_blank" rel="noopener noreferrer" class="chatbot-attribution-link"><?php echo esc_html('Chatbot WordPress plugin by Kognetiks'); ?></a>
+                <a href="https://kognetiks.com/wordpress-plugins/kognetiks-chatbot/?utm_source=chatbot&utm_medium=website&utm_campaign=powered_by&utm_id=plugin" target="_blank" rel="noopener noreferrer" class="chatbot-attribution-link"><?php echo esc_html('Chatbot plugin by Kognetiks'); ?></a>
             </div>
             <?php
         } else {
@@ -1398,6 +1293,7 @@ function chatbot_chatgpt_attribution() {
             <?php
         }
     }
+
 }
 
 
@@ -1434,19 +1330,6 @@ function chatbot_chatgpt_shortcode_enqueue_script() {
     $custom_avatar_icon_setting = esc_attr(get_option('chatbot_chatgpt_custom_avatar_icon_setting', ''));
     $kchat_settings['chatbot_chatgpt_custom_avatar_icon_setting'] = $custom_avatar_icon_setting;
 
-    // DIAG - Diagnostics - Ver 1.9.3
-    // back_trace( 'NOTICE', 'chatbot_chatgpt_shortcode_enqueue_script - at the beginning of the function');
-    // back_trace( 'NOTICE', 'get_the_id(): ' . get_the_id() );
-    // back_trace( 'NOTICE', '$user_id: ' . $user_id);
-    // back_trace( 'NOTICE', '$page_id: ' . $page_id);
-    // back_trace( 'NOTICE', '$session_id: ' . $session_id);
-    // back_trace( 'NOTICE', '$thread_id: ' . $thread_id);
-    // back_trace( 'NOTICE', '$assistant_id: ' . $assistant_id);
-    // back_trace( 'NOTICE', '$model: ' . $model);
-    // back_trace( 'NOTICE', '$voice: ' . $voice);
-    // back_trace( 'NOTICE', '$chatbot_chatgpt_display_style: ' . $chatbot_chatgpt_display_style);
-    // back_trace( 'NOTICE', '$kchat_settings: ' . print_r($kchat_settings, true));
-
     ?>
         <script type="text/javascript">
             document.addEventListener("DOMContentLoaded", function() {
@@ -1467,7 +1350,7 @@ function chatbot_chatgpt_shortcode_enqueue_script() {
                     Object.keys(kchat_settings).forEach(function(key) {
                         if (includeKeys.includes(key)) {
                             localStorage.setItem(key, kchat_settings[key]);
-                            // DiAG - Ver 2.1.1.1
+                            // DiAG - Diagnostics - Ver 2.4.5
                             // console.log("Chatbot: NOTICE: chatbot-shortcode.php - Key: " + key + " Value: " + kchat_settings[key]);
                         }
                     });

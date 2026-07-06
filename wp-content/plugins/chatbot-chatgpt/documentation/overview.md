@@ -1,120 +1,64 @@
-# **Kognetiks Chatbot for WordPress** Plugin Documentation
+# **Kognetiks Chatbot** Plugin Documentation
 
-**Kognetiks Chatbot for WordPress** is a plugin that allows you to effortlessly integrate OpenAI’s ChatGPT API or NVIDIA's NIM API into your website, providing a powerful, AI-driven chatbot for enhanced user experience and personalized support.
+**Kognetiks Chatbot** is a plugin that allows you to effortlessly integrate conversational chat from OpenAI, Azure, Mistral, NVIDIA, Anthropic, DeepSeek, or local models using open-source servers into your website, providing a powerful, AI-driven chatbot for enhanced user experience and personalized support.
 
-Conversational AI platforms - like those from OpenAI, NVIDIA, and others - use natural language processing and machine learning algorithms to interact with users in a human-like manner. They are designed to answer questions, provide suggestions, and engage in conversations with users. This is important because it can provide assistance and support to people who need it, especially in situations where human support is not available or is limited. It can also be used to automate customer service, reduce response times, and improve customer satisfaction. Moreover, these platforms can be used in various fields such as healthcare, education, finance, and many more.
+Conversational AI platforms - like those from OpenAI, Azure, Mistral, NVIDIA, Anthropic, DeepSeek, local AI servers, and others - use natural language processing and machine learning algorithms to interact with users in a human-like manner. They are designed to answer questions, provide suggestions, and engage in conversations with users. This is important because it can provide assistance and support to people who need it, especially in situations where human support is not available or is limited. It can also be used to automate customer service, reduce response times, and improve customer satisfaction. Moreover, these platforms can be used in various fields such as healthcare, education, finance, and many more.
 
-The **Kognetiks Chatbot for WordPress** is powered by OpenAI, NVIDIA or others, via their APIs and Models to bring artificial intelligence to life within your WordPress website.
+The **Kognetiks Chatbot** is powered by OpenAI, Azure, Mistral, NVIDIA, Anthropic, DeepSeek, or other AI platforms, via their APIs and Models to bring artificial intelligence to life within your WordPress website.
 
-**Important Note:** This plugin requires an API key from OpenAI, NVIDIA or other AI platform vendors, to function correctly. You can obtain an API key by signing up at https://platform.openai.com/account/api-keys or https://build.nvidia.com/nim.
+## External Services
 
-## What's new in Version 2.2.0
+The **Kognetiks Chatbot** plugin relies on external AI services to provide chatbot functionality. It sends user queries and related data to a third-party AI provider for processing and response generation. By using this plugin, you agree to abide by each service's terms of service and privacy policy:
 
-* **Rate Limit Exceeded Errors**: Added improved error handling for rate limit exceeded errors to retry the request after the delay specified by the API.
+- **OpenAI**: [Terms of Use](https://platform.openai.com/terms) | [Privacy Policy](https://openai.com/policies/privacy-policy/)
+- **NVIDIA**: [Terms of Use](https://www.nvidia.com/en-us/about-nvidia/nv-accounts/) | [Privacy Policy](https://www.nvidia.com/en-us/about-nvidia/privacy-policy/)
+- **Anthropic**: [Terms of Service](https://www.anthropic.com/legal/consumer-terms) | [Privacy Policy](https://docs.anthropic.com/en/docs/legal-center/privacy)
+- **DeepSeek**: [Terms of Use](https://chat.deepseek.com/downloads/DeepSeek%20User%20Agreement.html) | [Privacy Policy](https://chat.deepseek.com/downloads/DeepSeek%20Privacy%20Policy.html)
+- **Mistral**: [Terms of Service](https://mistral.ai/terms#terms-of-service) | [Privacy Policy](https://mistral.ai/terms#privacy-policy)
+- **Google**: [Terms of Use](https://ai.google.dev/gemini-api/terms) | [Privacy Policy](https://policies.google.com/privacy)
+- **JAN.AI**: [About](https://jan.ai/about) | [Privacy Policy](https://jan.ai/docs/privacy-policy)
 
-## What's new in Version 2.1.9
+**IMPORTANT**:
 
-* **Bug Fixes**: Removed extra line breaks after the chatbot's response, among other minor issues identified after the release of version 2.1.8.
+- This plugin requires an API key from OpenAI, NVIDIA, Anthropic, DeepSeek, Google, Mistral to function. Without an API key, the chatbot cannot process user queries.
 
-## What's new in Version 2.1.8
+- Obtain API keys here:
 
-* **NVIDIA NIM API Integration**: Added support for NVIDIA's NIM API to provide advanced conversational capabilities for the chatbot.
-* **Assistant Management**: Resolved the issue with adding, updating and deleting Assistants when using Firefox browser.
-* **Conversation Continuation**: Improved conversation continuity for visitors and logged-in users to ensure a seamless experience across sessions.
-* **Additional Security**: Enhanced security to reduce vulnerabilities associated with assistant management.
-* **Additional Security**: Enhanced security to reduce vulnerabilities associated with accessing chatbot support pages.
+   - [OpenAI API Keys](https://platform.openai.com/account/api-keys)
+   - [Azure API Keys](https://azure.microsoft.com/en-us/pricing/purchase-options/azure-account?icid=ai-services)
+   - [NVIDIA API Keys](https://developer.nvidia.com/nim)
+   - [Anthropic API Keys](https://www.anthropic.com/)
+   - [DeepSeek API Keys](https://platform.deepseek.com/sign_in)
+   - [Google API Keys](https://aistudio.google.com/api-keys)
+   - [Mistral API Keys](https://console.mistral.ai/api-keys)
+   
+- By entering your API key from the AI provider of your choice and activating the chatbot, you:
 
-## What's new in Version 2.1.7
+   - Consent to sending user queries and related data to the selected AI provider for processing and response generation.
+   - Agree to abide by the provider's terms of service, pricing, and privacy policy.
+   - Acknowledge that your data, including text submitted by users, may be transferred to and processed by the AI platform in accordance with its privacy policy.
 
-* **Bug Fixes**: Resolved minor issues and bugs identified after release of version 2.1.6.
+**NOTE**: You are responsible for any fees associated with the use of the selected AI platform. Be sure to review each provider's pricing and usage policies before proceeding.
 
-## What's new in Version 2.1.6
+## Introducing the Sentential Context Model - BETA FEATURE OFFERING
 
-* **Message Limit Periods**: Added options to set message limits periods for visitors and logged-in users, from ```Hourly```, ```Daily```, ```Weekly```, up to ```Lifetime```.
-* **Charset Fallback Adjustment**: Added fallback to ```utf8``` character set when ```utf8mb4``` is not supported, ensuring compatibility across different database configurations.
-* **Suppress Footer Chatbots**: Suppress chatbot in the footer when the chatbot is embedded on the page.
+The **Kognetiks Chatbot** plugin now includes a novel feature: the Sentential Context Model.  This new **beta feature** allows the chatbot to generate intelligent responses by leveraging your website's content - no AI platform connection required.  It's perfect for localized use or content-focused applications, this feature makes the chatbot more versatile than ever.
 
-## What's new in Version 2.1.5
+## What's new in Version 2.4.5
 
-* **Speech Recognition Integration**: Added support for speech recognition to enhance user interaction with the chatbot. Users can now speak to the chatbot, which will transcribe the speech into text for processing.
-* **Knowledge Navigator Update**:  Updated the Knowledge Navigator algorithm to prioritize and return search results that match the highest number of input words first, ordered by relevance and recency, to provide the most relevant and recent links.
-* **Bug Fix**: Removed unnecessary code that was causing a cannot modify header information in the chatbot-shortcode.php file.
+### New Features
+* **OpenAI Prompts (Responses API)**: Shortcode now supports prompt IDs (`pmpt_...`) in addition to assistant IDs (`asst_...`) for OpenAI Responses API usage.
+* **Conversation Logging**: Added option to retain conversation logs indefinitely.
 
-## What's new in Version 2.1.4
+### Improvements
+* **Documentation**: Updated documentation for OpenAI Prompts (Responses API) and Conversation Logging.
 
-* **Improved Table Formatting**: Enhanced the appearance of tables in chatbot responses for better readability.
-* **Bug Fixes**: Resolved minor issues and bugs identified during the development process.
+### Bug Fixes
+* **PHP execution time**: Fixed timeouts on long-running API calls by temporarily adjusting and restoring `max_execution_time` for OpenAI Chat Completions and Assistants API requests.
 
-## What's new in Version 2.1.3
+* Information about past updates can be found [here](updates/updates.md).
 
-* **Remote Server Access**: The **Kognetiks Chatbot for WordPress** now includes the advanced feature to allow access to your assistants from remote servers.  Coupled with security measures to control and monitor remote access to your chatbots, you must enable the **Remote Widget Access** feature.  This will allow specific remote servers to interact with your chatbot(s) via an endpoint. To ensure that only authorized servers and chatbots can access your resources, the system uses a whitelisting mechanism that pairs domains with specific chatbot shortcodes.
-* **Improving Math Handling**: Integrated code enhances chatbot’s ability to render complex mathematical expressions.
-* **Bug Fixes**: Resolved minor issues and bugs identified during the development process.
-
-## What's New in Version 2.1.2
-
-* **Changed Script Load Order**: Adjusted the loading order of scripts to ensure that critical settings are defined before the main chatbot script executes, preventing incorrect style application.
-
-## What's New in Version 2.1.1
-
-* **Code Cleanup and Optimization**: Refined and optimized the codebase for improved performance and maintainability.
-* **Variable Unification**: Standardized variable names across the project to ensure consistency and reduce potential errors.
-* **User Experience Consistency**: Addressed inconsistencies in the chatbot experience between logged-in and non-logged-in users, ensuring a uniform experience.
-* **Bug Fixes**: Resolved minor issues and bugs identified during the development process.
-
-## What's New in Version 2.1.0
-
-* **JavaScript Version Control**: Added JavaScript version control to help with cache busting.
-* **Conversation Log CSV Export**: Added a check to determine if $value is not null before calling mb_convert_encoding to prevent PHP warnings.
-
-## What's New in Version 2.0.9
-
-* **Adjusted Module Name Conflict**: Renamed one module that had a name conflict with another vendor's plugin.
-* **Reworked Conversation Continuity**: Improved the way the chatbot handles conversation continuity for visitors and logged-in users, ensuring a seamless experience across pages.
-* **Alternate Attribution Message**: Allows for replacing the attribution message with 'Chatbot WordPress plugin by Kognetiks' with a text message of your choosing.
-* **Refactored Inline Styles**: Moved inline styles to an external CSS file for better maintainability and separation of concerns.
-* **floating-style CSS Class Rename**: Renamed the .floating-style CSS class to chatbot-floating-style to avoid conflicts with other plugins or themes.
-* **embedded-style CSS Class Rename**: Renamed the .embedded-style CSS class to chatbot-embedded-style to avoid conflicts with other plugins or themes.
-* **chatgptTitle CSS ID Rename**: Renamed the chatgptTitle CSS ID renamed to chatbot-chatgpt-title to avoid conflicts with other plugins or themes.
-* **chatbot-user-text CSS Class Rename**: Renamed the user-text CSS class to chatbot-user-text to avoid conflicts with other plugins or themes.
-* **bot-text CSS Class Rename**: Renamed the bot-text CSS class to chatbot-bot-text to avoid conflicts with other plugins or themes.
-
-## What's New in Version 2.0.8
-
-* **Logic Error Updated**: Corrected a logic error that was causing some visitors and logged-in users to lose their session continuity with the Assistants. This ensures a smoother and more consistent experience for all users.
-* **Fixed Special Characters Display Issue**: Improved the way special characters are handled in chatbot names. Previously, the code was converting special characters like '&' into their HTML equivalents (e.g., '&' became '&').
-
-## What's New in Version 2.0.7
-
-* **Model Support**: The latest models available from the AI platform you choose and are dynamically added to model picklists.
-* **Manage Chatbot Error Logs**: Added the ability to manage chatbot error logs, including the ability to download and delete logs. See Chatbot Settings > Tools. TIP: You must enable Diagnostics access the Tools tab. See Chatbot Settings > Messages > Messages and Diagnostics.
-* **Revised Reporting Settings Layout**: Revised and refreshed the Reporting Settings page layout for better visualization. See Chatbot Settings > Reporting.
-* **Conversation Continuation**: Added a setting to enable conversation continuation after returning to a page previously visited. See Chatbot Settings > Settings > Additional Settings.
-
-## What's New in Version 2.0.6
-
-* **Dynamic Shortcode**: Added support for dynamic shortcodes to allow for more flexible Assistant selection. Add all parameters to the shortcode, including the Assistant ID on the GTP Assistant tab. For example, `[chatbot-1]`.
-* **Logic Error Updated**: Corrected a logic error that prevented visitors and logged-in users from interacting with Assistants.
-
-## What's New in Version 2.0.5
-
-* **Enhanced Assistant Management**: A new intuitive interface for managing all your chatbot Assistants in one place.
-
-* **Assistant ID Integration**: Easily add Assistants developed in the OpenAI Playground using their unique ID.
-
-* **Improved Shortcode Usage**: Tips for optimal placement and usage of the `[chatbot assistant="Common Name"]` shortcode.
-
-* **Customizable Assistant Attributes**: Tailor each Assistant's settings such as Styling, Target Audience, Voice, Allow File Uploads, Allow Transcript Downloads, Show Assistant Name, Initial Greeting, Subsequent Greeting, Placeholder Prompt, and Additional Instructions.
-
-* **Support Tab**: Reverted the "Support" tab to correctly display the plugin's support documentation overview.
-
-* **Embedded Chatbot Formatting Updated**: Added a closing `</div>` tag to the embedded chatbot to ensure proper formatting.
-
-* **Force Page Reload on Conversation Cleared**: Added an option to force a page reload when the conversation is cleared.
-
-* **Knowledge Navigator Analysis**: Moved the Knowledge Navigator Analysis for export to the bottom of the Knowledge Navigator tab.
-
-* **Custom Buttons Expanded**: Now supports up to four custom buttons, available on floating only, embedded only, or on both chatbot styles.
+---
 
 ## Quick Start
 
@@ -126,33 +70,108 @@ The **Kognetiks Chatbot for WordPress** is powered by OpenAI, NVIDIA or others, 
 
 - [Frequently Asked Questions](support/faqs.md)
 
-## Sections
+---
 
-- [General](settings/settings.md)
+## 🧱 Core Setup  
+*Make it work*
 
-- [API/ChatGPT Settings](api-chatgpt-settings/api-chatgpt-model-settings.md)
+- [General](settings/settings.md)  
+- [Messages](messages/messages.md)
 
-- [API/NVIDIA Settings](api-nvidia-settings/api-nvidia-model-settings.md)
+---
+
+## 🤖 AI Engines & Models  
+*Choose how the chatbot thinks*
+
+- [API / ChatGPT Settings](api-chatgpt-settings/api-chatgpt-model-settings.md)  
+- [API / Azure OpenAI Settings](api-azure-openai-settings/api-azure-openai-model-settings.md)  
+- [API / NVIDIA Settings](api-nvidia-settings/api-nvidia-model-settings.md)  
+- [API / Anthropic Settings](api-anthropic-settings/api-anthropic-model-settings.md)  
+- [API / DeepSeek Settings](api-deepseek-settings/api-deepseek-model-settings.md)  
+- [API / Google Settings](api-google-settings/api-google-model-settings.md)  
+- [API / Mistral Settings](api-mistral-settings/api-mistral-model-settings.md)  
+- [API / Local Server Settings](api-local-settings/api-local-model-settings.md)
+
+---
+
+## 🧠 Assistants & Knowledge  
+*What the chatbot knows*
 
 - [Assistants](assistants/manage-assistants.md)
+- [OpenAI's Responses API](api-openai-responses-api/prompt-agent-build-and-deploy-guide.md)
+- [Knowledge Navigator](knowledge-navigator/knowledge-navigator.md)  
+- [Knowledge Navigator Analysis](knowledge-navigator/knowledge-navigator-analysis.md)
 
-- [Avatars](avatars/avatars.md)
+---
 
-- [Appearance](appearance/appearance.md)
+## 🎨 Experience & Interface  
+*How it looks and behaves for visitors*
 
+- [Avatars](avatars/avatars.md)  
+- [Appearance](appearance/appearance.md)  
 - [Buttons](buttons/buttons.md)
 
-- [Knowledge Navigator](knowledge-navigator/knowledge-navigator.md)
+---
 
-- [Analysis](analysis/analysis.md)
+## 👀 Visibility & Oversight  
+*What’s happening and when it matters*
 
-- [Reporting](reporting/reporting.md)
+- [Dashboard Widget](dashboard/dashboard.md)  
+- [Reporting](reporting/reporting.md)  
+- [Insights](analytics/analytics.md)  
+- Conversation Digest *(configured within Reporting & Insights)*
 
-- [Messages](messages/messages.md)
+---
+
+## 🛠️ Utilities & Management  
+*Advanced and supporting tools*
 
 - [Tools](tools/tools.md)
 
-## Support
+---
+
+## 🔐 Premium Capabilities
+
+Kognetiks Premium is designed to help you **stay aware**, **act with confidence**, and **demonstrate real value** from your chatbot — without constant monitoring.
+
+- **🧠 Insights & Reporting**  
+  Understand how conversations are performing over time, identify patterns, and spot when attention is needed.  
+  → [Insights & Reporting Overview](analytics-package/analytics-package.md)
+
+- **📧 Conversation Digest Email**  
+  Stay informed automatically with scheduled summaries of new chatbot conversations delivered to your inbox.  
+  → [Conversation Digest Email](conversation-digest-email.md)
+
+- **💎 Proof of Value Reports Email**  
+  Turn chatbot activity into clear, executive-ready summaries that demonstrate impact, performance, and ROI.  
+  → [Proof of Value Reports Email](proof-of-value-reports-email.md)
+
+---
+
+## 🧩 Premium Subscription & Support
+
+- **🎧 Premium Support**  
+  Priority assistance, guidance, and troubleshooting for Premium users running production chatbots.  
+  → [Premium Support](premium-support/premium-support.md)
+
+
+---
+
+## Functional Details
+
+- [Functional Details](specs/functional-details.md)
+
+---
+
+## Beta Support
+
+- [Enabling Beta Features](beta-features/beta-features.md)
+
+- [API/Transformer Settings](api-transformer-settings/api-transformer-model-settings.md) **BETA FEATURE**
+
+--- 
+
+## Connect with Support
 
 - [How the Kognetiks Chatbot Works](support/how-it-works.md)
 
@@ -164,9 +183,7 @@ The **Kognetiks Chatbot for WordPress** is powered by OpenAI, NVIDIA or others, 
 
 - [Diagnostics - For Developers](support/diagnostics.md)
 
-## Demos
-
-- Coming Soon
+---
 
 ## Notice
 
@@ -174,7 +191,7 @@ While AI-powered applications strive for accuracy, they can sometimes make mista
 
 ## Disclaimer
 
-OpenAI, ChatGPT, and their respective trademarks are registered trademarks of OpenAI. NVIDIA, NIM, and their respective trademarks are registered trademarks of NVIDIA. Anthropic, Claude, and their respective trademarks are registered trademarks of Anthropic. Kognetiks is an independent entity and is neither affiliated with, endorsed by, nor sponsored by OpenAI, NVIDIA, or Anthropic.
+WordPress, OpenAI, ChatGPT, NVIDIA, NIM, Anthropic, Claude, DeepSeek, Google, Mistral, Azure and related trademarks are the property of their respective owners. Kognetiks is an independent entity and is not affiliated with, endorsed by, or sponsored by WordPress Foundation, OpenAI, NVIDIA, Anthropic, DeepSeek, Google or Mistral.
 
 ---
 

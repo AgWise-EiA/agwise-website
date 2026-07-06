@@ -8,6 +8,88 @@ jQuery(document).ready(function ($) {
     } else {
         // console.log('Chatbot: NOTICE: kchat_settings:', kchat_settings);
     }
+    
+// Unlock conversation on page load/refresh to prevent stuck locks
+function unlockConversationOnLoad() {
+    let user_id = kchat_settings.user_id;
+    let page_id = kchat_settings.page_id;
+    let session_id = kchat_settings.session_id;
+    let assistant_id = kchat_settings.assistant_id;
+    
+    if (user_id && page_id && session_id && assistant_id) {
+        $.ajax({
+            url: kchat_settings.ajax_url,
+            method: 'POST',
+            timeout: 5000, // 5 second timeout
+            data: {
+                action: 'chatbot_chatgpt_unlock_conversation',
+                user_id: user_id,
+                page_id: page_id,
+                session_id: session_id,
+                assistant_id: assistant_id,
+                chatbot_nonce: kchat_settings.chatbot_unlock_nonce // Security: CSRF protection
+            },
+            success: function(response) {
+                // Gate the success path - if server returned success:false, handle it silently
+                if (response && typeof response === 'object' && response.success === false) {
+                    // Silently handle - this is just a cleanup operation, don't show errors
+                    return;
+                }
+                // console.log('Chatbot: NOTICE: Conversation unlocked on page load');
+            },
+            error: function(jqXHR, status, error) {
+                // Silently fail - this is just a cleanup operation
+                // No-op to keep console clean, especially for 403 errors from Wordfence/Hostinger
+            }
+        });
+    }
+}
+
+// Reset all locks - emergency function
+function resetAllLocks() {
+    let user_id = kchat_settings.user_id;
+    let page_id = kchat_settings.page_id;
+    let session_id = kchat_settings.session_id;
+    let assistant_id = kchat_settings.assistant_id;
+
+    // console.log('kchat_settings:', kchat_settings);
+    // console.log('user_id:', kchat_settings.user_id);
+    // console.log('page_id:', kchat_settings.page_id);
+    // console.log('session_id:', kchat_settings.session_id);
+    // console.log('assistant_id:', kchat_settings.assistant_id);
+    
+    if (user_id && page_id && session_id && assistant_id) {
+        $.ajax({
+            url: kchat_settings.ajax_url,
+            method: 'POST',
+            timeout: 10000, // 10 second timeout
+            data: {
+                action: 'chatbot_chatgpt_reset_all_locks',
+                user_id: user_id,
+                page_id: page_id,
+                session_id: session_id,
+                assistant_id: assistant_id,
+                chatbot_nonce: kchat_settings.chatbot_reset_nonce // Security: CSRF protection
+            },
+            success: function(response) {
+                // console.log('Chatbot: NOTICE: All locks reset - ' + response.data);
+                // Reload the page to ensure clean state
+                setTimeout(function() {
+                    window.location.reload();
+                }, 1000);
+            },
+            error: function() {
+                // console.log('Chatbot: ERROR: Failed to reset locks');
+            }
+        });
+    }
+}
+
+// Call unlock function on page load
+unlockConversationOnLoad();
+
+// Expose resetAllLocks globally for console access
+window.resetAllLocks = resetAllLocks;
 
     // Only call the function if the chatbot shortcode is present
     if (isChatbotShortcodePresent()) {
@@ -22,10 +104,10 @@ jQuery(document).ready(function ($) {
         return document.querySelector('.chatbot-chatgpt') !== null;
     }
    
-    // DIAG - Diagnostic - Ver 2.1.1.1
+    // DIAG - Diagnostics - Ver 2.4.5
     // const sortedKeys = Object.keys(kchat_settings).sort();
     // for (const key of sortedKeys) {
-    //     console.log('Chatbot: NOTICE: kchat_settings: ' + key + ': ' + kchat_settings[key]);
+    //     // console.log('Chatbot: NOTICE: kchat_settings: ' + key + ': ' + kchat_settings[key]);
     // }
 
     let chatbot_chatgpt_Elements = $('#chatbot-chatgpt').hide();
@@ -51,25 +133,91 @@ jQuery(document).ready(function ($) {
     plugins_url = kchat_settings['plugins_url'];
 
     // Get an open icon for the chatbot - Ver 1.8.6
-    chatbotopenicon = plugins_url + 'assets/icons/' + 'chat_FILL0_wght400_GRAD0_opsz24.png';
+    // chatbotopenicon = plugins_url + 'assets/icons/' + 'chat_FILL0_wght400_GRAD0_opsz24.png';
+    const chatbotopeniconUrl = kchat_settings.chatbot_chatgpt_appearance_open_icon || plugins_url + 'assets/icons/' + 'chat_FILL0_wght400_GRAD0_opsz24.png';
+    // Sanitize the open icon URL to prevent XSS
+    const sanitizedOpenIcon = DOMPurify.sanitize(chatbotopeniconUrl, {ALLOWED_URI_REGEXP: /^(?:(?:(?:f|ht)tps?|mailto|tel|callto|cid|xmpp):|[^a-z]|[a-z+.\-]+(?:[^a-z+.\-:]|$))/i});
     chatbotopenicon = $('<img>')
     .attr('id', 'chatbot-open-icon')
     .attr('class', 'chatbot-open-icon')
-    .attr('src', chatbotopenicon);
+    .attr('src', sanitizedOpenIcon)
+    .attr('decoding', 'async')
+    .attr('width', '24')
+    .attr('height', '24');
 
     // Get a collapse icon for the chatbot - Ver 1.8.6
-    chatbotcollapseicon = plugins_url + 'assets/icons/' + 'close_FILL0_wght400_GRAD0_opsz24.png';
+    // chatbotcollapseicon = plugins_url + 'assets/icons/' + 'close_FILL0_wght400_GRAD0_opsz24.png';
+    const chatbotcollapseiconUrl = kchat_settings.chatbot_chatgpt_appearance_collapse_icon || plugins_url + 'assets/icons/' + 'close_FILL0_wght400_GRAD0_opsz24.png';
+    // Sanitize the collapse icon URL to prevent XSS
+    const sanitizedCollapseIcon = DOMPurify.sanitize(chatbotcollapseiconUrl, {ALLOWED_URI_REGEXP: /^(?:(?:(?:f|ht)tps?|mailto|tel|callto|cid|xmpp):|[^a-z]|[a-z+.\-]+(?:[^a-z+.\-:]|$))/i});
     chatbotcollapseicon = $('<img>')
     .attr('id', 'chatbot-collapse-icon')
     .attr('class', 'chatbot-collapse-icon')
-    .attr('src', chatbotcollapseicon);
+    .attr('src', sanitizedCollapseIcon)
+    .attr('decoding', 'async')
+    .attr('width', '24')
+    .attr('height', '24');
 
     // Get an erase icon for the chatbot - Ver 1.8.6
-    chatboteraseicon = plugins_url + 'assets/icons/' + 'delete_FILL0_wght400_GRAD0_opsz24.png';
+    // chatboteraseicon = plugins_url + 'assets/icons/' + 'delete_FILL0_wght400_GRAD0_opsz24.png';
+    const chatboteraseiconUrl = kchat_settings.chatbot_chatgpt_appearance_erase_icon || plugins_url + 'assets/icons/' + 'delete_FILL0_wght400_GRAD0_opsz24.png';
+    // Sanitize the erase icon URL to prevent XSS
+    const sanitizedEraseIcon = DOMPurify.sanitize(chatboteraseiconUrl, {ALLOWED_URI_REGEXP: /^(?:(?:(?:f|ht)tps?|mailto|tel|callto|cid|xmpp):|[^a-z]|[a-z+.\-]+(?:[^a-z+.\-:]|$))/i});
     chatboteraseicon = $('<img>')
     .attr('id', 'chatbot-erase-icon')
     .attr('class', 'chatbot-erase-icon')
-    .attr('src', chatboteraseicon);
+    .attr('src', sanitizedEraseIcon)
+    .attr('decoding', 'async')
+    .attr('width', '24')
+    .attr('height', '24');
+
+    // // Get an the resize up button icon for the chatbot - Ver 2.2.7
+    // // chatbotresizeupicon = plugins_url + 'assets/icons/' + 'bottom_panel_open_FILL0_wght400_GRAD0_opsz24.png';
+    // chatbotresizeupicon = kchat_settings.chatbot_chatgpt_appearance_resize_up_icon || plugins_url + 'assets/icons/' + 'bottom_panel_open_FILL0_wght400_GRAD0_opsz24.png';
+    // chatbotresizeupicon = $('<img>')
+    // .attr('id', 'chatbot-resize-up-icon')
+    // .attr('class', 'chatbot-resize-up-icon')
+    // .attr('src', chatbotresizeupicon)
+    // .attr('decoding', 'async')
+    // .attr('width', '24')
+    // .attr('height', '24');
+
+    // // Get an the resize down button icon for the chatbot - Ver 2.2.7
+    // // chatbotresizedownicon = plugins_url + 'assets/icons/' + 'bottom_panel_open_FILL0_wght400_GRAD0_opsz24.png';
+    // chatbotresizedownicon = kchat_settings.chatbot_chatgpt_appearance_resize_down_icon || plugins_url + 'assets/icons/' + 'bottom_panel_close_FILL0_wght400_GRAD0_opsz24.png';
+    // chatbotresizedownicon = $('<img>')
+    // .attr('id', 'chatbot-resize-down-icon')
+    // .attr('class', 'chatbot-resize-down-icon')
+    // .attr('src', chatbotresizedownicon)
+    // .attr('decoding', 'async')
+    // .attr('width', '24')
+    // .attr('height', '24');
+
+    // // chatbot-resize-icon
+    // chatbotresizeicon = kchat_settings.chatbot_chatgpt_appearance_resize_down_icon || plugins_url + 'assets/icons/' + 'bottom_panel_close_FILL0_wght400_GRAD0_opsz24.png';
+    // chatbotresizeicon = $('<img>')
+    // .attr('id', 'chatbot-resize-icon')
+    // .attr('class', 'chatbot-resize-icon')
+    // .attr('src', chatbotresizeicon)
+    // .attr('decoding', 'async')
+    // .attr('width', '24')
+    // .attr('height', '24');
+
+    let chatbotresizeupiconSrc = kchat_settings.chatbot_chatgpt_appearance_resize_up_icon 
+        || plugins_url + 'assets/icons/bottom_panel_open_FILL0_wght400_GRAD0_opsz24.png';
+
+    let chatbotresizedowniconSrc = kchat_settings.chatbot_chatgpt_appearance_resize_down_icon 
+        || plugins_url + 'assets/icons/bottom_panel_close_FILL0_wght400_GRAD0_opsz24.png';
+
+    // Sanitize the resize icon URLs to prevent XSS
+    const sanitizedResizeUpIcon = DOMPurify.sanitize(chatbotresizeupiconSrc, {ALLOWED_URI_REGEXP: /^(?:(?:(?:f|ht)tps?|mailto|tel|callto|cid|xmpp):|[^a-z]|[a-z+.\-]+(?:[^a-z+.\-:]|$))/i});
+    const sanitizedResizeDownIcon = DOMPurify.sanitize(chatbotresizedowniconSrc, {ALLOWED_URI_REGEXP: /^(?:(?:(?:f|ht)tps?|mailto|tel|callto|cid|xmpp):|[^a-z]|[a-z+.\-]+(?:[^a-z+.\-:]|$))/i});
+
+    let chatbotresizeicon = $('<img>')
+        .attr('id', 'chatbot-resize-icon')
+        .attr('src', sanitizedResizeUpIcon)
+        .attr('width', '24')
+        .attr('height', '24');
 
     // console.log('Chatbot: NOTICE: chatbot_chatgpt_start_status: ' + chatbot_chatgpt_start_status);
     // console.log('Chatbot: NOTICE: chatbot_chatgpt_start_status_new_visitor: ' + chatbot_chatgpt_start_status_new_visitor);
@@ -85,7 +233,7 @@ jQuery(document).ready(function ($) {
     //     var footerTop = site-footer.getBoundingClientRect().top;
 
     //     var visible-distance = footerTop - headerBottom;
-    //     console.log('Chatbot: NOTICE: Distance:  + distance + 'px');
+    //     // console.log('Chatbot: NOTICE: Distance:  + distance + 'px');
     // }
     
     if (chatbot_chatgpt_display_style === 'embedded') {
@@ -200,11 +348,23 @@ jQuery(document).ready(function ($) {
 
     chatbotContainer = $('<div></div>').addClass('chatbot-container');
 
+    // Add the resize icon - Ver 2.2.7
+    chatbotResizeBtn = $('<button></button>').addClass('chatbot-resize-btn').append(chatbotresizeicon); // Add a resize button
+
     // Changed this out for an image - Ver 1.8.6
     // chatbotCollapseBtn = $('<button></button>').addClass('chatbot-collapse-btn').addClass('dashicons dashicons-format-chat'); // Add a collapse button
     chatbotCollapseBtn = $('<button></button>').addClass('chatbot-collapse-btn').append(chatbotcollapseicon); // Add a collapse button
 
     chatbotCollapsed = $('<div></div>').addClass('chatbot-collapsed'); // Add a collapsed chatbot icon dashicons-format-chat f125
+
+    // Create a container for the header buttons
+    let headerActions = $('<div></div>').addClass('chatbot-header-actions');
+
+    // Append the collapse and resize buttons into the container
+    headerActions.append(chatbotResizeBtn, chatbotCollapseBtn);
+
+    // Append the container to the chatbot header
+    $('#chatbot-chatgpt-header').append(headerActions);
 
     // Avatar and Custom Message - Ver 1.5.0 - Upgraded - Ver 2.0.3 - 2024 05 28
     let selectedAvatar = kchat_settings.chatbot_chatgpt_avatar_icon_setting || '';
@@ -277,8 +437,12 @@ jQuery(document).ready(function ($) {
     }
     
     // Append the collapse button and collapsed chatbot icon to the chatbot container
-    $('#chatbot-chatgpt-header').append(chatbotCollapseBtn);
-    chatbotContainer.append(chatbotCollapsed);
+    // $('#chatbot-chatgpt-header').append(chatbotCollapseBtn);
+    // chatbotContainer.append(chatbotCollapsed);
+
+    // Append the resize button to the chatbot container - Ver 2.2.7
+    // $('#chatbot-chatgpt-header').append(chatbotResizeBtn);
+    // chatbotContainer.append(chatbotResizeBtn);
 
     // Add initial greeting to the chatbot
     conversation.append(chatbotContainer);
@@ -360,13 +524,22 @@ jQuery(document).ready(function ($) {
         chatbot_chatgpt_Elements.append(chatbotHeader);
 
         // Add the chatbot button to the header
-        $('#chatbot-chatgpt-header').append(chatbotCollapseBtn);
-        chatbotHeader.append(chatbotCollapsed);
+        // $('#chatbot-chatgpt-header').append(chatbotCollapseBtn);
+        // chatbotHeader.append(chatbotCollapsed);
+
+        // Add the chatbot resize button to the header - Ver 2.2.7
+        // $('#chatbot-chatgpt-header').append(chatbotResizeBtn);
+        // chatbotHeader.append(chatbotResizeBtn);
 
         // Attach the click event listeners for the collapse button and collapsed chatbot icon
         chatbotCollapseBtn.on('click', toggleChatbot);
         chatbotCollapsed.on('click', toggleChatbot);
         chatGptOpenButton.on('click', toggleChatbot);
+        chatbotResizeBtn.on('click', resizeChatbot);
+
+        // Attached the click event listeners for the resize up and down buttons - Ver 2.2.7
+        // $('#chatbot-resize-up-icon').on('click', resizeChatbot);
+        // $('#chatbot-resize-down-icon').on('click', resizeChatbot);
 
     } else {
 
@@ -375,6 +548,110 @@ jQuery(document).ready(function ($) {
 
     }
 
+    let originalWidth;
+    let originalHeight;
+    let enlarged = false;
+    let resizeTimeout;
+
+    function resizeChatbot() {
+        
+        let chatEl = document.getElementById('chatbot-chatgpt');
+    
+        if (!chatEl) {
+            // console.warn('Chatbot: WARNING: Chatbot element not found.');
+            return;
+        }
+    
+        // Ensure original dimensions are set when first resizing
+        if (typeof originalWidth === 'undefined' || typeof originalHeight === 'undefined') {
+            originalWidth = chatEl.offsetWidth;
+            originalHeight = chatEl.offsetHeight;
+        }
+    
+        let viewportWidth = window.innerWidth;
+        let viewportHeight = window.innerHeight;
+        let margin = 20; // Safety margin
+    
+        if (!enlarged) {
+            let newWidth = Math.min(originalWidth * 2, viewportWidth - margin);
+            let newHeight = Math.min(originalHeight * 2, viewportHeight - margin);
+
+            // Update the height and width of the chatbot with the newWidth and newHeight
+            chatEl.style.setProperty('width', newWidth + 'px', 'important');
+            chatEl.style.setProperty('height', newHeight + 'px', 'important');
+
+            $('#chatbot-chatgpt-conversation')[0].style.setProperty('max-height', '90%', 'important');
+
+            // Remove any existing resize listeners before adding new ones
+            $(window).off('resize').on('resize', function() {
+                clearTimeout(resizeTimeout);
+                resizeTimeout = setTimeout(function() {
+                    updateChatbotConversationMaxHeight();
+                    updateChatContainerDimensions();
+                }, 250); // Debounce resize events
+            });
+
+            $('#chatbot-resize-icon')
+                .attr('src', sanitizedResizeDownIcon)
+                .attr('alt', 'Reduce Chat');
+
+            enlarged = true;
+            localStorage.setItem('chatbot_enlarged', 'true');
+
+        } else {
+            chatEl.style.setProperty('width', originalWidth + 'px', 'important');
+            chatEl.style.setProperty('height', originalHeight + 'px', 'important');
+
+            $('#chatbot-chatgpt-conversation').css('max-height', '400px');
+
+            $('#chatbot-resize-icon')
+                .attr('src', sanitizedResizeUpIcon)
+                .attr('alt', 'Enlarge Chat');
+
+            enlarged = false;
+            localStorage.setItem('chatbot_enlarged', 'false');
+            
+            // Remove resize listener when reducing
+            $(window).off('resize');
+        }
+    }
+
+    // Initialize enlarged state from localStorage
+    if (localStorage.getItem('chatbot_enlarged') === 'true') {
+        enlarged = true;
+    }
+
+    // Function to update the chatbot styles based on the viewport size
+    function updateChatbotConversationMaxHeight() {
+
+        if (! enlarged) { return; }
+
+        let newMaxHeight = window.innerHeight * 0.9 + 'px';
+        document.getElementById('chatbot-chatgpt-conversation')
+                .style.setProperty('max-height', newMaxHeight, 'important');
+    }
+
+    // Function to update the chatbot styles based on the viewport size
+    function updateChatContainerDimensions() {
+
+        if (! enlarged) { return; }
+        
+        let chatEl = document.getElementById('chatbot-chatgpt');
+        if (!chatEl) return;
+        
+        let viewportWidth = window.innerWidth;
+        let viewportHeight = window.innerHeight;
+        let margin = 20; // Safety margin
+    
+        // Calculate new dimensions based on the original dimensions and viewport size.
+        let newWidth = Math.min(originalWidth * 2, viewportWidth - margin);
+        let newHeight = Math.min(originalHeight * 2, viewportHeight - margin);
+    
+        chatEl.style.setProperty('width', newWidth + 'px', 'important');
+        chatEl.style.setProperty('height', newHeight + 'px', 'important');
+    }
+
+    // Function to append message to the conversation
     function appendMessage(message, sender, cssClass) {
 
         let user_id = kchat_settings.user_id;
@@ -389,6 +666,9 @@ jQuery(document).ready(function ($) {
         let customErrorMessage = kchat_settings['chatbot_chatgpt_custom_error_message'] || 'Your custom error message goes here.';
     
         if (typeof message !== 'undefined' && message !== null) {
+            // Normalize message to string before any string operations (fixes TypeError: message.startsWith is not a function)
+            message = toSafeString(message);
+            
             if (message.startsWith('Error')) {
                 logErrorToServer(message);  // Log the error to the server
         
@@ -479,11 +759,16 @@ jQuery(document).ready(function ($) {
         }
 
         // MathJax rendering - Ver 2.1.2 - 2024 08 29
-        MathJax.typesetPromise([messageElement[0]])
-        .then(() => {
-            // console.log("MathJax rendering complete");
-        })
-        .catch((err) => console.log("MathJax rendering failed: ", err));
+        if (typeof MathJax !== 'undefined') {
+            // console.log("MathJax is loaded.");
+            MathJax.typesetPromise([messageElement[0]])
+                .then(() => {
+                    // console.log("MathJax rendering complete");
+                })
+                .catch((err) => console.log("MathJax rendering failed: ", err));
+        } else {
+            // console.log("MathJax is not loaded.");
+        }
 
     }
 
@@ -506,6 +791,9 @@ jQuery(document).ready(function ($) {
 
     // markdownToHtml - Ver 2.1.5
     function markdownToHtml(markdown) {
+        // Normalize input to string defensively before any string operations
+        markdown = toSafeString(markdown);
+        
         // Step 1: Process links before any other inline elements
         markdown = markdown.replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2" target="_blank">$1</a>');
     
@@ -517,8 +805,28 @@ jQuery(document).ready(function ($) {
             return `{{HTML_TAG_${predefinedHtml.length - 1}}}`;
         });
     
-        // Step 3: Escape HTML outside of code blocks
-        markdown = markdown.split(/(```[\s\S]+?```)/g).map((chunk, index) => {
+        // Step 2.5: Extract LaTeX mathematical expressions to preserve them - Ver 2.1.5 MathJax Fix
+        let latexExpressions = [];
+        // Extract display math: \[...\] and $$...$$
+        markdown = markdown.replace(/\\\[[\s\S]*?\\\]|\$\$[\s\S]*?\$\$/g, (match) => {
+            latexExpressions.push(match);
+            return `{{LATEX_DISPLAY_${latexExpressions.length - 1}}}`;
+        });
+        // Extract inline math: \(...\) and $...$ (but not $$...$$)
+        markdown = markdown.replace(/\\\([\s\S]*?\\\)|\$(?!\$)[\s\S]*?\$(?!\$)/g, (match) => {
+            latexExpressions.push(match);
+            return `{{LATEX_INLINE_${latexExpressions.length - 1}}}`;
+        });
+        // Extract [latext]...[/latext] tags and convert to display math - Ver 2.1.5 MathJax Fix
+        markdown = markdown.replace(/\[latext\]([\s\S]*?)\[\/latext\]/gi, (match, content) => {
+            // Convert [latext] tags to display math format
+            const displayMath = `\\[${content.trim()}\\]`;
+            latexExpressions.push(displayMath);
+            return `{{LATEX_DISPLAY_${latexExpressions.length - 1}}}`;
+        });
+    
+        // Step 3: Escape HTML outside of code blocks and LaTeX expressions
+        markdown = markdown.split(/(```[\s\S]+?```|{{LATEX_DISPLAY_\d+}}|{{LATEX_INLINE_\d+}})/g).map((chunk, index) => {
             return index % 2 === 0 ? chunk.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;") : chunk;
         }).join('');
     
@@ -532,9 +840,30 @@ jQuery(document).ready(function ($) {
                         .replace(/^# (.*)$/gim, '<h1>$1</h1>');
     
         // Step 6: Bold, Italic, Strikethrough
-        markdown = markdown.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-                        .replace(/\*(.*?)\*/g, '<em>$1</em>')
-                        .replace(/\~\~(.*?)\~\~/g, '<del>$1</del>');
+        // Process bold first, handling nested italic inside bold
+        // Strategy: Extract bold blocks, process italic inside them, then process remaining italic
+        const boldPlaceholders = [];
+        let boldIndex = 0;
+        // Match bold: **text** - use non-greedy matching to handle multiple bold blocks
+        markdown = markdown.replace(/\*\*([\s\S]*?)\*\*/g, (match, content) => {
+            // Process italic inside bold content (match *text* but not **)
+            // Replace single asterisks that form italic, avoiding ** patterns
+            let processedContent = content;
+            // Match italic pattern: *text* where * is not part of **
+            processedContent = processedContent.replace(/\*([^*\n]+?)\*/g, '<em>$1</em>');
+            const placeholder = `{{BOLD_${boldIndex}}}`;
+            boldPlaceholders[boldIndex] = '<strong>' + processedContent + '</strong>';
+            boldIndex++;
+            return placeholder;
+        });
+        // Process remaining standalone italic (not inside bold placeholders)
+        markdown = markdown.replace(/\*([^*\n]+?)\*/g, '<em>$1</em>');
+        // Restore bold blocks
+        markdown = markdown.replace(/{{BOLD_(\d+)}}/g, (match, index) => {
+            return boldPlaceholders[parseInt(index)] || match;
+        });
+        // Process strikethrough
+        markdown = markdown.replace(/\~\~([^~]+?)\~\~/g, '<del>$1</del>');
     
         // Step 7: Multi-line code blocks
         markdown = markdown.replace(/```([\s\S]*?)```/gm, '<pre><code>$1</code></pre>');
@@ -554,20 +883,27 @@ jQuery(document).ready(function ($) {
     
         // Step 11: Consolidate line breaks and remove extra spaces
         markdown = markdown.replace(/\n{2,}/g, '\n').split(/\n/g).map((line, index) => {
-            return line.match(/^<h|<p|<ul|<pre|<blockquote/) ? line : line.trim() ? `${line}<br>` : '';
-        }).join('');
+            return line.match(/^<h|<p|<ul|<pre|<blockquote/) ? line : line.trim() ? `${line}</p>` : '';
+        }).filter(line => line.trim() !== '').join('');
    
-        // Step 12: Reinsert predefined HTML tags
+        // Step 12: Reinsert LaTeX expressions - Ver 2.1.5 MathJax Fix
+        markdown = markdown.replace(/{{LATEX_DISPLAY_(\d+)}}/g, (match, index) => {
+            return latexExpressions[parseInt(index)];
+        });
+        markdown = markdown.replace(/{{LATEX_INLINE_(\d+)}}/g, (match, index) => {
+            return latexExpressions[parseInt(index)];
+        });
+
+        // Step 13: Reinsert predefined HTML tags
         markdown = markdown.replace(/{{HTML_TAG_(\d+)}}/g, (match, index) => {
             return predefinedHtml[parseInt(index)];
         });
 
         // Penultimate step: Check for extra line breaks at the end
         markdown = markdown.replace(/<br>\s*$/, '');
-        // Check again for extra line breaks at the end
-        markdown = markdown.replace(/<br>\s*$/, '');
-        // Check again for extra line breaks at the end
-        markdown = markdown.replace(/<br>\s*$/, '');
+
+        // Penultimate step: Remove the last paragraph tag if it's empty
+        markdown = markdown.replace(/<p>\s*<\/p>$/, '');
 
         // Return final output wrapped in a div
         return `<div>${markdown.trim()}</div>`;
@@ -577,6 +913,89 @@ jQuery(document).ready(function ($) {
     function getWeekNumber(d) {
         let oneJan = new Date(d.getFullYear(), 0, 1);
         return Math.ceil((((d - oneJan) / 86400000) + oneJan.getDay() + 1) / 7);
+    }
+
+    // Safe string coercion to prevent [object Object] display
+    function safeStringCoercion(val) {
+        if (typeof val === 'string') {
+            return val;
+        }
+        if (val && typeof val === 'object') {
+            // Try common properties that might contain the actual message
+            if (val.text) return val.text;
+            if (val.message) return val.message;
+            if (val.content) return val.content;
+            if (val.data) return safeStringCoercion(val.data); // Recursive for nested objects
+            // Fallback to JSON stringify
+            return JSON.stringify(val);
+        }
+        // Handle null, undefined, numbers, etc.
+        return String(val || '');
+    }
+
+    // Single source of truth wrapper - ensures always returns a string (never null/undefined)
+    function toSafeString(x) {
+        return safeStringCoercion(x) || '';
+    }
+
+    // Safe JSON parser for error responses
+    function tryParseJSON(str) {
+        if (!str || typeof str !== 'string') {
+            return null;
+        }
+        try {
+            return JSON.parse(str);
+        } catch (e) {
+            return null;
+        }
+    }
+
+    // Poll queue status to determine when to re-enable the submit button
+    function pollQueueStatus() {
+        let user_id = kchat_settings.user_id;
+        let page_id = kchat_settings.page_id;
+        let session_id = kchat_settings.session_id;
+        let assistant_id = kchat_settings.assistant_id;
+        
+        $.ajax({
+            url: kchat_settings.ajax_url,
+            method: 'POST',
+            timeout: 5000,
+            data: {
+                action: 'chatbot_chatgpt_get_queue_status',
+                user_id: user_id,
+                page_id: page_id,
+                session_id: session_id,
+                assistant_id: assistant_id,
+                chatbot_nonce: kchat_settings.chatbot_queue_nonce // Security: CSRF protection
+            },
+            success: function(response) {
+                if (response.success && response.data) {
+                    const queueStatus = response.data;
+                    if (!queueStatus.has_messages || queueStatus.count === 0) {
+                        // Queue is empty, re-enable the button
+                        submitButton.prop('disabled', false);
+                        removeTypingIndicator();
+                    } else {
+                        // Queue still has messages, poll again in 1 second
+                        setTimeout(pollQueueStatus, 1000);
+                    }
+                } else {
+                    // Fallback: re-enable button after 5 seconds if polling fails
+                    setTimeout(function() {
+                        submitButton.prop('disabled', false);
+                        removeTypingIndicator();
+                    }, 5000);
+                }
+            },
+            error: function() {
+                // Fallback: re-enable button after 5 seconds if polling fails
+                setTimeout(function() {
+                    submitButton.prop('disabled', false);
+                    removeTypingIndicator();
+                }, 5000);
+            }
+        });
     }
 
     function resetMessageCount(today) {
@@ -685,7 +1104,24 @@ jQuery(document).ready(function ($) {
         // console.log('Chatbot: NOTICE: page_id: ' + page_id);
         // console.log('Chatbot: NOTICE: message: ' + message);
 
-        $.ajax({
+        // Generate a unique client message ID for idempotency
+        let client_message_id = 'client_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+        
+        // Variable to track if this is a "still working" message
+        let isStillWorkingMessage = false;
+        let ajaxResponse = null; // Store response for use in complete handler
+
+        // Function to send message with nonce (extracted for reuse)
+        function sendMessageWithNonce() {
+            // Ensure nonce is present
+            if (!kchat_settings.chatbot_message_nonce) {
+                appendMessage('Oops! Security token is missing. Please refresh the page.', 'error');
+                removeTypingIndicator();
+                submitButton.prop('disabled', false);
+                return;
+            }
+
+            $.ajax({
             url: kchat_settings.ajax_url,
             method: 'POST',
             timeout: timeout_setting, // Example: 10,000ms = 10 seconds
@@ -695,6 +1131,8 @@ jQuery(document).ready(function ($) {
                 user_id: user_id, // pass the user ID here
                 page_id: page_id, // pass the page ID here
                 session_id: session_id, // pass the session ID here
+                client_message_id: client_message_id, // pass the client message ID for idempotency
+                chatbot_nonce: kchat_settings.chatbot_message_nonce, // Security: CSRF protection
             },
             headers: {  // Adding headers to prevent caching
                 'Cache-Control': 'no-cache, no-store, must-revalidate',
@@ -704,10 +1142,63 @@ jQuery(document).ready(function ($) {
             beforeSend: function () {
                 showTypingIndicator();
                 submitButton.prop('disabled', true);
+                
+                // Proactive nonce refresh if the nonce is getting old
+                const nonceAge = Date.now() - (kchat_settings.nonce_timestamp || 0);
+                if (nonceAge > 3600000) { // 1 hour in milliseconds
+                    // console.log('Chatbot: Proactively refreshing nonce due to age');
+                    $.ajax({
+                        url: kchat_settings.ajax_url,
+                        method: 'POST',
+                        data: {
+                            action: 'chatbot_chatgpt_refresh_nonce'
+                        },
+                        success: function(response) {
+                            if (response.success && response.data && response.data.chatbot_message_nonce) {
+                                kchat_settings.chatbot_message_nonce = response.data.chatbot_message_nonce;
+                                kchat_settings.nonce_timestamp = Date.now();
+                                // console.log('Chatbot: Nonce proactively refreshed');
+                            }
+                        }
+                    });
+                }
             },
             success: function (response) {
                 // console.log('Chatbot: SUCCESS: ' + JSON.stringify(response));
-                botResponse = response.data;
+                
+                // Gate the success path - if server returned a structured object with success flag
+                if (response && typeof response === 'object' && response.success === false) {
+                    appendMessage(toSafeString(response.data || response.message || response));
+                    botResponse = '';
+                    removeTypingIndicator();
+                    submitButton.prop('disabled', false);
+                    return;
+                }
+                
+                // Store response for use in complete handler
+                ajaxResponse = response;
+                
+                // Handle queued responses
+                const isQueued = response.data && typeof response.data === 'object' && response.data.queued;
+                // console.log('Chatbot: Checking response.data.queued:', isQueued);
+                if (isQueued) {
+                    // For queued messages, don't show any message - keep the typing indicator
+                    botResponse = null;
+                    // For queued messages, we don't want to disable the button
+                    // The queue will handle processing and the button will be re-enabled
+                    // when the actual response comes through
+                    // console.log('Chatbot: Queued response detected - botResponse set to null');
+                } else {
+                    botResponse = response.data;
+                    // Normalize to string before any string operations
+                    botResponse = toSafeString(botResponse);
+                    // console.log('Chatbot: Non-queued response - botResponse set to:', botResponse);
+                }
+                
+                // Check if this is a "still working" message that should re-enable the button
+                if (botResponse) {
+                    isStillWorkingMessage = botResponse.includes("The system is currently busy processing requests");
+                }
                 // Revision to how disclaimers are handled - Ver 1.5.0
                 if (kchat_settings.chatbot_chatgpt_disclaimer_setting === 'No') {
                     const prefixes = [
@@ -719,7 +1210,7 @@ jQuery(document).ready(function ($) {
                         "As an artificial intelligence developed by OpenAI, "
                     ];
                     for (let prefix of prefixes) {
-                        if (typeof botResponse === 'string' && botResponse.startsWith(prefix)) {
+                        if (botResponse && botResponse.startsWith(prefix)) {
                             botResponse = botResponse.slice(prefix.length);
                             break;
                         }
@@ -727,7 +1218,23 @@ jQuery(document).ready(function ($) {
                 }
                 // markdownToHtml - Ver 1.9.2
                 // console.log('Chatbot: NOTICE: botResponse: ' + botResponse);
-                botResponse = markdownToHtml(botResponse);
+
+                // Retrieve the current message count and message limit
+                // console.log('Chatbot: NOTICE: chatbot_chatgpt_display_message_count: ' + localStorage.getItem('chatbot_chatgpt_display_message_count'));
+                // console.log('Chatbot: NOTICE: chatbot_chatgpt_message_count: ' + localStorage.getItem('chatbot_chatgpt_message_count'));
+                // console.log('Chatbot: NOTICE: chatbot_chatgpt_message_limit_setting: ' + localStorage.getItem('chatbot_chatgpt_message_limit_setting'));
+                // console.log('Chatbot: NOTICE: chatbot_chatgpt_visitor_message_limit_setting: ' + localStorage.getItem('chatbot_chatgpt_message_visitor_limit_setting'));
+
+                if (localStorage.getItem('chatbot_chatgpt_display_message_count') === 'Yes') {
+                    let messageCount = localStorage.getItem('chatbot_chatgpt_message_count') || 0;
+                    let messageLimit = localStorage.getItem('chatbot_chatgpt_message_limit_setting') || 999;
+                    let chatbot_chatgpt_visitor_message_limit_setting = localStorage.getItem('chatbot_chatgpt_message_visitor_limit_setting') || 999;
+
+                    // Append the message count and limit to the message
+                    let messageInfo = ` (${messageCount} / ${messageLimit})`;
+                    botResponse += messageInfo;
+                }
+                botResponse = markdownToHtml(botResponse || '');
             },
             error: function (jqXHR, status, error) {
                 if(status === "timeout") {
@@ -735,16 +1242,187 @@ jQuery(document).ready(function ($) {
                     // console.log('Chatbot: ERROR: ' + error);
                     appendMessage('Oops! This request timed out. Please try again.', 'error');
                     botResponse = '';
+                } else if (jqXHR.status === 403) {
+                    // Handle 403 with safe error message extraction
+                    let errorMessage = 'Oops! Security check failed. Please refresh the page and try again.';
+                    let isNonceError = false;
+                    const contentType = jqXHR.getResponseHeader('content-type') || '';
+                    
+                    // If response is JSON, try to parse it safely
+                    let payload = null;
+                    if (contentType.includes('application/json') && jqXHR.responseText) {
+                        payload = tryParseJSON(jqXHR.responseText);
+                    } else if (jqXHR.responseText) {
+                        // Try parsing anyway in case Content-Type header is missing
+                        payload = tryParseJSON(jqXHR.responseText);
+                    }
+                    
+                    if (payload) {
+                        // Check if this is specifically a nonce failure
+                        if (payload.data && (payload.data.code === 'nonce_failed' || payload.data.suggestion === 'refresh_nonce')) {
+                            isNonceError = true;
+                        } else if (payload.code === 'nonce_failed' || payload.suggestion === 'refresh_nonce') {
+                            isNonceError = true;
+                        }
+                        
+                        errorMessage = toSafeString(payload.data?.message || payload.message || payload.data || payload);
+                    }
+                    
+                    // Only show error message if it's not a nonce error (we'll handle nonce refresh silently)
+                    if (!isNonceError && errorMessage && errorMessage !== 'Oops! Security check failed. Please refresh the page and try again.') {
+                        appendMessage(errorMessage, 'error');
+                    }
+                    
+                    // Handle 403 Forbidden - likely nonce expiration
+                    // Always try to refresh nonce on 403, but especially if it's a nonce error
+                    if (isNonceError) {
+                        // console.log('Chatbot: Nonce error detected - refreshing nonce');
+                    } else {
+                        // console.log('Chatbot: 403 Error detected - attempting nonce refresh');
+                    }
+                    
+                    // Try to refresh the nonce by making a request to get fresh settings
+                    $.ajax({
+                        url: kchat_settings.ajax_url,
+                        method: 'POST',
+                        data: {
+                            action: 'chatbot_chatgpt_refresh_nonce'
+                        },
+                        success: function(response) {
+                            if (response.success && response.data && response.data.chatbot_message_nonce) {
+                                // Update the nonce in settings
+                                kchat_settings.chatbot_message_nonce = response.data.chatbot_message_nonce;
+                                // console.log('Chatbot: Nonce refreshed successfully');
+                                
+                                // Retry the original request with the new nonce
+                                $.ajax({
+                                    url: kchat_settings.ajax_url,
+                                    method: 'POST',
+                                    timeout: timeout_setting,
+                                    data: {
+                                        action: 'chatbot_chatgpt_send_message',
+                                        message: message,
+                                        user_id: user_id,
+                                        page_id: page_id,
+                                        session_id: session_id,
+                                        client_message_id: client_message_id,
+                                        chatbot_nonce: kchat_settings.chatbot_message_nonce,
+                                    },
+                                    headers: {
+                                        'Cache-Control': 'no-cache, no-store, must-revalidate',
+                                        'Pragma': 'no-cache',
+                                        'Expires': '0'
+                                    },
+                                    success: function(response) {
+                                        // Gate the success path - if server returned success:false, handle it
+                                        if (response && typeof response === 'object' && response.success === false) {
+                                            appendMessage(toSafeString(response.data || response.message || response));
+                                            botResponse = '';
+                                            removeTypingIndicator();
+                                            submitButton.prop('disabled', false);
+                                            return;
+                                        }
+                                        
+                                        ajaxResponse = response;
+                                        const isQueued = response.data && typeof response.data === 'object' && response.data.queued;
+                                        if (isQueued) {
+                                            botResponse = null;
+                                        } else {
+                                            botResponse = response.data;
+                                            // Normalize to string before string operations
+                                            botResponse = toSafeString(botResponse);
+                                            if (kchat_settings.chatbot_chatgpt_message_limit_setting === 'Yes') {
+                                                let messageCount = parseInt(localStorage.getItem('chatbot_chatgpt_message_count') || '0') + 1;
+                                                let messageLimit = parseInt(kchat_settings.chatbot_chatgpt_message_limit_period_setting || '10');
+                                                let messageInfo = ` (${messageCount} / ${messageLimit})`;
+                                                botResponse += messageInfo;
+                                            }
+                                            botResponse = markdownToHtml(botResponse || '');
+                                        }
+                                    },
+                                    error: function(retryJqXHR, retryStatus, retryError) {
+                                        // console.log('Chatbot: Retry failed - ' + retryError);
+                                        // Extract error message safely from response
+                                        let errorMsg = 'Oops! Something went wrong on our end. Please refresh the page and try again.';
+                                        if (retryJqXHR.responseText) {
+                                            const payload = tryParseJSON(retryJqXHR.responseText);
+                                            if (payload) {
+                                                errorMsg = toSafeString(payload.data || payload.message || payload);
+                                            }
+                                        }
+                                        appendMessage(errorMsg, 'error');
+                                        botResponse = '';
+                                    },
+                                    complete: function() {
+                                        const isQueuedResponse = ajaxResponse && ajaxResponse.data && typeof ajaxResponse.data === 'object' && ajaxResponse.data.queued;
+                                        if (!isQueuedResponse) {
+                                            removeTypingIndicator();
+                                        }
+                                        if (botResponse) {
+                                            appendMessage(botResponse, 'bot');
+                                            // Execute any custom JavaScript in the response
+                                            executeCustomJavaScript();
+                                        }
+                                        submitButton.prop('disabled', false);
+                                    }
+                                });
+                            } else {
+                                // console.log('Chatbot: Failed to refresh nonce');
+                                appendMessage('Oops! Security check failed. Please refresh the page and try again.', 'error');
+                                botResponse = '';
+                            }
+                        },
+                        error: function() {
+                            // console.log('Chatbot: Failed to refresh nonce');
+                            // Try to reload the page to get fresh nonces
+                            if (confirm('Security token expired. Would you like to reload the page to continue?')) {
+                                window.location.reload();
+                            } else {
+                                appendMessage('Oops! Security check failed. Please refresh the page and try again.', 'error');
+                            }
+                            botResponse = '';
+                        }
+                    });
                 } else {
+                    // Extract error message safely from response
+                    let errorMsg = 'Oops! Something went wrong on our end. Please try again later.';
+                    const contentType = jqXHR.getResponseHeader('content-type') || '';
+                    
+                    if (jqXHR.responseText) {
+                        // Try parsing JSON if Content-Type suggests it, or try anyway
+                        if (contentType.includes('application/json')) {
+                            const payload = tryParseJSON(jqXHR.responseText);
+                            if (payload) {
+                                errorMsg = toSafeString(payload.data || payload.message || payload || jqXHR.statusText);
+                            }
+                        } else {
+                            // Try parsing anyway in case Content-Type header is missing
+                            const payload = tryParseJSON(jqXHR.responseText);
+                            if (payload) {
+                                errorMsg = toSafeString(payload.data || payload.message || payload);
+                            } else {
+                                // Fallback to statusText if available
+                                errorMsg = toSafeString(jqXHR.statusText || error || errorMsg);
+                            }
+                        }
+                    } else {
+                        errorMsg = toSafeString(jqXHR.statusText || error || errorMsg);
+                    }
+                    
                     // appendMessage('Error: ' + error, 'error')
                     // console.log('Chatbot: ERROR: ' + error);
-                    appendMessage('Oops! Something went wrong on our end. Please try again later.', 'error');
+                    appendMessage(errorMsg, 'error');
                     botResponse = '';
                 }
             },
             complete: function () {
-                removeTypingIndicator();
+                // Only remove typing indicator for non-queued responses
+                const isQueuedResponse = ajaxResponse && ajaxResponse.data && typeof ajaxResponse.data === 'object' && ajaxResponse.data.queued;
+                if (!isQueuedResponse) {
+                    removeTypingIndicator();
+                }
                 if (botResponse) {
+                    // console.log('Chatbot: Appending botResponse:', botResponse);
                     appendMessage(botResponse, 'bot');
                     // FIXME - Add custom JS to the bot's response - Ver 2.0.9
                     // Append custom JS to the bot's response - Ver 2.0.9
@@ -756,12 +1434,58 @@ jQuery(document).ready(function ($) {
                             appendMessage(customMessage, 'bot');
                         }
                     };
+                } else {
+                    // console.log('Chatbot: botResponse is null/empty - not appending message');
                 }
                 scrollToLastBotResponse();
-                submitButton.prop('disabled', false);
+                
+                // Re-enable the button if this is not a queued response OR if it's a "still working" message
+                // For queued responses, keep the button disabled until queue processing is complete
+                // For "still working" messages, the button should be re-enabled immediately
+                const isQueuedForButton = ajaxResponse && ajaxResponse.data && typeof ajaxResponse.data === 'object' && ajaxResponse.data.queued;
+                if (ajaxResponse && (!isQueuedForButton || isStillWorkingMessage)) {
+                    submitButton.prop('disabled', false);
+                } else if (isQueuedForButton) {
+                    // For queued responses, poll the queue status and re-enable when empty
+                    pollQueueStatus();
+                }
             },
             cache: false, // This ensures jQuery does not cache the result
         });
+        } // End of sendMessageWithNonce function
+        
+        // Check if nonce exists, if not fetch it first
+        if (!kchat_settings.chatbot_message_nonce) {
+            // console.log('Chatbot: Nonce missing, fetching before request');
+            // Fetch nonce before proceeding
+            $.ajax({
+                url: kchat_settings.ajax_url,
+                method: 'POST',
+                data: {
+                    action: 'chatbot_chatgpt_refresh_nonce'
+                },
+                success: function(response) {
+                    if (response.success && response.data && response.data.chatbot_message_nonce) {
+                        kchat_settings.chatbot_message_nonce = response.data.chatbot_message_nonce;
+                        kchat_settings.nonce_timestamp = Date.now();
+                        // Retry the original request now that we have a nonce
+                        sendMessageWithNonce();
+                    } else {
+                        appendMessage('Oops! Unable to initialize security token. Please refresh the page.', 'error');
+                        removeTypingIndicator();
+                        submitButton.prop('disabled', false);
+                    }
+                },
+                error: function() {
+                    appendMessage('Oops! Unable to initialize security token. Please refresh the page.', 'error');
+                    removeTypingIndicator();
+                    submitButton.prop('disabled', false);
+                }
+            });
+        } else {
+            // Nonce exists, proceed with request
+            sendMessageWithNonce();
+        }
     });
 
     // Input mitigation - Ver 2.0.0
@@ -786,7 +1510,10 @@ jQuery(document).ready(function ($) {
     messageInput.on('keydown', function (e) {
         if (e.keyCode === 13  && !e.shiftKey) {
             e.preventDefault();
-            submitButton.trigger('click');
+            // Only trigger click if the submit button is not disabled
+            if (!submitButton.prop('disabled')) {
+                submitButton.trigger('click');
+            }
         }
     });
 
@@ -833,7 +1560,8 @@ jQuery(document).ready(function ($) {
                 action: 'chatbot_chatgpt_download_transcript',
                 user_id: kchat_settings.user_id,
                 page_id: kchat_settings.page_id,
-                conversation_content: conversationContent  // Send the conversation content
+                conversation_content: conversationContent,  // Send the conversation content
+                chatbot_nonce: kchat_settings.chatbot_transcript_nonce // Security: CSRF protection
             },
             beforeSend: function () {
                 // Show typing indicator and disable submit button
@@ -918,6 +1646,7 @@ jQuery(document).ready(function ($) {
                 user_id: kchat_settings.user_id,
                 page_id: kchat_settings.page_id,
                 session_id: kchat_settings.session_id,
+                chatbot_nonce: kchat_settings.chatbot_tts_nonce // Security: CSRF protection
             },
             beforeSend: function () {
                 showTypingIndicator();
@@ -927,16 +1656,16 @@ jQuery(document).ready(function ($) {
                 if (typeof response === 'string') {
                     response = JSON.parse(response);
                 }
-                response.data = markdownToHtml(response.data);
+                response.data = markdownToHtml(response.data || '');
                 // appendMessage('Text-to-Speech: ' + response.data, 'bot');
-                appendMessage(response.data, 'bot');
+                appendMessage(safeStringCoercion(response.data), 'bot');
             },
             error: function(jqXHR, status, error) {
                 if(status === "timeout") {
                     appendMessage('Error: ' + error, 'error');
                     appendMessage('Oops! This request timed out. Please try again.', 'error');
                 } else {
-                    // DIAG - Log the error - Ver 1.6.7
+                    // DIAG - Diagnostics - Ver 2.4.5
                     // console.log('Chatbot: ERROR: ' + JSON.stringify(response));
                     appendMessage('Error: ' + error, 'error');
                     appendMessage('Oops! Failed to convert text to speech. Please try again.', 'error');
@@ -955,19 +1684,40 @@ jQuery(document).ready(function ($) {
     //
 
     // Get a microphone icon for the chatbot
+    // chatbotopenicon = plugins_url + 'assets/icons/' + 'chat_FILL0_wght400_GRAD0_opsz24.png';
+    chatbotmicenabledicon = kchat_settings.chatbot_chatgpt_appearance_mic_enabled_icon || plugins_url + 'assets/icons/' + 'mic_24dp_000000_FILL0_wght400_GRAD0_opsz24.png';
+    // console.log('Chatbot: NOTICE: kchat_settings.chatbot_chatgpt_appearance_mic_enabled_icon: ' + kchat_settings.chatbot_chatgpt_appearance_mic_enabled_icon);
+    // console.log('Chatbot: NOTICE: chatbotmicenabledicon: ' + chatbotmicenabledicon);
+    
+    // Sanitize the icon URL to prevent XSS
+    const sanitizedMicEnabledIcon = DOMPurify.sanitize(chatbotmicenabledicon, {ALLOWED_URI_REGEXP: /^(?:(?:(?:f|ht)tps?|mailto|tel|callto|cid|xmpp):|[^a-z]|[a-z+.\-]+(?:[^a-z+.\-:]|$))/i});
+    
     const micIcon = $('<img>')
+        .attr('decoding', 'async')
         .attr('id', 'chatbot-mic-icon')
         .attr('class', 'chatbot-mic-icon')
-        .attr('src', plugins_url + 'assets/icons/' + 'mic_24dp_000000_FILL0_wght400_GRAD0_opsz24.png');
+        .attr('src', sanitizedMicEnabledIcon)
+        .attr('width', '24')
+        .attr('height', '24');
 
     // Get a microphone slash icon for the chatbot
+    chatbotmicdisabledicon = kchat_settings.chatbot_chatgpt_appearance_mic_disabled_icon || plugins_url + 'assets/icons/' + 'mic_off_24dp_000000_FILL0_wght400_GRAD0_opsz24.png';
+    // console.log('Chatbot: NOTICE: kchat_settings.chatbot_chatgpt_appearance_mic_disabled_icon: ' + kchat_settings.chatbot_chatgpt_appearance_mic_disabled_icon);
+    // console.log('Chatbot: NOTICE: chatbotmicdisabledicon: ' + chatbotmicdisabledicon);
+    
+    // Sanitize the disabled icon URL to prevent XSS
+    const sanitizedMicDisabledIcon = DOMPurify.sanitize(chatbotmicdisabledicon, {ALLOWED_URI_REGEXP: /^(?:(?:(?:f|ht)tps?|mailto|tel|callto|cid|xmpp):|[^a-z]|[a-z+.\-]+(?:[^a-z+.\-:]|$))/i});
+    
     const micSlashIcon = $('<img>')
+        .attr('decoding', 'async')
         .attr('id', 'chatbot-mic-slash-icon')
         .attr('class', 'chatbot-mic-icon')
-        .attr('src', plugins_url + 'assets/icons/' + 'mic_off_24dp_000000_FILL0_wght400_GRAD0_opsz24.png');
+        .attr('src', sanitizedMicDisabledIcon)
+        .attr('width', '24')
+        .attr('height', '24');
 
     // Add the initial icon (microphone on) to the button
-    $('#chatbot-chatgpt-speech-recognition-btn').html(micIcon);
+    $('#chatbot-chatgpt-speech-recognition-btn').empty().append(micIcon);
 
     // Flag to track the recognition state
     let isRecognizing = false;  // Track if recognition is active
@@ -1086,7 +1836,7 @@ jQuery(document).ready(function ($) {
     function resetRecognition() {
         isRecognizing = false;
         // Switch back to the "microphone on" icon
-        $('#chatbot-chatgpt-speech-recognition-btn').html(micIcon);
+        $('#chatbot-chatgpt-speech-recognition-btn').empty().append(micIcon);
     }
 
     // Function to send recognized speech text to chatbot input - V2.1.5.1
@@ -1204,6 +1954,7 @@ jQuery(document).ready(function ($) {
         formData.append('user_id', user_id); // Add user_id to FormData
         formData.append('page_id', page_id); // Add page_id to FormData
         formData.append('session_id', session_id); // Add session_id to FormData
+        formData.append('chatbot_nonce', kchat_settings.chatbot_upload_nonce); // Security: CSRF protection
     
         $.ajax({
             url: kchat_settings.ajax_url,
@@ -1217,19 +1968,37 @@ jQuery(document).ready(function ($) {
                 submitButton.prop('disabled', true);
             },
             success: function(response) {
-                console.error('Chatbot: NOTICE: Response from server', response);
-                $('#chatbot-chatgpt-upload-file-input').val(''); // Clear the file input after successful upload
-                appendMessage('File(s) successfully uploaded.', 'bot');
+                $('#chatbot-chatgpt-upload-file-input').val(''); // Clear the file input after upload
+                var data = response && response.data;
+                var hasErrors = false;
+                if (Array.isArray(data)) {
+                    data.forEach(function(item) {
+                        if (item && item.status === 'error' && item.message) {
+                            hasErrors = true;
+                            appendMessage(item.message, 'error');
+                        }
+                    });
+                }
+                if (!hasErrors && response && response.success) {
+                    appendMessage('File(s) successfully uploaded.', 'bot');
+                } else if (!hasErrors && (!response || !response.success) && data && typeof data.message === 'string') {
+                    appendMessage(data.message, 'error');
+                } else if (!hasErrors && (!response || !response.success)) {
+                    appendMessage('Oops! Failed to upload file. Please try again.', 'error');
+                }
             },
             error: function(jqXHR, status, error) {
-                if(status === "timeout") {
+                if (status === "timeout") {
                     appendMessage('Error: ' + error, 'error');
                     appendMessage('Oops! This request timed out. Please try again.', 'error');
                 } else {
-                    // DIAG - Log the error - Ver 1.6.7
-                    // console.log('Chatbot: ERROR: ' + JSON.stringify(response));
-                    appendMessage('Error: ' + error, 'error');
-                    appendMessage('Oops! Failed to upload file. Please try again.', 'error');
+                    var data = (jqXHR && jqXHR.responseJSON && jqXHR.responseJSON.data) || null;
+                    if (Array.isArray(data) && data.length > 0 && data[0].message) {
+                        appendMessage(data[0].message, 'error');
+                    } else {
+                        appendMessage('Error: ' + error, 'error');
+                        appendMessage('Oops! Failed to upload file. Please try again.', 'error');
+                    }
                 }
             },
             complete: function (response) {
@@ -1288,6 +2057,7 @@ jQuery(document).ready(function ($) {
         }
         // console.log('Chatbot: NOTICE: Files selected ' + fileField.files);
         formData.append('action', 'chatbot_chatgpt_upload_mp3');
+        formData.append('chatbot_nonce', kchat_settings.chatbot_upload_nonce); // Security: CSRF protection
     
         $.ajax({
             url: kchat_settings.ajax_url,
@@ -1310,7 +2080,7 @@ jQuery(document).ready(function ($) {
                     appendMessage('Error: ' + error, 'error');
                     appendMessage('Oops! This request timed out. Please try again.', 'error');
                 } else {
-                    // DIAG - Log the error - Ver 1.6.7
+                    // DIAG - Diagnostics - Ver 2.4.5
                     // console.error('Chatbot: ERROR: ' + JSON.stringify(response));
                     appendMessage('Error: ' + error, 'error');
                     appendMessage('Oops! Failed to upload file. Please try again.', 'error');
@@ -1335,7 +2105,7 @@ jQuery(document).ready(function ($) {
         let thread_id = kchat_settings.thread_id;
         let chatbot_chatgpt_force_page_reload = kchat_settings['chatbot_chatgpt_force_page_reload'] || 'No';
 
-        // DIAG - Diagnostics - Ver 1.9.1
+        // DIAG - Diagnostics - Ver 2.4.5
         // console.log('Chatbot: NOTICE: assistant_id: ' + assistant_id);
     
         $.ajax({
@@ -1350,6 +2120,7 @@ jQuery(document).ready(function ($) {
                 thread_id: thread_id, // pass the thread ID
                 assistant_id: assistant_id, // pass the assistant ID
                 chatbot_chatgpt_force_page_reload: chatbot_chatgpt_force_page_reload, // pass the force page reload setting
+                chatbot_nonce: kchat_settings.chatbot_erase_nonce, // Security: CSRF protection
             },
             beforeSend: function () {
                 showTypingIndicator();
@@ -1357,10 +2128,10 @@ jQuery(document).ready(function ($) {
             },
             success: function(response) {
                 sessionStorage.removeItem('chatbot_chatgpt_conversation' + '_' + assistant_id); // Clear the last response from sessionStorage
-                // DIAG - Log the response
+                // DIAG - Diagnostics - Ver 2.4.5
                 // console.log('Chatbot: NOTICE: Removing conversation from sessionStorage');
                 // console.log('Chatbot: SUCCESS:', response.data);
-                appendMessage( response.data, 'bot');
+                appendMessage(safeStringCoercion(response.data), 'bot');
                 // Check localStorage setting and force a page reload if equal to 'Yes' - Ver 2.0.4
                 if (kchat_settings.chatbot_chatgpt_force_page_reload === 'Yes') {
                     location.reload(); // Force a page reload after clearing the conversation
@@ -1371,7 +2142,7 @@ jQuery(document).ready(function ($) {
                     appendMessage('Error: ' + error, 'error');
                     appendMessage('Oops! This request timed out. Please try again.', 'error');
                 } else {
-                    // DIAG - Log the error - Ver 1.6.7
+                    // DIAG - Diagnostics - Ver 2.4.5
                     // console.error('Chatbot: ERROR: ' + JSON.stringify(response));
                     appendMessage('Error: ' + error, 'error');
                     appendMessage('Oops! Unable to clear conversation. Please try again.', 'error');
@@ -1434,18 +2205,18 @@ jQuery(document).ready(function ($) {
 
         // Nuclear option to clear session conversation - Ver 1.5.0
         // Do not use unless absolutely needed
-        // DIAG - Diagnostics - Ver 1.5.0
+        // DIAG - Diagnostics - Ver 2.4.5
         // nuclearOption = 'Off';
         // if (nuclearOption === 'On') {
-        //     console.log('Chatbot: NOTICE: ***** NUCLEAR OPTION IS ON ***** ');
+        //     // console.log('Chatbot: NOTICE: ***** NUCLEAR OPTION IS ON ***** ');
         //     sessionStorage.removeItem('chatbot_chatgpt_conversation' + '_' + assistant_id);
         //     // Removed in Ver 1.6.1
         //     sessionStorage.removeItem('chatgpt_last_response');
         // }
 
-        // DIAG - Diagnostics - Ver 1.5.0
+        // DIAG - Diagnostics - Ver 2.4.5
         // if (kchat_settings.chatbot_chatgpt_diagnostics === 'On') {
-        //     console.log('Chatbot: NOTICE: loadChatbotStatus - BEFORE DECISION');
+        //     // console.log('Chatbot: NOTICE: loadChatbotStatus - BEFORE DECISION');
         // }
 
         // Decide what to do for a new visitor - Ver 1.5.0
@@ -1484,9 +2255,9 @@ jQuery(document).ready(function ($) {
             localStorage.setItem('chatbot_chatgpt_start_status_new_visitor', 'closed');
         }
 
-        // DIAG - Diagnostics - Ver 1.5.0
+        // DIAG - Diagnostics - Ver 2.4.5
         // if (kchat_settings.chatbot_chatgpt_diagnostics === 'On') {
-        //     console.log('Chatbot: NOTICE: loadChatbotStatus - AFTER DECISION');
+        //     // console.log('Chatbot: NOTICE: loadChatbotStatus - AFTER DECISION');
         // }
         
         // console.log('Chatbot: NOTICE: chatbot_chatgpt_start_status: ' + chatbot_chatgpt_start_status);
@@ -1513,9 +2284,9 @@ jQuery(document).ready(function ($) {
     function scrollToBottom() {
 
         // setTimeout(() => {
-        //     // DIAG - Diagnostics - Ver 1.5.0
+        //     // DIAG - Diagnostics - Ver 2.4.5
         //     // if (kchat_settings.chatbot_chatgpt_diagnostics === 'On') {
-        //     //     console.log('Chatbot: NOTICE: scrollToBottom");
+        //     //     // console.log('Chatbot: NOTICE: scrollToBottom");
         //     // }
         //     if (conversation && conversation.length > 0) {
         //         conversation.scrollTop(conversation[0].scrollHeight);
@@ -1533,30 +2304,30 @@ jQuery(document).ready(function ($) {
 
         setTimeout(() => {
             
-            // DIAG - Diagnostics - Ver 2.0.3
+            // DIAG - Diagnostics - Ver 2.4.5
             // if (kchat_settings.chatbot_chatgpt_diagnostics === 'On') {
-            //    console.log('Chatbot: NOTICE: scrollToLastBotResponse');
+            //    // console.log('Chatbot: NOTICE: scrollToLastBotResponse');
             // }
     
             const botTexts = document.querySelectorAll('.chatbot-bot-text');
             const conversation = document.querySelector('#chatbot-chatgpt-conversation');
     
-            // DIAG - Diagnostics - Ver 2.0.3
+            // DIAG - Diagnostics - Ver 2.4.5
             // if (kchat_settings.chatbot_chatgpt_diagnostics === 'On') {
-            //     console.log('Chatbot: NOTICE: Bot Texts:', botTexts);
-            //     console.log('Chatbot: NOTICE: Conversation:', conversation);
+            //     // console.log('Chatbot: NOTICE: Bot Texts:', botTexts);
+            //     // console.log('Chatbot: NOTICE: Conversation:', conversation);
             // }
     
             if (botTexts && botTexts.length > 0 && conversation) {
                 const lastBotText = botTexts[botTexts.length - 1];
                 const topPosition = lastBotText.offsetTop - conversation.offsetTop;
 
-                // DIAG - Diagnostics - Ver 2.0.3
+                // DIAG - Diagnostics - Ver 2.4.5
                 // if (kchat_settings.chatbot_chatgpt_diagnostics === 'On') {
-                //     console.log('Chatbot: NOTICE: Last Bot Text:', lastBotText);
-                //     console.log('Chatbot: NOTICE: Last Bot Text OffsetTop:', lastBotText.offsetTop);
-                //     console.log('Chatbot: NOTICE: Conversation OffsetTop:', conversation.offsetTop);
-                //     console.log('Chatbot: NOTICE: Top Position:', topPosition);
+                //     // console.log('Chatbot: NOTICE: Last Bot Text:', lastBotText);
+                //     // console.log('Chatbot: NOTICE: Last Bot Text OffsetTop:', lastBotText.offsetTop);
+                //     // console.log('Chatbot: NOTICE: Conversation OffsetTop:', conversation.offsetTop);
+                //     // console.log('Chatbot: NOTICE: Top Position:', topPosition);
                 // }
     
                 // Scroll to the top of the last bot message
@@ -1564,9 +2335,9 @@ jQuery(document).ready(function ($) {
 
             } else {
 
-                // DIAG - Diagnostics - Ver 2.0.3
+                // DIAG - Diagnostics - Ver 2.4.5
                 // if (kchat_settings.chatbot_chatgpt_diagnostics === 'On') {
-                // console.log('Chatbot: NOTICE: No bot texts found or conversation container is missing.');
+                //     console.log('Chatbot: NOTICE: No bot texts found or conversation container is missing.');
                 // }
 
             }

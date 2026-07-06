@@ -1,8 +1,8 @@
 # Using the Interactions Data
 
-The Interactions Data settings allow you to view, manage, and export the data related to user interactions with your **Kognetiks Chatbot for WordPress**. This data includes the number of interactions per day, which can help you understand user engagement and activity patterns. Follow these steps to understand and use these settings:
+The Interactions Data settings allow you to view, manage, and export the data related to user interactions with your **Kognetiks Chatbot**. This data includes the number of interactions per day, which can help you understand user engagement and activity patterns. Follow these steps to understand and use these settings:
 
-![Interaction Data](interaction-data.png)
+<img src="interaction-data.png" alt="Interaction Data" style="width:auto;height:auto;">
 
 
 1. **Interactions Data Overview**:
@@ -40,4 +40,5 @@ By using these settings, you can effectively manage and analyze the interactions
 
 ---
 
+- **[Back to Reporting Overview](reporting.md)**
 - **[Back to the Overview](/overview.md)**

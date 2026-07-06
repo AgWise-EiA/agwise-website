@@ -1,6 +1,6 @@
 <?php
 /**
- * Kognetiks Chatbot for WordPress - File Helper - Ver 2.0.3
+ * Kognetiks Chatbot - File Helper - Ver 2.0.3
  *
  * This file contains the code for uploading files as part
  * in support of Custom GPT Assistants via the Chatbot.
@@ -14,22 +14,61 @@ if ( ! defined( 'WPINC' ) ) {
 }
 
 // Handle non-image attachments
-function chatbot_chatgpt_text_attachment($prompt, $file_id, $beta_version) {
+function chatbot_chatgpt_text_attachment($prompt, $file_id, $beta_version = 'assistants=v1') {
 
-    // Set up the data payload
-    $data = [
-        'role' => 'user',
-        'content' => [
-            [
-                'type' => 'text',
-                'text' => $prompt,
-            ]
-        ],
-    ];
+    $chatbot_ai_platform_choice = esc_attr( get_option( 'chatbot_ai_platform_choice', 'OpenAI' ) );
+
+    if ( $chatbot_ai_platform_choice == 'Azure OpenAI' ) {
+        $beta_version = 'assistants=v0';
+    }
+
+    if ( $chatbot_ai_platform_choice == 'OpenAI') {
+        // Set up the data payload
+        $data = [
+            'role' => 'user',
+            'content' => [
+                [
+                    'type' => 'text',
+                    'text' => $prompt,
+                ]
+            ],
+        ];
+    } elseif ( $chatbot_ai_platform_choice == 'Azure OpenAI') {
+        // Setup the data payload
+        $data = [
+            'role' => 'user',
+            'content' => $prompt,
+        ];
+    }
 
     // Add the non-images files to the data payload
-    if ( !empty($file_id && !empty($file_id[0]) )) {
-        if ( $beta_version == 'assistants=v1' ) {
+    if ( !empty($file_id) && is_array($file_id) && !empty($file_id[0]) ) {
+        
+        // DIAG - Diagnostics - Ver 2.4.5
+        // back_trace('ERROR', 'Sending files to OpenAI API');
+        // back_trace('ERROR', 'File count: ' . count($file_id));
+        // back_trace('ERROR', 'Files: ' . print_r($file_id, true));
+
+        if ( $beta_version == 'assistants=v0') {
+            // assistants=v2 - Ver 1.9.6 - 2024 04 24
+            $data = $data + [
+                "attachments" => [],
+            ];
+            foreach ($file_id as $file_item) {
+                // Skip invalid file_item entries
+                if (substr($file_item, 0, 10) !== 'assistant-') {
+                    continue;
+                }
+                $attachment = [
+                    "file_id" => $file_item,
+                    "tools" => [
+                        ["type" => "file_search"]
+                    ]
+                ];
+                // Add each attachment to the attachments array in the main data structure
+                $data['attachments'][] = $attachment;
+            }
+        } elseif ( $beta_version == 'assistants=v1' ) {
             // assistants=v1 - Ver 1.9.6 - 2024 04 24
             $data['file_ids'] = $file_id;
         } else {

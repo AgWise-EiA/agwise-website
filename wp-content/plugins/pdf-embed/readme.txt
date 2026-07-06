@@ -1,12 +1,12 @@
 === Pdf Embed ===
 Contributors:      tropicalista
 Tags:              pdf embedder, embed pdf, pdf embed api, pdf block, block
-Tested up to:      6.7
-Stable tag:        0.5.0
+Tested up to:      7.0
+Stable tag:        0.6.2
 License:           GPL-2.0-or-later
 License URI:       https://www.gnu.org/licenses/gpl-2.0.html
-Requires at least: 5.6.0
-Requires PHP:      5.6
+Requires at least: 7.0
+Requires PHP:      7.0
 
 PDF embedder with official Adobe Embed API.
 
@@ -78,6 +78,48 @@ Yes you will need a free [Adobe PDF Embed API](https://developer.adobe.com/docum
 5. Pdf block controls
 
 == Changelog ==
+
+= 0.6.2 =
+* Reset settings on uninstall
+
+= 0.6.1 =
+* Fix missing default global settings
+
+= 0.6.0 =
+* Fix composer autoload
+
+= 0.5.9 =
+* Add settings global page
+
+= 0.5.8 =
+* Fix settings not saving
+
+= 0.5.7 =
+* Fix settings modal
+
+= 0.5.6 =
+* Fix permission checking
+* Fix spinner on modal settings
+
+= 0.5.5 =
+* Delete option on uninstall to solve key problems.
+* Fix download pdf not respecting global settings.
+
+= 0.5.4 =
+* Wp 6.8 compatibility
+
+= 0.5.3 =
+* Minor fix
+
+= 0.5.2 =
+* Added text selection option
+* Added PDF linearization
+* Added global options
+* Better handling of API key error
+* Better handling of height
+
+= 0.5.1 =
+* Fix appsero client
 
 = 0.5.0 =
 * Compatitbility wp 6.7

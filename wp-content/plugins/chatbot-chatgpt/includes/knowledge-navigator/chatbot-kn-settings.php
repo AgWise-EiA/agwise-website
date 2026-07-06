@@ -1,6 +1,6 @@
 <?php
 /**
- * Kognetiks Chatbot for WordPress - Knowledge Navigator - Settings
+ * Kognetiks Chatbot - Knowledge Navigator - Settings
  *
  * This file contains the code for the Chatbot settings page.
  * These are all the options for the Knowledge Navigator.
@@ -25,18 +25,13 @@ $max_top_words = esc_attr(get_option('chatbot_chatgpt_kn_maximum_top_words', 25)
 // Knowledge Navigator Results
 function chatbot_chatgpt_kn_results_callback($run_scanner) {
 
-    // DIAG - Diagnostic - Ver 1.6.3
-    // back_trace( 'NOTICE', 'chatbot_chatgpt_kn_results_callback');
-    // back_trace( 'NOTICE', '$run_scanner: ' . $run_scanner);
-    // back_trace( 'NOTICE', 'chatbot_chatgpt_kn_schedule: ' . get_option('chatbot_chatgpt_kn_schedule'));
-
     // NUCLEAR OPTION - OVERRIDE VALUE TO NO
     // update_option('chatbot_chatgpt_kn_schedule', 'No');
     
     global $topWords;
 
     // Must be one of: Now, Hourly, Twice Daily, Weekly
-    // $run_scanner = get_option('chatbot_chatgpt_kn_schedule', 'No');
+    // $run_scanner = esc_attr(get_option('chatbot_chatgpt_kn_schedule', 'No'));
 
     if (!isset($run_scanner)) {
         $run_scanner = 'No';
@@ -44,20 +39,11 @@ function chatbot_chatgpt_kn_results_callback($run_scanner) {
 
     if (in_array($run_scanner, ['Now', 'Hourly', 'Daily', 'Twice Daily', 'Weekly', 'Disable', 'Cancel'])) {
 
-        // DIAG - Diagnostic - Ver 1.6.3
-        // back_trace( 'NOTICE', "$run_scanner: " . $run_scanner);
-        // back_trace( 'NOTICE', "max_top_words: " . serialize($GLOBALS['max_top_words']));
-        // back_trace( 'NOTICE', "domain: " . serialize($GLOBALS['domain']));
-        // back_trace( 'NOTICE', "start_url: " . serialize($GLOBALS['start_url']));
-
         $chatbot_chatgpt_no_of_items_analyzed = 0;
         update_option('chatbot_chatgpt_no_of_items_analyzed', $chatbot_chatgpt_no_of_items_analyzed);
 
         // WP Cron Scheduler - VER 1.6.2
-        // back_trace( 'NOTICE', 'BEFORE wp_clear_scheduled_hook');
-
         wp_clear_scheduled_hook('knowledge_navigator_scan_hook'); // Clear before rescheduling
-        // back_trace( 'NOTICE', 'AFTER wp_clear_scheduled_hook');
 
         if ($run_scanner === 'Cancel') {
             update_option( 'chatbot_chatgpt_kn_schedule', 'No' );
@@ -77,9 +63,6 @@ function chatbot_chatgpt_kn_results_callback($run_scanner) {
                 
                 // RESET THE STATUS MESSAGE
                 update_option('chatbot_chatgpt_kn_status', 'In Process');
-
-                // Log action to debug.log
-                // back_trace( 'NOTICE', 'BEFORE crawl_schedule_event_hook');
 
                 // IDEA WP Cron Scheduler - VER 1.6.2
                 // https://chat.openai.com/share/b1de5d84-966c-4f0f-b24d-329af3e55616
@@ -107,11 +90,8 @@ function chatbot_chatgpt_kn_results_callback($run_scanner) {
                         wp_schedule_event($timestamp, $interval, $hook); // Schedule a recurring event for other intervals
                     }
                 }
-                
-                // DIAG - Log action to debug.log
-                // back_trace( 'NOTICE', 'AFTER crawl_schedule_event_hook');
-
-                // Log scan interval - Ver 1.6.3
+            
+                // Scan interval - Ver 1.6.3
                 if ($interval === 'Now') {
                     update_option('chatbot_chatgpt_scan_interval', 'No Schedule');
                 } else {
@@ -121,6 +101,7 @@ function chatbot_chatgpt_kn_results_callback($run_scanner) {
                 // Reset before reloading the page
                 $run_scanner = 'No';
                 update_option('chatbot_chatgpt_kn_schedule', 'No');
+                
             }
         }
     }
@@ -176,11 +157,109 @@ function chatbot_chatgpt_kn_settings_section_callback($args) {
     <?php
 }
 
+// Dynamic post type inclusion settings - Ver 2.3.0
+function chatbot_chatgpt_kn_get_published_post_types() {
+
+    global $wpdb;
+    $published_types = [];
+    
+    // Get all post types that actually exist in the posts table
+    $db_types = $wpdb->get_col("SELECT DISTINCT post_type FROM {$wpdb->posts} WHERE post_type NOT LIKE 'wp_%' AND post_type NOT IN ('attachment', 'revision', 'nav_menu_item', 'custom_css', 'customize_changeset')");
+    
+    // Make sure we always have our core types first
+    $core_types = ['post' => 'Post', 'page' => 'Page', 'product' => 'Product'];
+    foreach ($core_types as $type => $label) {
+        $published_types[$type] = $label;
+    }
+    
+    // Add any additional types from the database
+    foreach ($db_types as $type) {
+        if (!isset($published_types[$type])) {
+            $label = ucfirst(str_replace(['_', '-'], ' ', $type));
+            $published_types[$type] = $label;
+        }
+    }
+    
+    return $published_types;
+
+}
+
+// Register settings on init
+add_action('admin_init', 'chatbot_chatgpt_kn_register_settings');
+
+function chatbot_chatgpt_kn_register_settings() {
+    // Register the section first
+    add_settings_section(
+        'chatbot_chatgpt_kn_include_exclude_section',
+        'Knowledge Navigator Include/Exclude Settings',
+        'chatbot_chatgpt_kn_include_exclude_section_callback',
+        'chatbot-chatgpt'
+    );
+
+    // Get all post types - do this only once
+    $published_types = chatbot_chatgpt_kn_get_published_post_types();
+    
+    // Register settings and fields for each post type
+    foreach ($published_types as $type => $label) {
+        // Always use plural form for option names
+        $plural_type = $type === 'reference' ? 'references' : $type . 's';
+        $option_name = 'chatbot_chatgpt_kn_include_' . $plural_type;
+        
+        // Register the setting
+        register_setting(
+            'chatbot_chatgpt_knowledge_navigator',
+            $option_name
+        );
+        
+        // Add the settings field
+        add_settings_field(
+            'chatbot_chatgpt_kn_include_' . $plural_type, // Use plural for field ID to match option_name
+            'Include ' . ucfirst($label) . 's',    // Display plural in label
+            'chatbot_chatgpt_kn_include_post_type_callback',
+            'chatbot-chatgpt',
+            'chatbot_chatgpt_kn_include_exclude_section',
+            [
+                'post_type' => $type,              // Pass singular post_type
+                'option_name' => $option_name      // Pass plural option_name
+            ]
+        );
+    }
+
+    // Register comments setting
+    register_setting(
+        'chatbot_chatgpt_knowledge_navigator',
+        'chatbot_chatgpt_kn_include_comments'
+    );
+    
+    add_settings_field(
+        'chatbot_chatgpt_kn_include_comments',
+        'Include Approved Comments',
+        'chatbot_chatgpt_kn_include_comments_callback',
+        'chatbot-chatgpt',
+        'chatbot_chatgpt_kn_include_exclude_section'
+    );
+}
+
 function chatbot_chatgpt_kn_include_exclude_section_callback($args) {
     ?>
-    <p>Choose the content types you want to include in the Knowledge Navigator's indexing process: pages, posts, products, and/or comments.  Only published/approved content will be indexed.</p>
-    <p>Then click 'Save Settings' at the bottom of the page.</p>
-<?php
+    <p>Choose the content types you want to include in the Knowledge Navigator's indexing process. Only published content will be indexed.</p>
+    <?php
+}
+
+function chatbot_chatgpt_kn_include_post_type_callback($args) {
+    if (empty($args['option_name'])) {
+        return;
+    }
+
+    $option_name = $args['option_name'];
+    $value = get_option($option_name, 'No');
+
+    ?>
+    <select id="<?php echo esc_attr($option_name); ?>" name="<?php echo esc_attr($option_name); ?>">
+        <option value="No" <?php selected($value, 'No'); ?>>No</option>
+        <option value="Yes" <?php selected($value, 'Yes'); ?>>Yes</option>
+    </select>
+    <?php
 }
 
 function chatbot_chatgpt_kn_enhanced_response_section_callback($args) {
@@ -208,50 +287,20 @@ function chatbot_chatgpt_kn_schedule_callback($args) {
 }
 
 function chatbot_chatgpt_kn_maximum_top_words_callback($args) {
-    $GLOBALS['max_top_words'] = intval(get_option('chatbot_chatgpt_kn_maximum_top_words', 250));
+    $GLOBALS['max_top_words'] = intval(esc_attr(get_option('chatbot_chatgpt_kn_maximum_top_words', 250)));
     ?>
     <select id="chatbot_chatgpt_kn_maximum_top_words" name="chatbot_chatgpt_kn_maximum_top_words">
         <?php
         for ($i = 500; $i <= 10000; $i += 500) {
-            echo '<option value="' . $i . '"' . selected($GLOBALS['max_top_words'], $i, false) . '>' . $i . '</option>';
+            echo '<option value="' . esc_attr( $i ) . '"' . selected($GLOBALS['max_top_words'], $i, false) . '>' . esc_html( $i ) . '</option>';
         }
         ?>
     </select>
     <?php
 }
 
-function chatbot_chatgpt_kn_include_posts_callback($args) {
-    $chatbot_chatgpt_kn_include_posts = esc_attr(get_option('chatbot_chatgpt_kn_include_posts', 'Yes'));
-    ?>
-    <select id="chatbot_chatgpt_kn_include_posts" name="chatbot_chatgpt_kn_include_posts">
-        <option value="No" <?php selected($chatbot_chatgpt_kn_include_posts, 'No'); ?>><?php echo esc_html('No'); ?></option>
-        <option value="Yes" <?php selected($chatbot_chatgpt_kn_include_posts, 'Yes'); ?>><?php echo esc_html('Yes'); ?></option>
-    </select>
-    <?php
-}
-
-function chatbot_chatgpt_kn_include_pages_callback($args) {
-    $chatbot_chatgpt_kn_include_pages = esc_attr(get_option('chatbot_chatgpt_kn_include_pages', 'Yes'));
-    ?>
-    <select id="chatbot_chatgpt_kn_include_pages" name="chatbot_chatgpt_kn_include_pages">
-        <option value="No" <?php selected($chatbot_chatgpt_kn_include_pages, 'No'); ?>><?php echo esc_html('No'); ?></option>
-        <option value="Yes" <?php selected($chatbot_chatgpt_kn_include_pages, 'Yes'); ?>><?php echo esc_html('Yes'); ?></option>
-    </select>
-    <?php
-}
-
-function chatbot_chatgpt_kn_include_products_callback($args) {
-    $chatbot_chatgpt_kn_include_products = esc_attr(get_option('chatbot_chatgpt_kn_include_products', 'Yes'));
-    ?>
-    <select id="chatbot_chatgpt_kn_include_products" name="chatbot_chatgpt_kn_include_products">
-        <option value="No" <?php selected($chatbot_chatgpt_kn_include_products, 'No'); ?>><?php echo esc_html('No'); ?></option>
-        <option value="Yes" <?php selected($chatbot_chatgpt_kn_include_products, 'Yes'); ?>><?php echo esc_html('Yes'); ?></option>
-    </select>
-    <?php
-}
-
 function chatbot_chatgpt_kn_include_comments_callback($args) {
-    $chatbot_chatgpt_kn_include_comments = esc_attr(get_option('chatbot_chatgpt_kn_include_comments', 'Yes'));
+    $chatbot_chatgpt_kn_include_comments = esc_attr(get_option('chatbot_chatgpt_kn_include_comments', 'No'));
     ?>
     <select id="chatbot_chatgpt_kn_include_comments" name="chatbot_chatgpt_kn_include_comments">
         <option value="No" <?php selected($chatbot_chatgpt_kn_include_comments, 'No'); ?>><?php echo esc_html('No'); ?></option>
@@ -261,12 +310,12 @@ function chatbot_chatgpt_kn_include_comments_callback($args) {
 }
 
 function chatbot_chatgpt_enhanced_response_limit_callback($args) {
-    $chatbot_chatgpt_enhanced_response_limit = intval(get_option('chatbot_chatgpt_enhanced_response_limit', 3));
+    $chatbot_chatgpt_enhanced_response_limit = intval(esc_attr(get_option('chatbot_chatgpt_enhanced_response_limit', 3)));
     ?>
     <select id="chatbot_chatgpt_enhanced_response_limit" name="chatbot_chatgpt_enhanced_response_limit">
         <?php
         for ($i = 1; $i <= 10; $i++) {
-            echo '<option value="' . $i . '"' . selected($chatbot_chatgpt_enhanced_response_limit, $i, false) . '>' . $i . '</option>';
+            echo '<option value="' . esc_attr( $i ) . '"' . selected($chatbot_chatgpt_enhanced_response_limit, $i, false) . '>' . esc_html( $i ) . '</option>';
         }
         ?>
     </select>
@@ -274,12 +323,12 @@ function chatbot_chatgpt_enhanced_response_limit_callback($args) {
 }
 
 function chatbot_chatgpt_kn_tuning_percentage_callback($args) {
-    $chatbot_chatgpt_kn_tuning_percentage = intval(get_option('chatbot_chatgpt_kn_tuning_percentage', 25));
+    $chatbot_chatgpt_kn_tuning_percentage = intval(esc_attr(get_option('chatbot_chatgpt_kn_tuning_percentage', 25)));
     ?>
     <select id="chatbot_chatgpt_kn_tuning_percentage" name="chatbot_chatgpt_kn_tuning_percentage">
         <?php
         for ($i = 10; $i <= 100; $i += 5) {
-            echo '<option value="' . $i . '"' . selected($chatbot_chatgpt_kn_tuning_percentage, $i, false) . '>' . $i . '</option>';
+            echo '<option value="' . esc_attr( $i ) . '"' . selected($chatbot_chatgpt_kn_tuning_percentage, $i, false) . '>' . esc_html( $i ) . '</option>';
         }
         ?>
     </select>
@@ -305,5 +354,16 @@ function chatbot_chatgpt_custom_learnings_message_callback($args) {
     $chatbot_chatgpt_custom_learnings_message = esc_attr(get_option('chatbot_chatgpt_custom_learnings_message', 'More information may be found here ...'));
     ?>
     <input type="text" style="width: 50%;" id="chatbot_chatgpt_custom_learnings_message" name = "chatbot_chatgpt_custom_learnings_message" value="<?php echo esc_attr( $chatbot_chatgpt_custom_learnings_message ); ?>">
+    <?php
+}
+
+// Optionally include post or page excerpts with Knowledge Navigator responses - Ver 2.2.1
+function chatbot_chatgpt_enhanced_response_include_excerpts_callback() {
+    $value = esc_attr(get_option('chatbot_chatgpt_enhanced_response_include_excerpts', 'No'));
+    ?>
+    <select id="chatbot_chatgpt_enhanced_response_include_excerpts" name="chatbot_chatgpt_enhanced_response_include_excerpts">
+        <option value="No" <?php selected( $value, 'No' ); ?>><?php echo esc_html( 'No' ); ?></option>
+        <option value="Yes" <?php selected( $value, 'Yes' ); ?>><?php echo esc_html( 'Yes' ); ?></option>
+    </select>
     <?php
 }

@@ -1,6 +1,6 @@
 <?php
 /**
- * Kognetiks Chatbot for WordPress - Manage Widget Logs - Ver 2.1.3
+ * Kognetiks Chatbot - Manage Widget Logs - Ver 2.1.3
  *
  * This file contains the code for managing Widget logs
  * 
@@ -14,7 +14,7 @@ if ( ! defined( 'WPINC' ) ) {
 }
 
 // Retrieve widget log file names
-function chatbot_chatgpt_manage_widget_logs() {
+function chatbot_manage_widget_logs() {
 
     global $chatbot_chatgpt_plugin_dir_path;
 
@@ -31,7 +31,9 @@ function chatbot_chatgpt_manage_widget_logs() {
         $scanned_dir = scandir($chatbot_logs_dir);
     } else {
         // Handle the error, e.g., log it, create the directory, or throw an exception
-        error_log("Directory not found: " . $chatbot_logs_dir);
+        if ( defined('WP_DEBUG') && WP_DEBUG ) {
+            error_log('[Chatbot] [chatbot-manage-widget-logs.php] Directory not found: ' . $chatbot_logs_dir);
+        }
         // Optionally, create the directory
         // mkdir($chatbot_logs_dir, 0777, true);
         // Then, you might want to scan it again or handle the situation differently
@@ -54,9 +56,6 @@ function chatbot_chatgpt_manage_widget_logs() {
         echo '<p>No log files found.</p>';
         return;
     }
-
-    // DIAG - Log files for troubleshooting - Ver 2.0.7
-    // back_trace( 'NOTICE', 'chatbot_chatgpt_manage_widget_logs', 'Files: ' . print_r($files, true));
 
     // Start HTML output with styling
     $output = '<style>
@@ -109,7 +108,7 @@ function chatbot_chatgpt_manage_widget_logs() {
     $output .= '</form>';
     $output .= '</div>';
 
-    echo $output; // Output the generated HTML
+    echo wp_kses_post( $output ); // Output the generated HTML
 
     return;
 }
@@ -118,6 +117,11 @@ function chatbot_chatgpt_manage_widget_logs() {
 function handle_widget_log_actions() {
 
     global $chatbot_chatgpt_plugin_dir_path;
+
+    // Security: Require admin capability - widget log management is admin-only
+    if ( ! current_user_can( 'manage_options' ) ) {
+        wp_die( esc_html__( 'You do not have sufficient permissions to access this page.', 'chatbot-chatgpt' ), 403 );
+    }
 
     if (!isset($_GET['action']) || !isset($_GET['_wpnonce'])) {
         return;
@@ -189,9 +193,7 @@ function handle_widget_log_actions() {
             wp_die('Invalid action');
     }
 }
-add_action('admin_post_nopriv_download_widget_log', 'handle_widget_log_actions');
+// Admin-only: no admin_post_nopriv_* - unauthenticated users cannot manage widget logs
 add_action('admin_post_download_widget_log', 'handle_widget_log_actions');
-add_action('admin_post_nopriv_delete_widget_log', 'handle_widget_log_actions');
 add_action('admin_post_delete_widget_log', 'handle_widget_log_actions');
-add_action('admin_post_nopriv_delete_all_widget_logs', 'handle_widget_log_actions');
 add_action('admin_post_delete_all_widget_logs', 'handle_widget_log_actions');

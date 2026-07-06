@@ -1,6 +1,6 @@
 <?php
 /**
- * Kognetiks Chatbot for WordPress - Settings - Tools - Ver 2.0.6
+ * Kognetiks Chatbot - Settings - Tools - Ver 2.0.6
  *
  * This file contains the code for the Chatbot settings page.
  * It handles the support settings and other parameters.
@@ -62,10 +62,10 @@ function chatbot_chatgpt_tools_settings_init() {
 
     // Manage Widget Logs
     add_settings_section(
-        'chatbot_chatgpt_manage_widget_logs_section',
+        'chatbot_manage_widget_logs_section',
         'Manage Widget Access Logs',
-        'chatbot_chatgpt_manage_widget_logs_section_callback',
-        'chatbot_chatgpt_manage_widget_logs'
+        'chatbot_manage_widget_logs_section_callback',
+        'chatbot_manage_widget_logs'
     );
     
     // Shortcode Tester Overview
@@ -136,8 +136,8 @@ function chatbot_chatgpt_options_exporter_button_callback() {
         <?php
             if (is_admin()) {
                 $header = " ";
-                $header .= '<a class="button button-primary" href="' . esc_url(admin_url('admin-post.php?action=chatbot_chatgpt_download_options_data')) . '">Download Options Data</a>';
-                echo $header;
+                $header .= '<a class="button button-primary" href="' . esc_url( wp_nonce_url( admin_url( 'admin-post.php?action=chatbot_chatgpt_download_options_data' ), 'chatbot_chatgpt_download_options_data' ) ) . '">Download Options Data</a>';
+                echo wp_kses_post( $header );
             }
         ?>
     </div>

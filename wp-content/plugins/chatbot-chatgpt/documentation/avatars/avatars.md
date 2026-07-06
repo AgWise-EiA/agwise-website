@@ -2,7 +2,7 @@
 
 The Avatar Settings allow you to customize the appearance and greeting of your chatbot, enhancing its personality and user engagement. Follow these steps to configure these options:
 
-![Avatar Settings](avatars.png)
+<img src="avatars.png" alt="Avatar Settings" style="width:auto;height:auto;">
 
 1. **Avatar Greeting**:
    - **Description**: This field allows you to set a custom greeting message that appears with the avatar.
@@ -32,9 +32,9 @@ The Avatar Settings allow you to customize the appearance and greeting of your c
 
 ## Tips
 
-- **Personalized Greetings**: Craft a greeting message that aligns with your brand’s voice and the purpose of your chatbot. A friendly and engaging greeting can enhance user interaction.
+- **Personalized Greetings**: Craft a greeting message that aligns with your brand's voice and the purpose of your chatbot. A friendly and engaging greeting can enhance user interaction.
 
-- **Custom Avatars**: Using a custom avatar can make your chatbot more recognizable and aligned with your brand’s visual identity.
+- **Custom Avatars**: Using a custom avatar can make your chatbot more recognizable and aligned with your brand's visual identity.
 
 - **Icon Selection**: If you prefer not to upload a custom avatar, choose from the wide array of pre-designed icons to give your chatbot a unique and friendly appearance.
 

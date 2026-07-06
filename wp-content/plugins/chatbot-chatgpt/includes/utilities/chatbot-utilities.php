@@ -1,6 +1,6 @@
 <?php
 /**
- * Kognetiks Chatbot for WordPress - Utilities - Ver 1.8.1
+ * Kognetiks Chatbot - Utilities - Ver 1.8.1
  *
  * This file contains the code for plugin utilities.
  * It is used to check for mobile devices and other utilities.
@@ -28,38 +28,6 @@ function is_mobile_device() {
 
 }
 
-// Function to confirm if curl is enabled
-function can_use_curl_for_file_protocol() {
-
-    // DIAG - Diagnostic - Ver 1.9.1
-    // back_trace( 'NOTICE', 'can_use_curl_for_file_protocol');
-
-    // Check if cURL extension is loaded
-    if (!function_exists('curl_init')) {
-        return false;
-    }
-    
-    // Initialize a cURL session to test settings
-    $curl = curl_init();
-    if (!$curl) {
-        return false;
-    }
-    
-    // Attempt to set CURLOPT_PROTOCOLS to include CURLPROTO_FILE
-    // This is a "trial" setting to see if setting fails
-    $result = @curl_setopt($curl, CURLOPT_PROTOCOLS, CURLPROTO_FILE | CURLPROTO_HTTP | CURLPROTO_HTTPS);
-    
-    // Close the cURL session
-    curl_close($curl);
-
-    // DIAG - Diagnostic - Ver 1.9.1
-    // back_trace( 'NOTICE', 'result: ' . print_r($result, true));
-
-    // Check if setting the option was successful - true if successful, false if failed
-    return $result;
-    
-}
-
 // Function to create a directory and an index.php file
 function create_directory_and_index_file($dir_path) {
     // Ensure the directory ends with a slash
@@ -68,7 +36,6 @@ function create_directory_and_index_file($dir_path) {
     // Check if the directory exists, if not create it
     if (!file_exists($dir_path) && !wp_mkdir_p($dir_path)) {
         // Error handling, e.g., log the error or handle the failure appropriately
-        // back_trace( 'ERROR', 'Failed to create directory.');
         return false;
     }
 
@@ -77,7 +44,7 @@ function create_directory_and_index_file($dir_path) {
 
     // Check if the index.php file exists, if not create it
     if (!file_exists($index_file_path)) {
-        $file_content = "<?php\n// Silence is golden.\n\n// Load WordPress Environment\n\$wp_load_path = dirname(__FILE__, 5) . '/wp-load.php';\nif (file_exists(\$wp_load_path)) {\n    require_once(\$wp_load_path);\n} else {\n    exit('Could not find wp-load.php');\n}\n\n// Force a 404 error\nstatus_header(404);\nnocache_headers();\ninclude(get_404_template());\nexit;\n?>";
+        $file_content = "<?php\n// Silence is golden.\n\n";
         file_put_contents($index_file_path, $file_content);
     }
 
@@ -86,4 +53,76 @@ function create_directory_and_index_file($dir_path) {
 
     return true;
 
+}
+
+/**
+ * Check if a model requires max_completion_tokens instead of max_tokens
+ * Newer OpenAI models (gpt-5, o1, o3, etc.) require max_completion_tokens
+ * 
+ * @param string $model The model name
+ * @return bool True if model requires max_completion_tokens, false otherwise
+ */
+function chatbot_openai_requires_max_completion_tokens($model) {
+    // Models that require max_completion_tokens instead of max_tokens
+    $models_requiring_max_completion_tokens = array(
+        'gpt-5',
+        'gpt-5-',
+        'o1',
+        'o1-',
+        'o3',
+        'o3-',
+    );
+    
+    // Use str_starts_with if available (PHP 8.0+), otherwise use substr
+    foreach ($models_requiring_max_completion_tokens as $prefix) {
+        if (function_exists('str_starts_with')) {
+            if (str_starts_with($model, $prefix)) {
+                return true;
+            }
+        } else {
+            // PHP 7.x compatibility
+            if (substr($model, 0, strlen($prefix)) === $prefix) {
+                return true;
+            }
+        }
+    }
+    
+    return false;
+}
+
+/**
+ * Check if a model doesn't support temperature and top_p parameters
+ * Some newer OpenAI models (gpt-5, o1, o3, etc.) use fixed values and don't accept these parameters
+ * 
+ * @param string $model The model name
+ * @return bool True if model doesn't support temperature/top_p, false otherwise
+ */
+function chatbot_openai_doesnt_support_temperature($model) {
+    // Models that don't support temperature/top_p parameters
+    // gpt-5 only supports the default temperature value (1.0), not custom values
+    // o1 and o3 models use fixed values and don't accept these parameters at all
+    $models_without_temperature = array(
+        'gpt-5',
+        'gpt-5-',
+        'o1',
+        'o1-',
+        'o3',
+        'o3-',
+    );
+    
+    // Use str_starts_with if available (PHP 8.0+), otherwise use substr
+    foreach ($models_without_temperature as $prefix) {
+        if (function_exists('str_starts_with')) {
+            if (str_starts_with($model, $prefix)) {
+                return true;
+            }
+        } else {
+            // PHP 7.x compatibility
+            if (substr($model, 0, strlen($prefix)) === $prefix) {
+                return true;
+            }
+        }
+    }
+    
+    return false;
 }

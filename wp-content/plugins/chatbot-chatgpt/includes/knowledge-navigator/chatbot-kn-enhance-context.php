@@ -1,6 +1,6 @@
 <?php
 /**
- * Kognetiks Chatbot for WordPress - Knowledge Navigator - Enhance Context - Ver 1.6.9
+ * Kognetiks Chatbot - Knowledge Navigator - Enhance Context - Ver 1.6.9
  *
  * This file contains the code for to utilize the DB with the TF-IDF data to enhance the chatbots context.
  * 
@@ -24,16 +24,15 @@ function kn_enhance_context( $message ) {
 
     $enhancedMessage = explode(' ', $enhancedMessage);
 
-    if (get_locale() !== "en_US") {
-        // DIAG - Diagnostic - Ver 1.7.2.1
-        // back_trace( 'NOTICE', 'get_locale()' . get_locale());
-        // $localized_stopWords = localize_global_stopwords(get_locale(), $stopWords);
-        $localized_stopWords = get_localized_stopwords(get_locale(), $stopWords);
-        // DIAG - Diagnostic - Ver 1.7.2.1
-        // back_trace( 'NOTICE',  '$localized_stopWords ' . $localized_stopWords);
-    } else {
-        $localized_stopWords = $stopWords;
-    }
+    // if (get_locale() !== "en_US") {
+    //     // $localized_stopWords = localize_global_stopwords(get_locale(), $stopWords);
+    //     $localized_stopWords = get_localized_stopwords(get_locale(), $stopWords);
+    // } else {
+    //     $localized_stopWords = $stopWords;
+    // }
+
+    // FIXME - CZECH OVERRIDE - REMOVED IN VER 2.2.1 - 2024-12-24
+    $localized_stopWords = $stopWords;
 
     // Filter out stop words
     $enhancedMessage = array_diff($enhancedMessage, $localized_stopWords);
@@ -53,6 +52,12 @@ function kn_enhance_context( $message ) {
     // Find matches in the knowledge base
     $table_name = $wpdb->prefix . 'chatbot_chatgpt_knowledge_base';
     $results = [];
+
+    // Check if the table exists
+    if ($wpdb->get_var("SHOW TABLES LIKE '{$table_name}'") !== $table_name) {
+        prod_trace( 'WARNING', 'Table ' . $table_name . ' does not exist. Skipping knowledge base match step.');
+        return null; // Skip processing if the table doesn't exist
+    }
 
     $limit = esc_attr(get_option('chatbot_chatgpt_enhanced_response_limit', 3));
     
@@ -86,8 +91,6 @@ function kn_enhance_context( $message ) {
     // Collapse the enhanced content into a single string
     $enhancedContext = implode(' ', $enhancedContext);
     $enhancedContext = implode(' ', chatbot_chatgpt_filter_out_html_tags($enhancedContext));
-    // DIAG - Diagnostics - Ver 1.9.6
-    // back_trace( 'NOTICE', '$enhancedContext: ' . $enhancedContext);
 
     return $enhancedContext;
 

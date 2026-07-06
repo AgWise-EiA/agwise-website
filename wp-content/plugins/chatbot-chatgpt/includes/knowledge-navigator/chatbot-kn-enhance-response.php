@@ -1,6 +1,12 @@
 <?php
 /**
- * Kognetiks Chatbot for WordPress - Knowledge Navigator - Enhance Response - Ver 1.6.9 - Updated - Ver 2.1.5 - 2024 09 13
+ * Kognetiks Chatbot - Knowledge Navigator - Enhance Response - Ver 1.6.9 - Updated in Ver 2.2.9
+ * 
+ * Updates
+ * 
+ * Ver 2.1.5 - 2024 09 13 - TBD
+ * 
+ * Ver 2.2.1 - 2024 12 01 - Added excerpts to enhanced responses
  *
  * This file contains the code for to utilize the DB with the TF-IDF data to enhance the chatbots response.
  * 
@@ -13,21 +19,116 @@ if ( ! defined( 'WPINC' ) ) {
     die();
 }
 
-// Enhance the response with TF-IDF - Ver 1.6.9
 function chatbot_chatgpt_enhance_with_tfidf($message) {
+
+    global $wpdb;
+    global $learningMessages;
+    global $stopWords;
+
+    $enhanced_response = "";
+    $results = array();
+    $limit = esc_attr(get_option('chatbot_chatgpt_enhanced_response_limit', 3));
+
+    $search_results = chatbot_chatgpt_content_search($message);
+
+    // Access the 'results' key from the returned array
+    $results = isset($search_results['results']) ? $search_results['results'] : [];
+
+    // Convert results to indexed array
+    $results = array_values($results);
+
+    // Select top three results
+    $results = array_slice($results, 0, $limit);
+    $links = [];
+
+    // Option - Include Title in Enhanced Response
+    $include_title = esc_attr(get_option('chatbot_chatgpt_enhanced_response_include_title', 'yes'));
+
+    // Decide if the links to site content and exceprts should be included in the response
+    $include_post_or_page_excerpt = esc_attr(get_option('chatbot_chatgpt_enhanced_response_include_excerpts', 'No'));
+
+    foreach ($results as $result) {
+
+        if (is_array($result) && isset($result['title'], $result['url'], $result['ID'])) {
+            if ('yes' == $include_title) {
+                $links[] = "<li>[" . $result['title'] . "](" . $result['url'] . ")</li>";
+            } else {
+                $links[] = "[here](" . $result['url'] . ")";
+            }
+
+            if ($include_post_or_page_excerpt == 'Yes') {
+                $post_excerpt = get_the_excerpt($result['ID']);
+                if (!empty($post_excerpt)) {
+                    $links[] = "<li>" . $post_excerpt . "</li>";
+                }
+            }
+        }
+
+    }
+
+    if (!empty($links)) {
+
+        if ('no' == $include_title) {
+            // Formatting: here, here, and here.
+            $links_string = implode(", ", $links);
+            $links_string = ltrim($links_string, ',');
+            $links_string = $links_string . ".";
+        } else {
+            // Formatting: bullet list
+            $links_string = implode("", $links);
+        }
+
+        // Determine the pre-message based on the settings
+        if (get_locale() !== "en_US") {
+            $localized_learningMessages = get_localized_learningMessages(get_locale(), $learningMessages);
+        } else {
+            $localized_learningMessages = $learningMessages;
+        }
+
+        $chatbot_chatgpt_suppress_learnings = esc_attr(get_option('chatbot_chatgpt_suppress_learnings', 'Random'));
+        $chatbot_chatgpt_custom_learnings_message = esc_attr(get_option('chatbot_chatgpt_custom_learnings_message', 'More information may be found here ...'));
+
+        if ('Random' == $chatbot_chatgpt_suppress_learnings) {
+            $enhanced_response .= "\n\n" . $localized_learningMessages[array_rand($localized_learningMessages)] . " ";
+        } elseif ('Custom' == $chatbot_chatgpt_suppress_learnings) {
+            $enhanced_response .= "\n\n" . $chatbot_chatgpt_custom_learnings_message . " ";
+        }
+
+        // Append the links to the enhanced response
+        if ('yes' == $include_title) {
+            $enhanced_response .= '<ul>' . $links_string . '</ul>';
+        } else {
+            $enhanced_response .= $links_string;
+        }
+
+    }
+
+    return !empty($enhanced_response) ? $enhanced_response : null;
+
+}
+
+// Enhance the response with TF-IDF - Ver 1.6.9
+function chatbot_chatgpt_enhance_with_tfidf_deprecated($message) {
     
     global $wpdb;
     global $learningMessages;
     global $stopWords;
+
     $enhanced_response = "";
 
     // Check if the Knowledge Navigator is finished running
-    $chatbot_chatgpt_kn_status = get_option('chatbot_chatgpt_kn_status', '');
+    $chatbot_chatgpt_kn_status = esc_attr(get_option('chatbot_chatgpt_kn_status', ''));
     if (false === strpos($chatbot_chatgpt_kn_status, 'Completed')) {
         return;
     }
 
     $table_name = $wpdb->prefix . 'chatbot_chatgpt_knowledge_base';
+
+    // Check if the table exists
+    if ($wpdb->get_var("SHOW TABLES LIKE '{$table_name}'") !== $table_name) {
+        prod_trace( 'WARNING', 'Table ' . $table_name . ' does not exist. Skipping knowledge base match step.');
+        return null; // Skip processing if the table doesn't exist
+    }
 
     // Split the message into words and remove stop words
     $words = explode(" ", $message);
@@ -36,7 +137,6 @@ function chatbot_chatgpt_enhance_with_tfidf($message) {
     // Initialize arrays to hold word scores and results
     $word_scores = array();
     $results = array();
-
     $limit = esc_attr(get_option('chatbot_chatgpt_enhanced_response_limit', 3));
 
     // Calculate total score for each word
@@ -78,8 +178,9 @@ function chatbot_chatgpt_enhance_with_tfidf($message) {
         $rows = $wpdb->get_results($query);
 
         // Check if matches are found
-        if (!$wpdb->last_error && !empty($rows)) {
+        if ($rows) {
             foreach ($rows as $row) {
+                
                 $result_key = hash('sha256', $row->url);
                 if (!isset($results[$result_key])) {
                     $results[$result_key] = [
@@ -90,14 +191,19 @@ function chatbot_chatgpt_enhance_with_tfidf($message) {
                         'word_match_count' => $row->word_match_count
                     ];
                 }
+
                 if (count($results) >= $limit) {
-                    break 2; // Break out of both loops
+                    break 2;
                 }
+
             }
+        } else {
+
+            
         }
 
-        // Decrease the number of words to match
         $num_words_to_match--;
+
     }
 
     // Convert results to indexed array
@@ -109,14 +215,26 @@ function chatbot_chatgpt_enhance_with_tfidf($message) {
 
     // Option - Include Title in Enhanced Response
     $include_title = esc_attr(get_option('chatbot_chatgpt_enhanced_response_include_title', 'yes'));
-    // FIXME - TEMPORARY - REMOVE THIS
-    // $include_title = 'no';
+
+    // Decide if the links to site content and exceprts should be included in the response
+    $include_post_or_page_excerpt = esc_attr(get_option('chatbot_chatgpt_enhanced_response_include_excerpts', 'No'));
 
     foreach ($results as $result) {
-        if ('yes' == $include_title) {
-            $links[] = "<li>[" . $result['title'] . "](" . $result['url'] . ")</li>";
-        } else {
-            $links[] = "[here](" . $result['url'] . ")";
+
+        if (is_object($result) && isset($result->post_title, $result->url, $result->ID)) {
+            if ('yes' == $include_title) {
+                $links[] = "<li>[" . $result->post_title . "](" . $result->url . ")</li>";
+            } else {
+                $links[] = "[here](" . $result->url . ")";
+            }
+
+            if ($include_post_or_page_excerpt == 'Yes') {
+                $post_excerpt = get_the_excerpt($result->ID);
+                if (!empty($post_excerpt)) {
+                    $links[] = "<li>" . $post_excerpt . "</li>";
+                }
+            }
+        
         }
     }
 

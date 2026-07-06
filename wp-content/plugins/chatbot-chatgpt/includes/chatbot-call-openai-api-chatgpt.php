@@ -1,0 +1,523 @@
+<?php
+/**
+ * Kognetiks Chatbot - ChatGPT API - Ver 1.6.9
+ *
+ * This file contains the code for accessing the ChatGPT API.
+ * 
+ *
+ * @package chatbot-chatgpt
+ */
+
+// If this file is called directly, abort.
+if ( ! defined( 'WPINC' ) ) {
+    die();
+}
+
+// Call the ChatGPT API
+function chatbot_chatgpt_call_api($api_key, $message, $user_id = null, $page_id = null, $session_id = null, $assistant_id = null, $client_message_id = null) {
+
+    // Fixed Ver 2.3.6: Store parameters before declaring globals to preserve logged-in user IDs
+    // Parameters take precedence over globals when explicitly provided
+    $param_user_id = $user_id;
+    $param_page_id = $page_id;
+    $param_session_id = $session_id;
+    $param_assistant_id = $assistant_id;
+    
+    global $session_id;
+    global $user_id;
+    global $page_id;
+    global $thread_id;
+    global $assistant_id;
+    global $learningMessages;
+    global $kchat_settings;
+    global $additional_instructions;
+    global $model;
+    global $voice;
+    
+    global $errorResponses;
+
+    // DIAG - Diagnostics - Ver 2.4.5
+    // back_trace("NOTICE", "Starting OpenAI API call");
+    // back_trace("NOTICE", "Message: " . $message);
+    // back_trace("NOTICE", "User ID: " . $user_id);
+    // back_trace("NOTICE", "Page ID: " . $page_id);
+    // back_trace("NOTICE", "Session ID: " . $session_id);
+    // back_trace("NOTICE", "Assistant ID: " . $assistant_id);
+    // back_trace("NOTICE", "Client Message ID: " . $client_message_id);
+    
+    // Use parameter if provided (not null), otherwise use global
+    if ($param_user_id !== null) {
+        $user_id = $param_user_id;
+    }
+    if ($param_page_id !== null) {
+        $page_id = $param_page_id;
+    }
+    if ($param_session_id !== null) {
+        $session_id = $param_session_id;
+    }
+    if ($param_assistant_id !== null) {
+        $assistant_id = $param_assistant_id;
+    }
+
+    // Use client_message_id if provided, otherwise generate a unique message UUID for idempotency
+    $message_uuid = $client_message_id ? $client_message_id : wp_generate_uuid4();
+
+    // Lock the conversation BEFORE thread resolution to prevent empty-thread vs real-thread lock split
+    $conv_lock = 'chatgpt_conv_lock_' . wp_hash($assistant_id . '|' . $user_id . '|' . $page_id . '|' . $session_id);
+    $lock_timeout = 60; // 60 seconds timeout
+
+    // Check for duplicate message UUID in conversation log
+    $duplicate_key = 'chatgpt_message_uuid_' . $message_uuid;
+    if (get_transient($duplicate_key)) {
+        return "Error: Duplicate request detected. Please try again.";
+    }
+
+    // Lock check removed - main send function handles locking
+    set_transient($duplicate_key, true, 120); // 2 minutes to prevent duplicates - Ver 2.3.7
+
+    // The current ChatGPT API URL endpoint for gpt-3.5-turbo and gpt-4
+    // $api_url = 'https://api.openai.com/v1/chat/completions';
+    $api_url = get_chat_completions_api_url();
+
+    $headers = array(
+        'Authorization' => 'Bearer ' . $api_key,
+        'Content-Type' => 'application/json',
+    );
+
+    // Select the OpenAI Model
+    // Get the saved model from the settings or default to "gpt-3.5-turbo"
+    $model = esc_attr(get_option('chatbot_chatgpt_model_choice', 'gpt-3.5-turbo'));
+ 
+    // Max tokens - Ver 1.4.2
+    $max_tokens = intval(esc_attr(get_option('chatbot_chatgpt_max_tokens_setting', '1000')));
+
+    // Conversation Context - Ver 1.6.1
+    $context = esc_attr(get_option('chatbot_chatgpt_conversation_context', 'You are a versatile, friendly, and helpful assistant designed to support me in a variety of tasks that responds in Markdown.'));
+
+    // Temperature - Ver 2.1.8
+    $temperature = floatval(esc_attr(get_option('chatbot_chatgpt_temperature', '0.5')));
+
+    // Top P - Ver 2.1.8
+    $top_p = floatval(esc_attr(get_option('chatbot_chatgpt_top_p', '1.0')));
+ 
+    // Build conversation context using standardized function - Ver 2.3.9+
+    // This function handles conversation history building, message cleaning, and conversation continuity
+    $conversation_context = chatbot_chatgpt_build_conversation_context('standard', 10, $session_id);
+    
+    // Knowledge Navigator keyword append for context
+    $chatbot_chatgpt_kn_conversation_context = esc_attr(get_option('chatbot_chatgpt_kn_conversation_context', ''));
+
+    // Build a summary of conversation history for system message (backward compatibility)
+    // Extract text content from structured messages to create a summary string
+    $chatgpt_last_response = '';
+    if (!empty($conversation_context['messages'])) {
+        $message_texts = [];
+        foreach ($conversation_context['messages'] as $msg) {
+            if (isset($msg['content'])) {
+                $message_texts[] = $msg['content'];
+            }
+        }
+        if (!empty($message_texts)) {
+            $chatgpt_last_response = implode(' ', $message_texts);
+        }
+    }
+
+    $sys_message = 'We previously have been talking about the following things: ';
+
+    // ENHANCED CONTEXT - Select some context to send with the message - Ver 2.2.4
+    $use_enhanced_content_search = esc_attr(get_option('chatbot_chatgpt_use_advanced_content_search', 'No'));
+
+    if ($use_enhanced_content_search == 'Yes') {
+
+        $search_results = chatbot_chatgpt_content_search($message);
+        If ( !empty ($search_results) ) {
+            // Extract relevant content from search results array
+            $content_texts = [];
+            foreach ($search_results['results'] as $result) {
+                if (!empty($result['excerpt'])) {
+                    $content_texts[] = $result['excerpt'];
+                }
+            }
+            // Join the content texts and append to context
+            if (!empty($content_texts)) {
+                $context = ' When answering the prompt, please consider the following information: ' . implode(' ', $content_texts);
+            }
+        }
+
+    } else {
+
+        // Original Context Instructions - No Enhanced Context
+        $context = $sys_message . ' ' . $chatgpt_last_response . ' ' . $context . ' ' . $chatbot_chatgpt_kn_conversation_context;
+
+    }
+
+    // Add session history to context if available (from conversation continuity)
+    if (!empty($conversation_context['session_history'])) {
+        // Session history is a concatenated string, so we'll add it to context
+        $context = $conversation_context['session_history'] . ' ' . $context;
+    }
+
+    // Check the length of the context and truncate if necessary - Ver 2.2.6
+    $context_length = intval(strlen($context) / 4); // Assuming 1 token ≈ 4 characters
+    // FIXME - Define max context length (adjust based on model requirements)
+    $max_context_length = (int) (16385 / 2); // Estimate at 65536 characters ≈ 16384 tokens
+    if ($context_length > $max_context_length) {
+        $max_chars = (int) $max_context_length;
+        // Truncate to the max length
+        $truncated_context = substr($context, 0, $max_chars);
+        // Ensure truncation happens at the last complete word
+        $truncated_context = preg_replace('/\s+[^\s]*$/', '', $truncated_context);
+        // Fallback if regex fails (e.g., no spaces in the string)
+        if (empty($truncated_context)) {
+            $truncated_context = substr($context, 0, $max_chars);
+        }
+        $context = $truncated_context;
+    } else {
+    }
+
+    // Added Role, System, Content Static Variable - Ver 1.6.0
+    // Build messages array with system message, conversation history, and current user message - Ver 2.3.9+
+    $messages = array(
+        array('role' => 'system', 'content' => $context)
+    );
+    
+    // Add conversation history messages (structured format for better context) - Ver 2.3.9+
+    if (!empty($conversation_context['messages'])) {
+        $messages = array_merge($messages, $conversation_context['messages']);
+    }
+    
+    // Add current user message
+    $messages[] = array('role' => 'user', 'content' => $message);
+    
+    // Determine which parameter to use based on model - Ver 2.3.9+
+    // Newer models (gpt-5, o1, o3, etc.) require max_completion_tokens instead of max_tokens
+    // Some models (o1, o3) don't support temperature/top_p parameters
+    $body = array(
+        'model' => $model,
+        'messages' => $messages,
+    );
+    
+    // Only add temperature and top_p if the model supports them
+    if (!chatbot_openai_doesnt_support_temperature($model)) {
+        $body['temperature'] = $temperature;
+        $body['top_p'] = $top_p;
+    }
+    
+    // Use max_completion_tokens for newer models, max_tokens for older models
+    if (chatbot_openai_requires_max_completion_tokens($model)) {
+        $body['max_completion_tokens'] = $max_tokens;
+    } else {
+        $body['max_tokens'] = $max_tokens;
+    }
+
+    // FIXME - Allow for file uploads here
+    // $file = 'path/to/file';
+
+    // Context History - Ver 1.6.1
+    addEntry('chatbot_chatgpt_context_history', $message);
+
+    $chatbot_chatgpt_timeout = intval(esc_attr(get_option('chatbot_chatgpt_timeout_setting', '50')));
+    
+    // Fix for timeout exceeding PHP max_execution_time - Ver 2.4.5
+    // Temporarily increase PHP's max_execution_time to prevent fatal errors
+    $current_max_execution_time = ini_get('max_execution_time');
+    $required_execution_time = $chatbot_chatgpt_timeout + 10; // Add 10 seconds buffer
+    if ($current_max_execution_time > 0 && $required_execution_time > $current_max_execution_time) {
+        @set_time_limit($required_execution_time);
+    }
+
+    $args = array(
+        'headers' => $headers,
+        'body' => json_encode($body),
+        'method' => 'POST',
+        'data_format' => 'body',
+        'timeout' => $chatbot_chatgpt_timeout, // Increase the timeout values to 15 seconds to wait just a bit longer for a response from the engine
+    );
+
+    $response = wp_remote_post($api_url, $args);
+    
+    // Restore original execution time limit - Ver 2.4.5
+    if ($current_max_execution_time > 0 && $required_execution_time > $current_max_execution_time) {
+        @set_time_limit($current_max_execution_time);
+    }
+
+    // Handle any errors that are returned from the chat engine
+    if (is_wp_error($response)) {
+        // Clear locks on error
+        // Lock clearing removed - main send function handles locking
+        return 'Error: ' . $response->get_error_message().' Please check Settings for a valid API key or your OpenAI account for additional information.';
+    }
+
+    // Get the raw response body
+    $raw_response_body = wp_remote_retrieve_body($response);
+    
+    // Clean the response body - remove BOM, trim whitespace
+    $raw_response_body = trim($raw_response_body);
+    // Remove UTF-8 BOM if present
+    if (substr($raw_response_body, 0, 3) === "\xEF\xBB\xBF") {
+        $raw_response_body = substr($raw_response_body, 3);
+    }
+    
+    // Validate that we have a non-empty string that looks like JSON
+    if (empty($raw_response_body)) {
+        if (get_locale() !== "en_US") {
+            $localized_errorResponses = get_localized_errorResponses(get_locale(), $errorResponses);
+        } else {
+            $localized_errorResponses = $errorResponses;
+        }
+        return $localized_errorResponses[array_rand($localized_errorResponses)];
+    }
+    
+    // Check if it looks like JSON (starts with { or [)
+    $first_char = substr(trim($raw_response_body), 0, 1);
+    if ($first_char !== '{' && $first_char !== '[') {
+        if (get_locale() !== "en_US") {
+            $localized_errorResponses = get_localized_errorResponses(get_locale(), $errorResponses);
+        } else {
+            $localized_errorResponses = $errorResponses;
+        }
+        return $localized_errorResponses[array_rand($localized_errorResponses)];
+    }
+    
+    // Decode the JSON response
+    $response_body = json_decode($raw_response_body, true);
+    
+    // Check if json_decode failed
+    if (json_last_error() !== JSON_ERROR_NONE) {
+        $json_error = json_last_error_msg();
+        
+        if (get_locale() !== "en_US") {
+            $localized_errorResponses = get_localized_errorResponses(get_locale(), $errorResponses);
+        } else {
+            $localized_errorResponses = $errorResponses;
+        }
+        // Clear locks on error
+        // Lock clearing removed - main send function handles locking
+        return $localized_errorResponses[array_rand($localized_errorResponses)];
+    }
+    
+    // Validate that response_body is an array
+    if (!is_array($response_body)) {
+        
+        if (get_locale() !== "en_US") {
+            $localized_errorResponses = get_localized_errorResponses(get_locale(), $errorResponses);
+        } else {
+            $localized_errorResponses = $errorResponses;
+        }
+        // Clear locks on error
+        // Lock clearing removed - main send function handles locking
+        return $localized_errorResponses[array_rand($localized_errorResponses)];
+    }
+    
+    if (isset($response_body['message'])) {
+        $response_body['message'] = trim($response_body['message']);
+        if (!str_ends_with($response_body['message'], '.')) {
+            $response_body['message'] .= '.';
+        }
+    }
+
+    if (is_array($response_body)) {
+        if (isset($response_body['choices'])) {
+        }
+    }
+
+    // Get the user ID and page ID
+    if (empty($user_id)) {
+        $user_id = get_current_user_id(); // Get current user ID
+    }
+    if (empty($page_id)) {
+        $page_id = get_the_id(); // Get current page ID
+        if (empty($page_id)) {
+            // $page_id = get_queried_object_id(); // Get the ID of the queried object if $page_id is not set
+            // Changed - Ver 1.9.1 - 2024 03 05
+            $page_id = get_the_ID(); // Get the ID of the queried object if $page_id is not set
+        }
+    }
+
+    // DIAG - Diagnostics - Ver 2.4.5
+    // FIXME - ADD THE USAGE TO CONVERSATION TRACKER
+    // if (isset($response_body["usage"]["prompt_tokens"])) {
+    // }
+    // if (isset($response_body["usage"]["completion_tokens"])) {
+    // }
+    // if (isset($response_body["usage"]["total_tokens"])) {
+    // }
+
+    // Add the usage to the conversation tracker
+    if ($response['response']['code'] == 200 && isset($response_body["usage"])) {
+        if (isset($response_body["usage"]["prompt_tokens"])) {
+            append_message_to_conversation_log($session_id, $user_id, $page_id, 'Prompt Tokens', null, null, null, $response_body["usage"]["prompt_tokens"]);
+        }
+        if (isset($response_body["usage"]["completion_tokens"])) {
+            append_message_to_conversation_log($session_id, $user_id, $page_id, 'Completion Tokens', null, null, null, $response_body["usage"]["completion_tokens"]);
+        }
+        if (isset($response_body["usage"]["total_tokens"])) {
+            append_message_to_conversation_log($session_id, $user_id, $page_id, 'Total Tokens', null, null, null, $response_body["usage"]["total_tokens"]);
+        }
+    }
+       
+    if (!empty($response_body['choices'])) {
+        // Handle the response from the chat engine
+        $content = isset($response_body['choices'][0]['message']['content']) 
+            ? trim($response_body['choices'][0]['message']['content']) 
+            : '';
+        
+        // Check if content is empty - this can happen with gpt-5 when all tokens are used for reasoning
+        if (empty($content)) {
+            // Check if this is a reasoning model that consumed all tokens
+            $finish_reason = isset($response_body['choices'][0]['finish_reason']) 
+                ? $response_body['choices'][0]['finish_reason'] 
+                : '';
+            $reasoning_tokens = isset($response_body['usage']['completion_tokens_details']['reasoning_tokens']) 
+                ? $response_body['usage']['completion_tokens_details']['reasoning_tokens'] 
+                : 0;
+            
+            // DIAG - Diagnostics - Ver 2.4.5
+            prod_trace('WARNING', 'Empty content response. Finish reason: ' . $finish_reason . ', Reasoning tokens: ' . $reasoning_tokens);
+            
+            if ($finish_reason === 'length' && $reasoning_tokens > 0) {
+                // All tokens were used for reasoning, suggest increasing max_completion_tokens
+                if (get_locale() !== "en_US") {
+                    $localized_errorResponses = get_localized_errorResponses(get_locale(), $errorResponses);
+                } else {
+                    $localized_errorResponses = $errorResponses;
+                }
+                // Clear locks on error
+                // Lock clearing removed - main send function handles locking
+                return 'The response was cut off because all available tokens were used for reasoning. Please try increasing the "Maximum Tokens" setting or rephrase your question to be more concise.';
+            }
+            
+            // Generic empty response error
+            if (get_locale() !== "en_US") {
+                $localized_errorResponses = get_localized_errorResponses(get_locale(), $errorResponses);
+            } else {
+                $localized_errorResponses = $errorResponses;
+            }
+            // Clear locks on error
+            // Lock clearing removed - main send function handles locking
+            return $localized_errorResponses[array_rand($localized_errorResponses)];
+        }
+        
+        // Context History - Ver 1.6.1
+        addEntry('chatbot_chatgpt_context_history', $content);
+        // Clear locks on success
+        // Lock clearing removed - main send function handles locking
+        return $content;
+    } else {
+        // FIXME - Decide what to return here - it's an error
+        if (get_locale() !== "en_US") {
+            $localized_errorResponses = get_localized_errorResponses(get_locale(), $errorResponses);
+        } else {
+            $localized_errorResponses = $errorResponses;
+        }
+        // Clear locks on error
+        // Lock clearing removed - main send function handles locking
+        // Return a random error message
+        return $localized_errorResponses[array_rand($localized_errorResponses)];
+    }
+    
+}
+
+// Call the ChatGPT API without trappings
+function chatbot_chatgpt_call_api_basic($api_key, $message) {
+
+    // The current ChatGPT API URL endpoint for gpt-3.5-turbo and gpt-4
+    // $api_url = 'https://api.openai.com/v1/chat/completions';
+    $api_url = get_chat_completions_api_url();
+
+    $headers = array(
+        'Authorization' => 'Bearer ' . $api_key,
+        'Content-Type' => 'application/json',
+    );
+
+    // Select the OpenAI Model
+    // Get the saved model from the settings or default to "gpt-3.5-turbo"
+    $model = esc_attr(get_option('chatbot_chatgpt_model_choice', 'gpt-3.5-turbo'));
+ 
+    // Max tokens - Ver 1.4.2
+    $max_tokens = intval(esc_attr(get_option('chatbot_chatgpt_max_tokens_setting', '1000')));
+
+    // Conversation Context - Ver 1.6.1
+    $context = esc_attr(get_option('chatbot_chatgpt_conversation_context', 'You are a versatile, friendly, and helpful assistant designed to support me in a variety of tasks that responds in Markdown.'));
+
+    // Temperature - Ver 2.1.8
+    $temperature = floatval(esc_attr(get_option('chatbot_chatgpt_temperature', '0.5')));
+
+    // Top P - Ver 2.1.8
+    $top_p = floatval(esc_attr(get_option('chatbot_chatgpt_top_p', '1.0')));
+ 
+    // Added Role, System, Content Static Variable - Ver 1.6.0
+    // Determine which parameter to use based on model - Ver 2.3.9+
+    // Newer models (gpt-5, o1, o3, etc.) require max_completion_tokens instead of max_tokens
+    // Some models (o1, o3) don't support temperature/top_p parameters
+    $body = array(
+        'model' => $model,
+        'messages' => array(
+            array('role' => 'system', 'content' => $context),
+            array('role' => 'user', 'content' => $message)
+            ),
+    );
+    
+    // Only add temperature and top_p if the model supports them
+    if (!chatbot_openai_doesnt_support_temperature($model)) {
+        $body['temperature'] = $temperature;
+        $body['top_p'] = $top_p;
+    }
+    
+    // Use max_completion_tokens for newer models, max_tokens for older models
+    if (chatbot_openai_requires_max_completion_tokens($model)) {
+        $body['max_completion_tokens'] = $max_tokens;
+    } else {
+        $body['max_tokens'] = $max_tokens;
+    }
+
+    $chatbot_chatgpt_timeout = intval(esc_attr(get_option('chatbot_chatgpt_timeout_setting', '50')));
+    
+    // Fix for timeout exceeding PHP max_execution_time - Ver 2.4.5
+    // Temporarily increase PHP's max_execution_time to prevent fatal errors
+    $current_max_execution_time = ini_get('max_execution_time');
+    $required_execution_time = $chatbot_chatgpt_timeout + 10; // Add 10 seconds buffer
+    if ($current_max_execution_time > 0 && $required_execution_time > $current_max_execution_time) {
+        @set_time_limit($required_execution_time);
+    }
+
+    $args = array(
+        'headers' => $headers,
+        'body' => json_encode($body),
+        'method' => 'POST',
+        'data_format' => 'body',
+        'timeout' => $chatbot_chatgpt_timeout, // Increase the timeout values to 15 seconds to wait just a bit longer for a response from the engine
+    );
+
+    $response = wp_remote_post($api_url, $args);
+    
+    // Restore original execution time limit - Ver 2.4.5
+    if ($current_max_execution_time > 0 && $required_execution_time > $current_max_execution_time) {
+        @set_time_limit($current_max_execution_time);
+    }
+
+    // Handle any errors that are returned from the chat engine
+    if (is_wp_error($response)) {
+        // Clear locks on error
+        // Lock clearing removed - main send function handles locking
+        return 'Error: ' . $response->get_error_message().' Please check Settings for a valid API key or your OpenAI account for additional information.';
+    }
+
+    // Return json_decode(wp_remote_retrieve_body($response), true);
+    $response_body = json_decode(wp_remote_retrieve_body($response), true);
+    if (isset($response_body['message'])) {
+        $response_body['message'] = trim($response_body['message']);
+        if (!str_ends_with($response_body['message'], '.')) {
+            $response_body['message'] .= '.';
+        }
+    }
+    
+    if (!empty($response_body['choices'])) {
+        // Handle the response from the chat engine
+        return $response_body['choices'][0]['message']['content'];
+    } else {
+        // Return a random error message
+        return $localized_errorResponses[array_rand($localized_errorResponses)];
+    }
+
+}

@@ -1,6 +1,6 @@
 <?php
 /**
- * Kognetiks Chatbot for WordPress - Knowledge Navigator - Database and File Management - Ver 1.6.3
+ * Kognetiks Chatbot - Knowledge Navigator - Database and File Management - Ver 1.6.3
  *
  * This file contains the code for table actions for database and file management.
  * 
@@ -22,13 +22,16 @@ function dbKNStore() {
     $charset_collate = $wpdb->get_charset_collate();
     $table_name = $wpdb->prefix . 'chatbot_chatgpt_knowledge_base';
 
-    // Fallback cascade for invalid or unsupported character sets
-    if (empty($charset_collate) || strpos($charset_collate, 'utf8mb4') === false) {
-        if (strpos($charset_collate, 'utf8') === false) {
-            // Fallback to utf8 if utf8mb4 is not supported
-            $charset_collate = "CHARACTER SET utf8 COLLATE utf8_general_ci";
-        }
-    }
+    // // Fallback cascade for invalid or unsupported character sets
+    // if (empty($charset_collate) || strpos($charset_collate, 'utf8mb4') === false) {
+    //     if (strpos($charset_collate, 'utf8') === false) {
+    //         // Fallback to utf8 if utf8mb4 is not supported
+    //         $charset_collate = "CHARACTER SET utf8 COLLATE utf8_general_ci";
+    //     }
+    // }
+
+    // FIXME - IRISH TEXT ENCODING - REMOVED IN VER 2.2.1 - 2024-12-24
+    // $charset_collate = "CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_520_ci";
 
     // Drop table if it exists
     $wpdb->query("DROP TABLE IF EXISTS $table_name");
@@ -50,11 +53,11 @@ function dbKNStore() {
         return true;  // Table created successfully
     } else {
         // Log the error
-        error_log('Failed to create table: ' . $table_name);
-        error_log('SQL: ' . $sql);
+        prod_trace( 'ERROR', 'Failed to create table: ' . $table_name);
+        prod_trace( 'ERROR', 'SQL: ' . $sql);
         // Log the specific reason for the failure
         if($wpdb->last_error !== '') {
-            error_log('Error details: ' . $wpdb->last_error);
+            prod_trace( 'ERROR', 'Details: ' . $wpdb->last_error);
         }
         return false;  // Table creation failed
     }
@@ -70,12 +73,15 @@ function dbKNStoreTFIDF() {
     $table_name = $wpdb->prefix . 'chatbot_chatgpt_knowledge_base_tfidf';
 
     // Fallback cascade for invalid or unsupported character sets
-    if (empty($charset_collate) || strpos($charset_collate, 'utf8mb4') === false) {
-        if (strpos($charset_collate, 'utf8') === false) {
-            // Fallback to utf8 if utf8mb4 is not supported
-            $charset_collate = "CHARACTER SET utf8 COLLATE utf8_general_ci";
-        }
-    }
+    // if (empty($charset_collate) || strpos($charset_collate, 'utf8mb4') === false) {
+    //     if (strpos($charset_collate, 'utf8') === false) {
+    //         // Fallback to utf8 if utf8mb4 is not supported
+    //         $charset_collate = "CHARACTER SET utf8 COLLATE utf8_general_ci";
+    //     }
+    // }
+
+    // FIXME - IRISH TEXT ENCODING - REMOVED IN VER 2.2.1 - 2024-12-24
+    // $charset_collate = "CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_520_ci";
 
     // Drop table if it exists
     $wpdb->query("DROP TABLE IF EXISTS $table_name");
@@ -94,11 +100,11 @@ function dbKNStoreTFIDF() {
         return true;  // Table created successfully
     } else {
         // Log the error
-        error_log('Failed to create table: ' . $table_name);
-        error_log('SQL: ' . $sql);
+        prod_trace( 'ERROR', 'Failed to create table: ' . $table_name);
+        prod_trace( 'ERROR', 'SQL: ' . $sql);
         // Log the specific reason for the failure
         if($wpdb->last_error !== '') {
-            error_log('Error details: ' . $wpdb->last_error);
+            prod_trace( 'ERROR', 'Details: ' . $wpdb->last_error);
         }
         return false;  // Table creation failed
     }
@@ -114,12 +120,15 @@ function dbKNStoreWordCount() {
 
     $charset_collate = $wpdb->get_charset_collate();
     // Fallback cascade for invalid or unsupported character sets
-    if (empty($charset_collate) || strpos($charset_collate, 'utf8mb4') === false) {
-        if (strpos($charset_collate, 'utf8') === false) {
-            // Fallback to utf8 if utf8mb4 is not supported
-            $charset_collate = "CHARACTER SET utf8 COLLATE utf8_general_ci";
-        }
-    }
+    // if (empty($charset_collate) || strpos($charset_collate, 'utf8mb4') === false) {
+    //     if (strpos($charset_collate, 'utf8') === false) {
+    //         // Fallback to utf8 if utf8mb4 is not supported
+    //         $charset_collate = "CHARACTER SET utf8 COLLATE utf8_general_ci";
+    //     }
+    // }
+
+    // FIXME - IRISH TEXT ENCODING - REMOVED IN VER 2.2.1 - 2024-12-24
+    // $charset_collate = "CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_520_ci";
 
     // Drop table if it exists
     $wpdb->query("DROP TABLE IF EXISTS $table_name");
@@ -139,11 +148,11 @@ function dbKNStoreWordCount() {
         return true;  // Table created successfully
     } else {
         // Log the error
-        error_log('Failed to create table: ' . $table_name);
-        error_log('SQL: ' . $sql);
+        prod_trace( 'ERROR', 'Failed to create table: ' . $table_name);
+        prod_trace( 'ERROR', 'SQL: ' . $sql);
         // Log the specific reason for the failure
         if($wpdb->last_error !== '') {
-            error_log('Error details: ' . $wpdb->last_error);
+            prod_trace( 'ERROR', 'Details: ' . $wpdb->last_error);
         }
         return false;  // Table creation failed
         
@@ -203,11 +212,7 @@ function store_top_words() {
 function output_results() {
 
     global $chatbot_chatgpt_plugin_dir_path;
-
     global $topWords;
-
-    // DIAG - Diagnostic - Ver 1.6.3
-    // back_trace( 'NOTICE', 'ENTER: output_results()');
 
     // Generate the directory path
     $results_dir_path = $chatbot_chatgpt_plugin_dir_path . 'results/';
@@ -215,7 +220,6 @@ function output_results() {
     // Ensure the directory exists or attempt to create it
     if (!create_directory_and_index_file($results_dir_path)) {
         // Error handling, e.g., log the error or handle the failure appropriately
-        // back_trace( 'ERROR', 'Failed to create directory.');
         return;
     }
 
@@ -231,7 +235,6 @@ function output_results() {
             $f->fputcsv([$word, $tfidf]);
         }
     } catch (RuntimeException $e) {
-        // back_trace( 'ERROR', 'Failed to open CSV file for writing: ' . $e->getMessage());
     }
 
     // Write JSON
@@ -240,7 +243,6 @@ function output_results() {
             throw new Exception("Failed to write to JSON file.");
         }
     } catch (Exception $e) {
-        // back_trace( 'ERROR', $e->getMessage());
     }
 
     return;

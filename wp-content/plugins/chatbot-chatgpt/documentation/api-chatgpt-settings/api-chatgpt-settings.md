@@ -1,8 +1,8 @@
 # Configuring the API/ChatGPT Settings
 
-The **Kognetiks Chatbot for WordPress** plugin requires proper configuration to function correctly. Follow the steps below to set up your plugin:
+The **Kognetiks Chatbot** plugin requires proper configuration to function correctly. Follow the steps below to set up your plugin:
 
-![ChatGPT API](api-chatgpt-api-settings.png)
+<img src="api-chatgpt-api-settings.png" alt="ChatGPT API" style="width:auto;height:auto;">
 
 1. **ChatGPT API Key**:
 
@@ -23,4 +23,5 @@ The **Kognetiks Chatbot for WordPress** plugin requires proper configuration to 
 
 ---
 
+- **[Back to API ChatGPT Settings](api-chatgpt-model-settings.md)**
 - **[Back to the Overview](/overview.md)**

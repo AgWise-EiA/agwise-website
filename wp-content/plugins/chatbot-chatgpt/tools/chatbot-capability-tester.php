@@ -1,6 +1,6 @@
 <?php
 /**
- * Kognetiks Chatbot for WordPress - Capability Tester - Ver 2.0.6
+ * Kognetiks Chatbot - Capability Tester - Ver 2.0.6
  *
  * This file contains the code for testing user capabilities
  * and displaying the results.
@@ -28,11 +28,9 @@ function chatbot_chatgpt_capability_tester() {
 
     foreach ($capabilities as $capability) {
         if (current_user_can($capability)) {
-            // back_trace( 'NOTICE', 'User has the capability: ' . $capability);
-            echo '<p>User has the capability: ' . $capability . '</p>';
+            echo '<p>User has the capability: ' . esc_html( $capability ) . '</p>';
         } else {
-            // back_trace( 'ERROR', 'User does not have the capability: ' . $capability);
-            echo '<p>User does not have the capability: ' . $capability . '</p>';
+            echo '<p>User does not have the capability: ' . esc_html( $capability ) . '</p>';
         }
     }
 

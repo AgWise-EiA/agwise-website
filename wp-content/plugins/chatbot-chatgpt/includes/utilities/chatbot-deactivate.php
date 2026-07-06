@@ -1,6 +1,6 @@
 <?php
 /**
- * Kognetiks Chatbot for WordPress - Deactivate and/or Delete the Plugin
+ * Kognetiks Chatbot - Deactivate and/or Delete the Plugin
  *
  * This file contains the code for deactivating and/or deleting the plugin.
  * 
@@ -16,9 +16,21 @@ if ( ! defined( 'WPINC' ) ) {
 // Deactivation Hook - Revised 1.9.9
 function chatbot_chatgpt_deactivate() {
 
-    if (empty(esc_attr(get_option('chatbot_chatgpt_delete_data')))) {      
+    $delete_data = get_option('chatbot_chatgpt_delete_data');
+    if ( empty( $delete_data ) ) {
         chatbot_chatgpt_admin_notices();
     }
+
+    // Clean up insights email cron jobs on deactivation
+    if (function_exists('kognetiks_insights_unschedule_proof_of_value_email')) {
+        kognetiks_insights_unschedule_proof_of_value_email();
+    } else {
+        // Fallback: clear the hook directly if function doesn't exist
+        wp_clear_scheduled_hook('kognetiks_insights_send_proof_of_value_email_hook');
+    }
+    
+    // Clean up conversation digest cron job on deactivation
+    wp_clear_scheduled_hook('kognetiks_insights_send_conversation_digest_email_hook');
 
 }
 
@@ -26,128 +38,147 @@ function chatbot_chatgpt_deactivate() {
 add_action('admin_notices', 'chatbot_chatgpt_admin_notices');
 function chatbot_chatgpt_admin_notices() {
 
-    if (empty(esc_attr(get_option('chatbot_chatgpt_delete_data')))) {     
+    $delete_data = get_option('chatbot_chatgpt_delete_data');
+    // Only show notice when option is empty (user has never set a preference).
+    // Do NOT set to 'no' here - that would cause uninstall to skip cleanup for users
+    // who never explicitly chose to keep data.
+    if ( empty( $delete_data ) ) {
 
         echo '<div class="notice notice-warning is-dismissible">
             <p><strong>Kognetiks Chatbot:</strong> Remember to set your data deletion preferences in the plugin settings on the Messages tab if you plan to uninstall the plugin.</p>
         </div>';
-        update_option('chatbot_chatgpt_delete_data', 'no');
 
     }
 
 }
 
-// Upgrade Logic - Revised 1.9.9
-function chatbot_chatgpt_uninstall(){
+// Uninstall Logic - Revised 2.4.4
+function chatbot_chatgpt_uninstall() {
 
-    global $wpdb;
-
-    // DIAG - Log the uninstall
-    // back_trace( 'NOTICE', 'PLUGIN UNINSTALL STARTED');
-
-    // Ask if the data should be removed, if not return
-    if (get_option('chatbot_chatgpt_delete_data') != 'yes') {
+    if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
         return;
     }
 
-    // Check for a setting that specifies whether to delete data
-    if (get_option('chatbot_chatgpt_delete_data') == 'yes') {
+    global $wpdb;
 
-        // Delete on-off options
-        // back_trace( 'NOTICE', 'Deleting one-off options');
-        $wpdb->query("DELETE FROM {$wpdb->prefix}options WHERE option_name LIKE 'chatbot_ai_platform_choice'");
-    
-        // Delete ChatGPT options
-        // back_trace( 'NOTICE', 'Deleting ChatGPT options');
-        $wpdb->query("DELETE FROM {$wpdb->prefix}options WHERE option_name LIKE 'chatbot_chatgpt%'");
+    $debug = defined('WP_DEBUG') && WP_DEBUG;
 
-        // Delete NVIDIA options
-        // back_trace( 'NOTICE', 'Deleting NVIDIA options');
-        $wpdb->query("DELETE FROM {$wpdb->prefix}options WHERE option_name LIKE 'chatbot_nvidia%'");
-
-        // Delete Markov Chain options
-        // back_trace( 'NOTICE', 'Deleting Markov Chain options');
-        $wpdb->query("DELETE FROM {$wpdb->prefix}options WHERE option_name LIKE 'chatbot_markov%'");
-
-        // Delete Anthropic options
-        // back_trace( 'NOTICE', 'Deleting Anthropic options');
-        $wpdb->query("DELETE FROM {$wpdb->prefix}options WHERE option_name LIKE 'chatbot_anthropic%'");
-
-        // Delete Transformer options
-        // back_trace( 'NOTICE', 'Deleting Transformer options');
-        $wpdb->query("DELETE FROM {$wpdb->prefix}options WHERE option_name LIKE 'chatbot_transformer_model%'");
-
-        // Delete ChatGPT tables
-        // back_trace( 'NOTICE', 'Deleting tables');
-        $wpdb->query("DROP TABLE IF EXISTS {$wpdb->prefix}chatbot_chatgpt_assistants");
-        $wpdb->query("DROP TABLE IF EXISTS {$wpdb->prefix}chatbot_chatgpt_conversation_log");
-        $wpdb->query("DROP TABLE IF EXISTS {$wpdb->prefix}chatbot_chatgpt_interactions");
-        $wpdb->query("DROP TABLE IF EXISTS {$wpdb->prefix}chatbot_chatgpt_knowledge_base");
-        $wpdb->query("DROP TABLE IF EXISTS {$wpdb->prefix}chatbot_chatgpt_knowledge_base_tfidf");
-        $wpdb->query("DROP TABLE IF EXISTS {$wpdb->prefix}chatbot_chatgpt_knowledge_base_word_count");
-
-        // Delete NVIDIA tables
-        // back_trace( 'NOTICE', 'Deleting NVIDIA tables');
-        // NONE CURRENTLY - Ver 2.1.8
-
-        // Delete Markov Chain tables
-        // back_trace( 'NOTICE', 'Deleting Markov Chain tables');
-        $wpdb->query("DROP TABLE IF EXISTS {$wpdb->prefix}chatbot_markov_chain");
-
-        // Delete Anthropic tables
-        // back_trace( 'NOTICE', 'Deleting Anthropic tables');
-        // NONE CURRENTLY - Ver 2.2.0
-
-        // Delete Transformer tables
-        // back_trace( 'NOTICE', 'Deleting Transformer tables');
-        // NONE CURRENTLY - Ver 2.2.0
-
-        // Delete ChatGPT transients
-        // back_trace( 'NOTICE', 'Deleting transients');
-        $wpdb->query("DELETE FROM {$wpdb->prefix}options WHERE option_name LIKE '_transient_chatbot_chatgpt%' OR option_name LIKE '_transient_timeout_chatbot_chatgpt%'");
-
-        // Delete NVIDIA transients
-        // back_trace( 'NOTICE', 'Deleting NVIDIA transients');
-        $wpdb->query("DELETE FROM {$wpdb->prefix}options WHERE option_name LIKE '_transient_chatbot_nvidia%' OR option_name LIKE '_transient_timeout_chatbot_nvidia%'");
-
-        // Delete Markov Chain transients
-        // back_trace( 'NOTICE', 'Deleting Markov Chain transients');
-        $wpdb->query("DELETE FROM {$wpdb->prefix}options WHERE option_name LIKE '_transient_chatbot_markov%' OR option_name LIKE '_transient_timeout_chatbot_markov%'");
-
-        // Delete Anthropic transients
-        // back_trace( 'NOTICE', 'Deleting Anthropic transients');
-        $wpdb->query("DELETE FROM {$wpdb->prefix}options WHERE option_name LIKE '_transient_chatbot_anthropic%' OR option_name LIKE '_transient_timeout_chatbot_anthropic%'");
-
-        // Delete Transformer transients
-        // back_trace( 'NOTICE', 'Deleting Transformer transients');
-        $wpdb->query("DELETE FROM {$wpdb->prefix}options WHERE option_name LIKE '_transient_chatbot_transformer_model%' OR option_name LIKE '_transient_timeout_chatbot_transformer_model%'");
-
-        // Delete any scheduled cron events
-        // back_trace( 'NOTICE', 'Deleting cron events');
-        $crons = _get_cron_array();
-        foreach ($crons as $timestamp => $cron) {
-            foreach ($cron as $hook => $events) {
-                if (strpos($hook, 'chatbot_chatgpt') !== false) {
-                    foreach ($events as $event) {
-                        wp_unschedule_event($timestamp, $hook, $event['args']);
-                    }
-                }
-                if (strpos($hook, 'chatbot_transformer') !== false) {
-                    foreach ($events as $event) {
-                        wp_unschedule_event($timestamp, $hook, $event['args']);
-                    }
-                }
-            }
-        }
-
-        // Delete the cron event called "knowledge_navigator_scan_hook"
-        // back_trace( 'NOTICE', 'Deleting cron event: knowledge_navigator_scan_hook');
-        wp_clear_scheduled_hook('knowledge_navigator_scan_hook');
-
+    if ( $debug ) {
+        error_log('[Chatbot] [chatbot-deactivate.php] uninstall: function called');
     }
 
-    // DIAG - Log the uninstall
-    // back_trace( 'NOTICE', 'PLUGIN UNINSTALL COMPLETED');
+    $delete_data = get_option('chatbot_chatgpt_delete_data');
+    if ( $delete_data !== 'yes' ) {
+        if ( $debug ) {
+            error_log('[Chatbot] [chatbot-deactivate.php] uninstall: delete_data != yes, skipping cleanup');
+        }
+        return;
+    }
 
-    return;
+    $errors_occurred = false;
+
+    $execute_query = function( $query, $description ) use ( &$wpdb, &$errors_occurred, $debug ) {
+        $result = $wpdb->query( $query );
+        if ( $result === false && ! empty( $wpdb->last_error ) ) {
+            if ( $debug ) {
+                error_log("[Chatbot] [chatbot-deactivate.php] uninstall error ($description): " . $wpdb->last_error);
+            }
+            $errors_occurred = true;
+        }
+        return $result;
+    };
+
+    // Options: exact + prefixes
+    $exact_options = array(
+        'chatbot_ai_platform_choice',
+    );
+
+    foreach ( $exact_options as $opt ) {
+        $execute_query(
+            $wpdb->prepare("DELETE FROM {$wpdb->prefix}options WHERE option_name = %s", $opt),
+            "delete option {$opt}"
+        );
+    }
+
+    $prefixes = array(
+        'chatbot_chatgpt',
+        'chatbot_openai',
+        'chatbot_azure',
+        'chatbot_nvidia',
+        'chatbot_anthropic',
+        'chatbot_deepseek',
+        'chatbot_google',
+        'chatbot_mistral',
+        'chatbot_markov',
+        'chatbot_local',
+        'chatbot_transformer',
+        'kognetiks_insights',
+    );
+
+    foreach ( $prefixes as $prefix ) {
+        $like = $wpdb->esc_like( $prefix ) . '%';
+        $execute_query(
+            $wpdb->prepare("DELETE FROM {$wpdb->prefix}options WHERE option_name LIKE %s", $like),
+            "delete options like {$prefix}%"
+        );
+    }
+
+    // Transients (prefix-based)
+    $transient_prefixes = array(
+        'chatbot_chatgpt',
+        'chatbot_nvidia',
+        'chatbot_anthropic',
+        'chatbot_google',
+        'chatbot_markov',
+        'chatbot_transformer_model',
+        'chatbot_mistral',
+        'chatbot_local',
+        'chatbot_azure',
+        'kchat',
+    );
+
+    foreach ( $transient_prefixes as $tp ) {
+        $like1 = $wpdb->esc_like('_transient_' . $tp) . '%';
+        $like2 = $wpdb->esc_like('_transient_timeout_' . $tp) . '%';
+
+        $execute_query(
+            $wpdb->prepare(
+                "DELETE FROM {$wpdb->prefix}options WHERE option_name LIKE %s OR option_name LIKE %s",
+                $like1,
+                $like2
+            ),
+            "delete transients for {$tp}"
+        );
+    }
+
+    // Tables
+    $tables_to_drop = array(
+        'chatbot_chatgpt_assistants',
+        'chatbot_chatgpt_azure_assistants',
+        'chatbot_chatgpt_conversation_log',
+        'chatbot_chatgpt_interactions',
+        'chatbot_chatgpt_knowledge_base',
+        'chatbot_chatgpt_knowledge_base_tfidf',
+        'chatbot_chatgpt_knowledge_base_word_count',
+        'chatbot_markov_chain',
+    );
+
+    foreach ( $tables_to_drop as $table ) {
+        $table_name = $wpdb->prefix . $table;
+        $execute_query(
+            "DROP TABLE IF EXISTS `{$table_name}`",
+            "drop table {$table_name}"
+        );
+    }
+
+    // Cron: clear only known hooks you own
+    wp_clear_scheduled_hook('knowledge_navigator_scan_hook');
+    wp_clear_scheduled_hook('kognetiks_insights_send_proof_of_value_email_hook');
+    wp_clear_scheduled_hook('kognetiks_insights_send_conversation_digest_email_hook');
+    wp_clear_scheduled_hook('chatbot_chatgpt_conversation_log_cleanup_event');
+
+    if ( $debug ) {
+        error_log('[Chatbot] [chatbot-deactivate.php] uninstall: completed ' . ($errors_occurred ? 'with errors' : 'successfully'));
+    }
+
 }

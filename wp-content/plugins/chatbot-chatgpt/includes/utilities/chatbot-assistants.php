@@ -1,6 +1,6 @@
 <?php
 /**
- * Kognetiks Chatbot for WordPress - Chatbot Assistants - Ver 2.0.4
+ * Kognetiks Chatbot - Chatbot Assistants - Ver 2.0.4
  *
  * This file contains the code for table actions for managing assistants
  * to display the chatbot conversation on a page on the website.
@@ -19,11 +19,6 @@ function create_chatbot_chatgpt_assistants_table() {
     global $wpdb;
 
     $table_name = $wpdb->prefix . 'chatbot_chatgpt_assistants';
-
-    // Check if the table already exists
-    if ($wpdb->get_var("SHOW TABLES LIKE '$table_name'") === $table_name) {
-        return; // Exit if the table already exists
-    }
     
     $charset_collate = $wpdb->get_charset_collate();
 
@@ -60,12 +55,9 @@ function create_chatbot_chatgpt_assistants_table() {
 
     // Check for errors after dbDelta
     if ($wpdb->last_error) {
-        // logErrorToServer('Failed to create table: ' . $table_name);
-        // logErrorToServer('SQL: ' . $sql);
-        // logErrorToServer('Error details: ' . $wpdb->last_error);
-        error_log('Failed to create table: ' . $table_name);
-        error_log('SQL: ' . $sql);
-        error_log('Error details: ' . $wpdb->last_error);
+        back_trace('ERROR', 'Failed to insert row into table: ' . $table_name);
+        back_trace('ERROR', 'SQL: ' . $sql);
+        back_trace('ERROR', 'Error details: ' . $wpdb->last_error);
         return false;  // Table creation failed
     }
 
@@ -73,10 +65,12 @@ function create_chatbot_chatgpt_assistants_table() {
     upgrade_chatbot_chatgpt_assistants_table();
 
     // Keep the chatbot_chatgpt_number_of_shortcodes option updated - Ver 2.0.6
-    update_chatbot_chatgpt_number_of_shortcodes();
+    // REMOVED - Ver 2.2.7
+    // update_chatbot_chatgpt_number_of_shortcodes();
 
 }
-register_activation_hook(__FILE__, 'create_chatbot_chatgpt_assistants_table');
+// REMVOED - Ver 2.2.7
+// register_activation_hook(__FILE__, 'create_chatbot_chatgpt_assistants_table');
 
 // Drop the table for the chatbot assistants
 function drop_chatbot_chatgpt_assistants_table() {
@@ -96,6 +90,7 @@ function get_chatbot_chatgpt_assistant_by_common_name($common_name) {
     global $wpdb;
     
     $table_name = $wpdb->prefix . 'chatbot_chatgpt_assistants';
+
 
     $assistant_details = $wpdb->get_row(
         $wpdb->prepare(
@@ -118,6 +113,7 @@ function get_chatbot_chatgpt_assistant_by_key($id) {
     
     $table_name = $wpdb->prefix . 'chatbot_chatgpt_assistants';
 
+ 
     $assistant_details = $wpdb->get_row(
         $wpdb->prepare(
             "SELECT * FROM $table_name WHERE id = %s",
@@ -128,9 +124,9 @@ function get_chatbot_chatgpt_assistant_by_key($id) {
 
     // Before returning the $assistant_details, rename certain keys for compatibility with the chatbot shortcode
     if ($assistant_details) {
-        $assistant_details['chatbot_chatbot_assistant_id'] = $assistant_details['assistant_id'];
+        $assistant_details['chatbot_chatgpt_assistant_id'] = $assistant_details['assistant_id'];
         $assistant_details['common_name'] = $assistant_details['common_name'];
-        $assistant_details['chatbot_chatbot_display_style'] = $assistant_details['style'];
+        $assistant_details['chatbot_chatgpt_display_style'] = $assistant_details['style'];
         $assistant_details['chatbot_chatgpt_audience_choice'] = $assistant_details['audience'];
         $assistant_details['chatbot_chatgpt_voice_option'] = $assistant_details['voice'];
         $assistant_details['chatbot_chatgpt_allow_file_uploads'] = $assistant_details['allow_file_uploads'];
@@ -170,9 +166,7 @@ function update_chatbot_chatgpt_number_of_shortcodes() {
     }  
 
     update_option('chatbot_chatgpt_number_of_shortcodes', $number_of_shortcodes);
-
-    // Optionally log for debugging
-    // error_log('chatbot-assistants - Number of Shortcodes: ' . $number_of_shortcodes);
+    
 }
 
 // Display the chatbot assistants table
@@ -220,7 +214,7 @@ function display_chatbot_chatgpt_assistants_table() {
     echo '<thead>';
     echo '<tr>';
     echo '<th>Actions</th>';  // Column header for actions
-    echo '<th>&#91;Shortcode&#93;</th>';
+    echo '<th style="min-width:100px;">&#91;Shortcode&#93;</th>';
     echo '<th>Assistant ID</th>';
     echo '<th>Common Name</th>';
     echo '<th>Style</th>';
@@ -382,6 +376,7 @@ function chatbot_chatgpt_assistants_scripts() {
                 // Send the update request via AJAX
                 jQuery.post(ajaxurl, data, function(response) {
                     alert('Assistant updated successfully!');
+                    window.programmaticReload = true;
                     location.reload();  // Reload the page to reflect the deletion
                 });
             }
@@ -398,6 +393,7 @@ function chatbot_chatgpt_assistants_scripts() {
                 // Send the delete request via AJAX
                 jQuery.post(ajaxurl, data, function(response) {
                     alert('Assistant deleted successfully!');
+                    window.programmaticReload = true;
                     location.reload();  // Reload the page to reflect the deletion
                 });
             }
@@ -425,6 +421,7 @@ function chatbot_chatgpt_assistants_scripts() {
                 // Send the add request via AJAX
                 jQuery.post(ajaxurl, data, function(response) {
                     alert('New assistant added successfully!');
+                    window.programmaticReload = true;
                     location.reload();  // Reload the page to reflect the addition
                 });
             }
@@ -486,8 +483,8 @@ function update_assistant() {
 
     // Check for errors after update
     if ($wpdb->last_error) {
-        error_log('Failed to update row in table: ' . $table_name);
-        error_log('Error details: ' . $wpdb->last_error);
+        back_trace('ERROR', 'Failed to update row in table: ' . $table_name);
+        back_trace('ERROR', 'Error details: ' . $wpdb->last_error);
         return false;  // Row update failed
     }
 
@@ -515,8 +512,8 @@ function delete_assistant() {
 
     // Check for errors after delete
     if ($wpdb->last_error) {
-        error_log('Failed to delete row from table: ' . $table_name);
-        error_log('Error details: ' . $wpdb->last_error);
+        back_trace('ERROR', 'Failed to delete row from table: ' . $table_name);
+        back_trace('ERROR', 'Error details: ' . $wpdb->last_error);
         return false;  // Row deletion failed
     }
 
@@ -537,6 +534,12 @@ function add_new_assistant() {
     global $wpdb;
 
     $table_name = $wpdb->prefix . 'chatbot_chatgpt_assistants';
+
+    // Check that the table exists
+    if ($wpdb->get_var("SHOW TABLES LIKE '$table_name'") !== $table_name) {
+        // Table doesn't exist then add the table
+        create_chatbot_chatgpt_assistants_table();
+    }
 
     $assistant_id = sanitize_text_field($_POST['assistant_id']);
     $common_name = sanitize_text_field($_POST['common_name']);
@@ -571,8 +574,8 @@ function add_new_assistant() {
 
     // Check for errors after insert
     if ($wpdb->last_error) {
-        error_log('Failed to insert row into table: ' . $table_name);
-        error_log('Error details: ' . $wpdb->last_error);
+        back_trace('ERROR', 'Failed to insert row into table: ' . $table_name);
+        back_trace('ERROR', 'Error details: ' . $wpdb->last_error);
         return false;  // Row insertion failed
     }
 
@@ -616,8 +619,8 @@ function upgrade_chatbot_chatgpt_assistants_table() {
 
         // Check for errors after insert
         if ($wpdb->last_error) {
-            error_log('Failed to insert row into table: ' . $table_name);
-            error_log('Error details: ' . $wpdb->last_error);
+            back_trace('ERROR', 'Failed to insert row into table: ' . $table_name);
+            back_trace('ERROR', 'Error details: ' . $wpdb->last_error);
             return false;  // Row insertion failed
         }
 
@@ -644,8 +647,8 @@ function upgrade_chatbot_chatgpt_assistants_table() {
 
         // Check for errors after insert
         if ($wpdb->last_error) {
-            error_log('Failed to insert row into table: ' . $table_name);
-            error_log('Error details: ' . $wpdb->last_error);
+            back_trace('ERROR', 'Failed to insert row into table: ' . $table_name);
+            back_trace('ERROR', 'Error details: ' . $wpdb->last_error);
             return false;  // Row insertion failed
         }
         

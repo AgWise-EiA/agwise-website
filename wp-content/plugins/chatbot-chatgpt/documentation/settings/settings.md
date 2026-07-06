@@ -4,18 +4,22 @@ The General Settings allow you to customize the basic behavior and appearance of
 
 ## AI Platform Selection
 
-![AI Platform Selection](ai-platform-selection.png)
+<img src="ai-platform-selection.png" alt="AI Platform Selection" style="width:auto;height:auto;">
 
 1. **AI Platform Choice**:
 
    - **Description**: This setting determines which AI model provider will be used for conversational AI capabilities.
-   - **Options**: `OpenAI`, `NVIDIA`, and others to be announced.
+   - **Options**: `OpenAI`, `Azure OpenAI`, `NVIDIA`, `Anthropic`, `DeepSeek`, `Local Server` and others to be announced.
    - **Default Value**: By default this value will be set to `OpenAI` as the model provider of choice.
    - **Note**: An valid API key obtained from the respective model vendor is required for the chatbot to operate correctly.
 
+   Also see **[API/ChatGPT Settings](api-chatgpt-settings/api-chatgpt-model-settings.md)**
+
+   Also see **[API/NVIDIA Settings](api-nvidia-settings/api-nvidia-model-settings.md)**
+
 ## General Settings
 
-![Chatbot Settings](general-settings.png)
+<img src="general-settings.png" alt="Chatbot Settings" style="width:auto;height:auto;">
 
 1. **Chatbot Name**:
    - **Description**: This field allows you to set the name of your chatbot.
@@ -33,7 +37,12 @@ The General Settings allow you to customize the basic behavior and appearance of
 
 ## Message Limit Settings
 
-![Message Limit Settings](message-limit-settings.png)
+<img src="message-limit-settings.png" alt="Message Limit Settings" style="width:auto;height:auto;">
+
+1. **Display Message Count**:
+   - **Description**: This setting determines if the message count is displayed in the chatbot's response, such as `(29/50)`, i.e., 29 prompts out of 50 limited, to help visitors and logged-in users understand how many exchanges they have had with the chatbot.
+   - **Default Value**: The default value is `No`, i.e., don't display the count.
+   - **Selection**: Choose `Yes` to display the message count.  Or choose `No` to exclude the message count from the response.
 
 1. **User Message Limit per Period**:
    - **Description**: This setting limits the number of messages logged-in users can send to the chatbot per day. It helps manage API usage and costs.
@@ -73,7 +82,7 @@ The General Settings allow you to customize the basic behavior and appearance of
 
 ## Prompts and Greetings
 
-![Prompts and Greetings](prompts-and-greetings.png)
+<img src="prompts-and-greetings.png" alt="Prompts and Greetings" style="width:auto;height:auto;">
 
 1. **Chatbot Prompt**:
    - **Description**: This is the initial prompt that appears in the chatbot input field.
@@ -89,7 +98,7 @@ The General Settings allow you to customize the basic behavior and appearance of
 
 ## Additional Settings
 
-![Additional Settings](additional-settings.png)
+<img src="additional-settings.png" alt="Additional Settings" style="width:auto;height:auto;">
 
 1. **Allow Speech Recognition**:
    - **Description**: This toggle allows you to allow chatbot users to speak to the chatbot if support by their browser.
@@ -126,6 +135,16 @@ The General Settings allow you to customize the basic behavior and appearance of
    - **Description**: This setting determines the number of rows in the chatbot input field.
    - **Options**: Set a numeric value.
    - **Selection**: Choose a value like `5` to allow more space for user input, or adjust based on your layout preferences.
+
+## Advanced Search Settings
+
+<img src="advanced-search-settings.png" alt="Advanced Search Settings" style="width:auto;height:auto;">
+
+1. **Enable Advanced Content Search**:
+
+   - **Description**: When enabled, this feature allows the chatbot to pull information from your site's existing content, such as posts, pages, products, and other custom post types, to provide richer and more accurate answers.
+   - **Options**: `Yes` or `No`.
+   - **Selection**: Choose `Yes` if you want the AI to reference your local content when responding to user queries.
 
 ## Steps to Configure
 
@@ -169,7 +188,7 @@ By configuring these settings, you ensure that your Kognetiks Chatbot plugin ope
 
 - **Greeting Messages**: Keep initial and subsequent greetings friendly and helpful to create a positive user experience.
 
-- **User Expectations**: Including disclaimers can help manage expectations and improve user understanding of the chatbot’s capabilities.
+- **User Expectations**: Including disclaimers can help manage expectations and improve user understanding of the chatbot's capabilities.
 
 By configuring these settings, you ensure that your Kognetiks Chatbot is customized to provide a welcoming and user-friendly experience for your website visitors.
 
