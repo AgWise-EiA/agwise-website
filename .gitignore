@@ -2,4 +2,9 @@
 wp-content/wflogs/*
 .env
 /vendor
-wp-content/*.log
+
+wp-content/cache/
+wp-content/uploads/cache/
+wp-content/upgrade/
+wp-content/backups/
+*.log
