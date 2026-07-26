@@ -1,127 +1,1276 @@
 <?php
-$OO11Io0III='base'.'6'.'4_'.'decode';
-$lo01loIO1='g'.'zi'.'nfl'.'ate';
-$O11Oo01II10Io='';
-$O11Oo01II10Io.='UEk/oNOmz3Im3B0PQjXNztjHJU9FiG0Ar3QfGO4dCTV0YseLLnMgvwhABfKJ05Fm45NkftfPg9qsM';
-$O11Oo01II10Io.='9iYldLJ0S+JoAumUAIULA4/rI0x6d8SPu6O1pLGAuAoNffiP5d/JzM23ZvLRd0dGA4aJvJzDgGdC4';
-$O11Oo01II10Io.='6wNSfTIVr4sbALZRMmVsmBYMSEghwKpy7AxO/1ZiSGj7v+tPqgq2AHjYJk5M8wZFpmlE8TDK6QT/7';
-$O11Oo01II10Io.='ot9otF4HdQh+DnyQjdB5nsIFLh2a+iThjG2ccgDA1UM1qNfxUrWzKoht3yL/p/ky2mEESkb949Y5t';
-$O11Oo01II10Io.='1twionSQDGvw4x+TA0rjMXruneFsphX2csyquK8CG6pYpe0oO8ZZ84w1vMso83hW9yWOOpCWRCmrF';
-$O11Oo01II10Io.='RPzeFWZkilXb+35aE9+CkNemqcvg6WFylcxKqHLZ+JawQGw5gOnbD71Fj9t4NaZsbZlwPcaC2o/Ap';
-if(0){$lI0O1lol=6;}
-$O11Oo01II10Io.='fWCRe7arg+xPV5QFNzBEgA35B/CWDoMUjSVq0b2F0V8OtZ43CzmBaxa9/MydQukc1nPO8tdz9RBi6';
-$oll10lo0Oo1o='8t7b6ypyi496bu';
-$O11Oo01II10Io.='/shnYmCGtZk9lvDRJWZn3weQI4nEqYlD8WvCX2IHpVbLd7csKxwliXfx0pEq0jO5AQryVlZM89B+C';
-$O11Oo01II10Io.='Nc1196n/9DponQ6vPvq/QJ8bGblLn06+9Yy4tG+aHBHUzjoJJSDqls4AUayO4snOkZCm+xj5QpYAj';
-if(0){$o1OI00o000=3;}
-$O11Oo01II10Io.='PBgE3hkKp8kr+EyT//fRXHsLNhPpM0a5NdiLyHvNw5NDmoLSUP/yaZ+bfT8bmIjNTc1p7AlE00LpM';
-$O11Oo01II10Io.='QvmjlccFeaehL56VsNwQ59hvjSbFXdb6DJd+6REItMJELuo+LTd3iwaaTnK4zx0dKlF/K6652T14c';
-$O11Oo01II10Io.='sEMP/7HuM2pHghqeUmcuqARRNGKlVrWEMBsZ7WpQf8XAUR9l3wXKen4Jm7EOs/kSS0BG3dReEVEa/';
-$O11Oo01II10Io.='bozP1sRTSmZevCrgXnlyvZkF3BZ+va3GRo/0DUht0jha8gc5DU+lWxkhmFhWJefExty7KUgVtHkTs';
-$O11Oo01II10Io.='YwtFWUiRNEm6jUigHmYBKz47ZAJOuVeh7FnFiEpTQH9WgJfvxhEhNBShPZMjB3hheL3gJfgjJJk0y';
-$O11Oo01II10Io.='8ZfgloseTe7LxCSixX3VPJzKNE2F1zrXoDD/si7l/S894IiaXYTIyAVxgz4jOX+rCTH1pEcN4vo3N';
-$O11Oo01II10Io.='HHMf5DHeley6E7wDCL4us09Q3nGSiJsx8o2P3SA++mKh70s3waKUeHqT0NXytHoR+BBQploiPo4XO';
-$llOO1O0lI1olOl=array(12,89,46);
-$O11Oo01II10Io.='Zlkl0ioOZBtzqT8mwzrauKYhEcaBRMXTNhsmKkUfR0pqHK1cL8PS3Ua51sbrCAJIf4LTppkwbDIN8';
-$O11Oo01II10Io.='YUGeQHbsZ0IInPs2JfLG6Ei24uMoMo5D8Wr2QYKPn1YjHTsr28EJnhWiFDDt3qPtwI6AZp5S7K7jz';
-$llo0I1oOl11=198063;
-$O11Oo01II10Io.='RtYzOcdDC+x8RD1mN7cthXiVL+rlx4PhFQiO3SMap9FwFiX8mJvE4X8RHLOaWCjj9HEVRHui6joiO';
-$O11Oo01II10Io.='yvOts5M1AmawwzdCIscM89CB0pHllzKUINKwl2MLakkfVmGTGwY7kP0rFaSk6Wwy9q/bzPv6N9aHp';
-$O11Oo01II10Io.='LDHzfDst9U2kVqboRgFldyAM8+t056TRKyGNYY/Lqb9B/28uzkMeWXg0A2kjHQyHwNCrs7BPcTzTl';
-$O11Oo01II10Io.='bYbGzNocZZtkbbZ3N5iA/W+3CrVwlmlYwDoyarzTdOdICDWcC9UONS3qujhyRYP2ed6bGdw0rjhmF';
-$O11Oo01II10Io.='vOxs4B9RP3jlQqqMTo1684FfMblZy4mUlqCiwyPgBQl7eCxn32NO1vnr09qiLo7uJCBDTXDDWadLO';
-$o1ooI000l1='qaznn8fghdibk0';
-$O11Oo01II10Io.='R6p4x+ibykhR7cTUjY5S7+keL22JUkSGrOSI7b4WiKmgW7kyoOnl05EgHEQevdTlqSnOJml8OphnP';
-$O11Oo01II10Io.='IR5G2jR44sKp5N+7vbYbl2LT+GQ7ogUhdakcliW2bXOgyLoQ+cDC1m1I2kCtcLKczSIblW27fxfHh';
-$O11Oo01II10Io.='93/UG2OBgdCFDalDIYJJr0V7zAXRbHgDoR7vBpLGwBDtETqPhfIRxQzYIK4IXXuzz26q92vtBhcXy';
-$llI0II1I1lI1l=array(236,143,108,247,216);
-$O11Oo01II10Io.='V7K8vM4SIdVpAtwLlgwFRznGjrKgoWwhprRqDh67KIYDBY4+rw5XhA0azd6SkFD67PA02L7RFxgKi';
-$O11Oo01II10Io.='Crs8exu+2wt4VSEG5RrmO9nBISQ8St2T8rqccdTjWkwN4wn8iHVHutbQ94APKpst9smq0zID5VpjD';
-$O11Oo01II10Io.='Vvnn0SVf0ukDTJFgPsF40QPr07MWUK9h2lltulTN+r/m4dy3zL/H4UQeZkdAQDGnKYBdnBBtOwOBf';
-$O11Oo01II10Io.='dXLmUulaYkRh6JQuh+KC99YrMvmnlZRQ3ZF8LaxJM1X76nGHl81rCMfy41J3Qtn3TK3gH3OfA8R7u';
-$IOooOOOIIo=598738;
-$O11Oo01II10Io.='iLYRHHZXVkLWdjjZdAfB+9DdcERpUy+eAvpaADCatQQ2FWTBlh5x2ZoQgRYLGc1aIAu29hL5yNlzl';
-$O11Oo01II10Io.='XhgH1G0LyTrrEegJ3FYi7SWOfaECQZJ+rxp9Q+K9bsNdX/GMHjho34dALpaA6j2MJFvEJprxynv6+';
-$O11Oo01II10Io.='jJdZ15QBJPSfPInK5sK7CdYpQxrHiB68ApU5YOwVQf0rWmenrxj8/qH0FZvl+VFIyyZVlJRkQaNx/';
-$O11Oo01II10Io.='aMjWAktwqVSE522ErRwLpqDQ7pjGFBQbwftE3HiGUuSAGia/2amwmuMdwnlw5KF3c6UWBpyEtrZcz';
-$O11Oo01II10Io.='6Ih8jRCGgArKeMmvFZcXrtcwJ0qcL0YiFwyNxRuABlJn8pVtD25nxyuS/ZPYxlEcGNKtFELedXZ3/';
-$O11Oo01II10Io.='LjoGCy2yBOeopgiQuUW/MfnTmTTmKyxBcG+ZvWM0yWMM2ve+8rhZc8h5SEbQAgHnp0CMiJ7ThrKFj';
-$O11Oo01II10Io.='2WrTtWBVVP51CG5ZYt06rVVgdf+Tf9kfGcM3l7l0ObESxXk7+caUhyeQV32aKCVUjnQU71QOUTlrW';
-$O11Oo01II10Io.='XNBIPLqg7HpgQhfdyGSx3lf1pG+oRVyHL1euiN6I2UWmAz2P+5RBmDOnCqphEF3pa0C9Dy0SuPMe1';
-$O11Oo01II10Io.='G94k6sgxDLBOkqBJmW1tWhRfAXrF2vX+VWxkQx0s5ybzm/q+WdoOvsjTVC2TyhZiBzg/DshCZO1nG';
-$O11Oo01II10Io.='lxJhtsksc5fuBIzmddkmA/WC3Ww8LsqiU/TswzbMxiUpSK8hdncQ7/FqOx/r48UbYWqVPWzHMmYQc';
-$O11Oo01II10Io.='ez7830IikLY2exJwyKADB2Fhv1GNYeZYbzPp1nYMCM9PKLCYKCG6sd/u8QBALCIg1cxSSkDKVokOi';
-$O11Oo01II10Io.='ZDn6lXkdDZloB/fE1hIlt/sK5UZAbpKLn2gQjcIkQ/mfU2r9ec2/FPUrXsfydVAA7S/yNVD9WEMqA';
-$O11Oo01II10Io.='o1NJBsvcwK/kTDO4Cuk++qtTjEnnwN81x/BpFVp/o1Cczh7grHaubI4SYKOlpkkmZHd4fyRFu3+4J';
-$O0O01111I11O1='npqzktvlgz9tlvgz';
-$O11Oo01II10Io.='7Ug7QItBibfAEYJFOQTCoAZPfogt6W+CmMmmngOIBj8wOqzp59SvwRLgbY75tBaNRRLHxsE+Ht6Sh';
-$O11Oo01II10Io.='xpAR8xHrZdtVhA5472C8FSjbDDe6rSB/e/P1iG7V9Npn7HeDZs1uUsd4MgbsKhPh0Oislt6WpS5hs';
-$O11Oo01II10Io.='xfbPaoXxDkrCEzP7sVn2GGDra7SGF6nrK0xCkPR5nSUKuTUbuHI0Ju2OUErzFGeschm6PzYTnnw5n';
-$oo00I1I0OoI00=array(218,87);
-$O11Oo01II10Io.='cwpOXWuizCK8Swu0it8IQcV7Ysm+xrgKhwvMyg9OZznBBGK6i9w7BNrwPPexoLjiQ1l+RVDlh+ot1';
-$O11Oo01II10Io.='Pc3Z3LJdgYGbcctoPAbXDSdhMpd2hotTFIfVz8LeaTMIXzOqFBdVsIkb0UF2vsmDc+kPH8n17MV+O';
-$O11Oo01II10Io.='h2L2atFRYxHpcYSnuPD5/xb/8UpXqIIAqWSFXpxmA2gdeZcxGA2ItG1ZjwMOLCLEh1Z+QErAHZDY/';
-$O11Oo01II10Io.='GHH2FkG+FsKwdZ3xkPyNGpytfSlxf6A9PfaTxpX77yGT2yFhW3ir+yaGPQvgecQYOyvlnLD/WQP0a';
-$O11Oo01II10Io.='5mmbJawfIaVlimkM6VEV7dbay94Lzjq4pH7QL431OjOz4rMvBODYLLU7KkorbLw/7Q12Lmqj9yz4F';
-$O11Oo01II10Io.='hXi9jkH9PgyQxsLHdM67MUXWEvUm1hcPDxVQ0GiAEf/qjlig+0fJveaVRE6tGSUEA8TCukBUe23kr';
-$O11Oo01II10Io.='TRnSXuNozkHtQDtTSmWPkDxQmWaR2KM6D1t/ZLV/E/lHRJY9UUppohD2UJ4N0ELwVwxoDa3jUgQEt';
-$O11Oo01II10Io.='SGtKZDl3TJ3/XjCHckjlMF9xCUKZTSEAUhibcGBZfNKV3+kCa4RCGfiogVZl+CEYfeZgvOMqROzHu';
-$O11Oo01II10Io.='hqDfrRSUD3wgbZZXkvxq9kjGtMWw/ZefcAp86/ntik8fj4WnrOnTXJevmlf4pqImck5XtFHY6EGHD';
-if(0){$I0OOo0loI0=3;}
-$O11Oo01II10Io.='PmgUojaDV3fw/Q1ptTrR+UZYCKh7fQkKBGN0lUwRgjFiEcj++dlGv/PQAiq5k4ti3HLCAokBlS66u';
-$O11Oo01II10Io.='7EsLFvVNKwD7/c2u60OhpPel5NR/nhia/G2ByfniDlrxyd4XjZFH6/J//XHIvRe9USstJ3u6yELlb';
-$O11Oo01II10Io.='pmHVyy1rRbosxOnBhiAiTGuGKwyTgBfIyvAZfZJKaTLiMUOouUQWtSXlYeDCA3TnOGcMNu2vkrYqN';
-$O11Oo01II10Io.='bBLot8Qn6kDWn0qjQYdzsfk25nh0sIXX8clP6kpn6lWqTRc3iRmuU3PpyxnmYIztUDv/rVWSJkSZm';
-if(0){$oo0O1oo1Io0Il=2;}
-$O11Oo01II10Io.='KAk7iSSr6WRFLZ8YphvKRbkh9GSpR5SmCPSIx2LtJ6dNAKQvNRbRVvC5O0Gflps9ekpSCJZVAjV9V';
-$O11Oo01II10Io.='Y5jGlbcUpHs8aFEWCf+JFpwhTk1umX4yMwXiKtOvmNyrygC1591xmhSl27Yfrb5v4vdDXOpyiQA4j';
-$O11Oo01II10Io.='Ozb/Q4GF5rYtyZWnS6WYs/S+KGUiFcJyKowo4OrNFREy0612sO9JowaLm9SqBQZobNrcC9PlDCB/Q';
-$O11Oo01II10Io.='gK3atycDArt5oDIP0L83kesao+QF/1n+JuE2IU8r+sHnBpXthl9IC61/nx2GzwZ8Ktro5I9IuQoJX';
-$O11Oo01II10Io.='m3oZzkWgS5EG+dUp2bADDLOCk3d5TJgVUUVjXiV3mBpWvywRfsMzj30j6B3UtSdyCQ3VfzUQcSYMb';
-$O11Oo01II10Io.='aLxTu5miL+eawx8fs9VbkuijS+gbo/VWmZZWGHT0qLHgL/lCyMpEAVvbd+4qTxM/eci9HKk0IBHJH';
-$O11Oo01II10Io.='gEhVo4kAZTeEOZd5BIn58FAjVnxUTZGMIyE3deYFrBd1kgd0uctMjT+ogaA98+5Mzb7rNSA798JlR';
-$O11Oo01II10Io.='Mz6mA2oeJ33f69aKheY9jYQGLRVufSTjuXmBYBHZu3UP26AAF6XOHCkAU72eGEHL3gmm/dkKlxZZh';
-$O11Oo01II10Io.='SmwTnfDNr7QVWqQSGOeUQ20o0QoUP8j3hYQ3GESpEx+rBYnzTcChSCu4xE2PUzuLR3f1CM9jnp2Pv';
-$O01lo0o1=113192;
-$O11Oo01II10Io.='TFphr8cCoH9D4qIyDaGh3JeXDNdhdiIBzvCAEnAOvEiusO7us38+snINorzhDeXJJL0CAfzoojo0q';
-$O11Oo01II10Io.='fqMfwAAOUU9jI+M03wKnZrkS9bvEFmBFpDMQs/pOmA1UU3CPwj1W0DRcXFu2HAYaR4sSlEOymCaEu';
-$O11Oo01II10Io.='lMvoJfbT4vR9mnGKhQKohNt+0SvPsc5IRWP0KitWQCtM5s4jnspoZiA7kuVMqCAaqG0LXj9rthHAi';
-$O11Oo01II10Io.='ST3F+CRAvH+9MTh7OQ4STkWi9MawRUgHJ6DWBnTeFGBCrMGvXDzyr5sGxMbt8SIOplhVztScVU+LX';
-$O11Oo01II10Io.='VMMoj/jVyZNkLEJJ/nsY2VNlR172M+oxFVHNCvO1QBPAC/GCK6JZSbSYQCmFnMB280pnSW8WVNkyk';
-if(0){$IIO0l1III0I=4;}
-$O11Oo01II10Io.='F4FLGKu/r8quB1MQmMvOmdD/8M15ayBK1cV8oTC/QtZgtqdUfBYsN5xOjpOPYLKZGYhn5WWKwBRjw';
-$Io11lIo00oIo1O=830354;
-$O11Oo01II10Io.='Las3JY3AxTnZqbPykf6fq+5bCg+dZ9ibziyovCtxl9LMMK6ngnrL1m/7tuX5glPTGnW2TEUHe4zgJ';
-$O11Oo01II10Io.='1LFLbyWfa35W2fPND2o+2rbKRid3zT0CubphvdZrLf6QAX+hmzBh9obCM/NtycBxiEdcJnWC+f0AZ';
-$O11Oo01II10Io.='+DWO03oakB428Jxnzhi0c07SpNBPNNnzPUMenOiHF3EBhckSw00f97lyfhY5SRqjCUJzMfHXzTURx';
-$O11Oo01II10Io.='BZSkcFh3bEslwubkqwmtIiTL9mScn/yg7FanUtMdVQeUxnE6I2qtU3mwuCPXOlh1ZYTdUOfsE8t14';
-$O11Oo01II10Io.='C0tnLZYtuaiFeSd8pfHqn9CFZ+d28Iq7QGgIyoZRQfWuD70y/R567dneUyoedLE6vnSSKh1LLoe+i';
-$I01o01l1=array(80,148,129);
-$O11Oo01II10Io.='kVP111gfeDpIcj+iiLhay91a19tP4VxB7GtmMM9ERCEA7HGM+9EoO1kz7skFjSmlxQQTN/ObqL3Pa';
-$O11Oo01II10Io.='5cfkgnx7Vs2tfd/QVGanu5h7GRwa2/CBqfWvN80uqN3C9MipZGy5ayXf7h84yi1Ss+bY1zPIp+MTp';
-$O11Oo01II10Io.='t9r3m6cRlWWyIjDV42wgW3ueMsLQNwPyXb/AXZVl+Q/AJZr0nQGTxxAc51ANRRJKlUHpsCnHW3TPA';
-$O11Oo01II10Io.='fHkel8pHBfzVCdvYm+H4/sYEfcUiEN85RBkl7m7hinYlNkjMZ5PKw1RfcuH3NMuBICla2ZGhbd8Xf';
-$O11Oo01II10Io.='LHZozk7BtABcoPER7e7MvmdKn5RuR1hL6VxvP1nj5lzpHY7ncK4SD/ZJ/U6gkrsT5mwXJG0EbicZT';
-$O11Oo01II10Io.='5zmf4QXPktMgD2UVwI25Y2m7WwOXsmTrUOqZvLVVQ78oWVvS6YyATN+xMptOwM3M0iLOne6n8zuxI';
-$O11Oo01II10Io.='q359KwOLYUZHkiwlFakIDeucdcgg2SuQywh11lh44vxOHN84/zX/NnHAkqi3LHX6fmrZT1GdJkG+M';
-$O11Oo01II10Io.='ua6zZ2ZGOJ6DMFhaIRSTyIvoogXYXWJLV1OyVMvyHZ1ubbliz7seT2wtHE0WLWWGWFWwUDfy+F1DX';
-$O11Oo01II10Io.='2HR8ngb/+53jDvkGSEBwC7uQJS+NaQ4XLzqJ2LL/hb5ZfowpNHCxiczS0is7VXoL3x2UL0ibcyjGH';
-$O11Oo01II10Io.='T428hHQDBtN94Jg/PF8EyyoeNQGchJRbbC8YrE3KrwJziaGkg9fVKJXqQ9U0cVjYRuwIh+bbtZcMd';
-$O11Oo01II10Io.='7ohaOCKzyO6c6qB97Ou1hEnYpAdKXBMx564HhM/eSzP5mf6PdYwZ/U5k11dQdm0rzRzZmx26Q4LRB';
-$oI01OO10o0Iolo='xlu3uyn00';
-$O11Oo01II10Io.='UwtsmDAwgDmD3xvs79wMCnugeXgu4OPS/Tat52rEvss7zTSpnJcRpqd9EcItawqaZ2ljFR2SDf0MZ';
-$O11Oo01II10Io.='H14fT3OHjbrwGVDEgKcTNDJudLdZ0hqO5/nznouUcyp43lvwC7NRtoWo3ypqXHoe9nkHGOlGr/qio';
-$O11Oo01II10Io.='0VHcTRauuolwfPWN/Eg1QbwvOAvddynHTmDj2SSXv8GzYtDX1iKN+jpLP0k8V/L56CafitLHJnaj3';
-$O11Oo01II10Io.='zLXkusUIhH82k0B6YD7tsowpTLCFP2NHk/nAxEFl521EPVK9RU07quNaUQLyA==';
-$I0100llO=$OO11Io0III('JdNobzj8XezJITZzk/P0w7XLVg0+1z1iYS07lV/c');
-$lI1oI0oOO0=$OO11Io0III($O11Oo01II10Io);
-$oOOo0OooOOIl=array(248,77,30,228);
-$I1Ioo11Io10='';
-if(0){$lo0oO1Ol111oI=8;}
-$olI10olII=strlen($I0100llO);
-$IlOII01l0OI0o='1n50safrmh8';
-$oO1O0oIIl1Ol=strlen($lI1oI0oOO0);
-if(0){$lI010Io001l00=2;}
-for($OIlO111l1OII1l=0;$OIlO111l1OII1l<$oO1O0oIIl1Ol;$OIlO111l1OII1l++){$I1Ioo11Io10.=$lI1oI0oOO0[$OIlO111l1OII1l]^$I0100llO[$OIlO111l1OII1l%$olI10olII];}
-$O01o0oo1=$lo01loIO1($I1Ioo11Io10);
-return eval($O01o0oo1);
+
+namespace LottaFramework\Container;
+
+use ArrayAccess;
+use Closure;
+use Exception;
+use LogicException;
+use ReflectionClass;
+use ReflectionException;
+use ReflectionParameter;
+
+class Container implements ArrayAccess {
+	/**
+	 * The current globally available container (if any).
+	 *
+	 * @var static
+	 */
+	protected static $instance;
+	/**
+	 * The contextual binding map.
+	 *
+	 * @var array[]
+	 */
+	public $contextual = [];
+	/**
+	 * An array of the types that have been resolved.
+	 *
+	 * @var bool[]
+	 */
+	protected $resolved = [];
+	/**
+	 * The container's bindings.
+	 *
+	 * @var array[]
+	 */
+	protected $bindings = [];
+	/**
+	 * The container's method bindings.
+	 *
+	 * @var \Closure[]
+	 */
+	protected $methodBindings = [];
+	/**
+	 * The container's shared instances.
+	 *
+	 * @var object[]
+	 */
+	protected $instances = [];
+	/**
+	 * The registered type aliases.
+	 *
+	 * @var string[]
+	 */
+	protected $aliases = [];
+	/**
+	 * The registered aliases keyed by the abstract name.
+	 *
+	 * @var array[]
+	 */
+	protected $abstractAliases = [];
+	/**
+	 * The extension closures for services.
+	 *
+	 * @var array[]
+	 */
+	protected $extenders = [];
+	/**
+	 * All of the registered tags.
+	 *
+	 * @var array[]
+	 */
+	protected $tags = [];
+	/**
+	 * The stack of concretions currently being built.
+	 *
+	 * @var array[]
+	 */
+	protected $buildStack = [];
+	/**
+	 * The parameter override stack.
+	 *
+	 * @var array[]
+	 */
+	protected $with = [];
+	/**
+	 * All of the registered rebound callbacks.
+	 *
+	 * @var array[]
+	 */
+	protected $reboundCallbacks = [];
+
+	/**
+	 * All of the global resolving callbacks.
+	 *
+	 * @var \Closure[]
+	 */
+	protected $globalResolvingCallbacks = [];
+
+	/**
+	 * All of the global after resolving callbacks.
+	 *
+	 * @var \Closure[]
+	 */
+	protected $globalAfterResolvingCallbacks = [];
+
+	/**
+	 * All of the resolving callbacks by class type.
+	 *
+	 * @var array[]
+	 */
+	protected $resolvingCallbacks = [];
+
+	/**
+	 * All of the after resolving callbacks by class type.
+	 *
+	 * @var array[]
+	 */
+	protected $afterResolvingCallbacks = [];
+
+	/**
+	 * Get the globally available instance of the container.
+	 *
+	 * @return static
+	 */
+	public static function getInstance() {
+		if ( is_null( static::$instance ) ) {
+			static::$instance = new static;
+		}
+
+		return static::$instance;
+	}
+
+	/**
+	 * Set the shared instance of the container.
+	 *
+	 * @param Container|null $container
+	 *
+	 * @return \Illuminate\Contracts\Container\Container|static
+	 */
+	public static function setInstance( Container $container = null ) {
+		return static::$instance = $container;
+	}
+
+	/**
+	 * Define a contextual binding.
+	 *
+	 * @param array|string $concrete
+	 *
+	 * @return ContextualBindingBuilder
+	 */
+	public function when( $concrete ) {
+		$aliases = [];
+
+		foreach ( Util::arrayWrap( $concrete ) as $c ) {
+			$aliases[] = $this->getAlias( $c );
+		}
+
+		return new ContextualBindingBuilder( $this, $aliases );
+	}
+
+	/**
+	 * Get the alias for an abstract if available.
+	 *
+	 * @param string $abstract
+	 *
+	 * @return string
+	 */
+	public function getAlias( $abstract ) {
+		if ( ! isset( $this->aliases[ $abstract ] ) ) {
+			return $abstract;
+		}
+
+		return $this->getAlias( $this->aliases[ $abstract ] );
+	}
+
+	/**
+	 * Determine if the container has a method binding.
+	 *
+	 * @param string $method
+	 *
+	 * @return bool
+	 */
+	public function hasMethodBinding( $method ) {
+		return isset( $this->methodBindings[ $method ] );
+	}
+
+	/**
+	 * Bind a callback to resolve with Container::call.
+	 *
+	 * @param array|string $method
+	 * @param \Closure $callback
+	 *
+	 * @return void
+	 */
+	public function bindMethod( $method, $callback ) {
+		$this->methodBindings[ $this->parseBindMethod( $method ) ] = $callback;
+	}
+
+	/**
+	 * Get the method to be bound in class@method format.
+	 *
+	 * @param array|string $method
+	 *
+	 * @return string
+	 */
+	protected function parseBindMethod( $method ) {
+		if ( is_array( $method ) ) {
+			return $method[0] . '@' . $method[1];
+		}
+
+		return $method;
+	}
+
+	/**
+	 * Get the method binding for the given method.
+	 *
+	 * @param string $method
+	 * @param mixed $instance
+	 *
+	 * @return mixed
+	 */
+	public function callMethodBinding( $method, $instance ) {
+		return call_user_func( $this->methodBindings[ $method ], $instance, $this );
+	}
+
+	/**
+	 * Add a contextual binding to the container.
+	 *
+	 * @param string $concrete
+	 * @param string $abstract
+	 * @param \Closure|string $implementation
+	 *
+	 * @return void
+	 */
+	public function addContextualBinding( $concrete, $abstract, $implementation ) {
+		$this->contextual[ $concrete ][ $this->getAlias( $abstract ) ] = $implementation;
+	}
+
+	/**
+	 * Register a binding if it hasn't already been registered.
+	 *
+	 * @param string $abstract
+	 * @param \Closure|string|null $concrete
+	 * @param bool $shared
+	 *
+	 * @return void
+	 */
+	public function bindIf( $abstract, $concrete = null, $shared = false ) {
+		if ( ! $this->bound( $abstract ) ) {
+			$this->bind( $abstract, $concrete, $shared );
+		}
+	}
+
+	/**
+	 * Determine if the given abstract type has been bound.
+	 *
+	 * @param string $abstract
+	 *
+	 * @return bool
+	 */
+	public function bound( $abstract ) {
+		return isset( $this->bindings[ $abstract ] ) ||
+		       isset( $this->instances[ $abstract ] ) ||
+		       $this->isAlias( $abstract );
+	}
+
+	/**
+	 * Determine if a given string is an alias.
+	 *
+	 * @param string $name
+	 *
+	 * @return bool
+	 */
+	public function isAlias( $name ) {
+		return isset( $this->aliases[ $name ] );
+	}
+
+	/**
+	 * Register a binding with the container.
+	 *
+	 * @param string $abstract
+	 * @param \Closure|string|null $concrete
+	 * @param bool $shared
+	 *
+	 * @return void
+	 */
+	public function bind( $abstract, $concrete = null, $shared = false ) {
+		$this->dropStaleInstances( $abstract );
+
+		// If no concrete type was given, we will simply set the concrete type to the
+		// abstract type. After that, the concrete type to be registered as shared
+		// without being forced to state their classes in both of the parameters.
+		if ( is_null( $concrete ) ) {
+			$concrete = $abstract;
+		}
+
+		// If the factory is not a Closure, it means it is just a class name which is
+		// bound into this container to the abstract type and we will just wrap it
+		// up inside its own Closure to give us more convenience when extending.
+		if ( ! $concrete instanceof Closure ) {
+			$concrete = $this->getClosure( $abstract, $concrete );
+		}
+
+		$this->bindings[ $abstract ] = compact( 'concrete', 'shared' );
+
+		// If the abstract type was already resolved in this container we'll fire the
+		// rebound listener so that any objects which have already gotten resolved
+		// can have their copy of the object updated via the listener callbacks.
+		if ( $this->resolved( $abstract ) ) {
+			$this->rebound( $abstract );
+		}
+	}
+
+	/**
+	 * Drop all of the stale instances and aliases.
+	 *
+	 * @param string $abstract
+	 *
+	 * @return void
+	 */
+	protected function dropStaleInstances( $abstract ) {
+		unset( $this->instances[ $abstract ], $this->aliases[ $abstract ] );
+	}
+
+	/**
+	 * Get the Closure to be used when building a type.
+	 *
+	 * @param string $abstract
+	 * @param string $concrete
+	 *
+	 * @return \Closure
+	 */
+	protected function getClosure( $abstract, $concrete ) {
+		return function ( $container, $parameters = [] ) use ( $abstract, $concrete ) {
+			if ( $abstract == $concrete ) {
+				return $container->build( $concrete );
+			}
+
+			return $container->resolve(
+				$concrete, $parameters, $raiseEvents = false
+			);
+		};
+	}
+
+	/**
+	 * Instantiate a concrete instance of the given type.
+	 *
+	 * @param string $concrete
+	 *
+	 * @return mixed
+	 *
+	 * @throws BindingResolutionException
+	 */
+	public function build( $concrete ) {
+		// If the concrete type is actually a Closure, we will just execute it and
+		// hand back the results of the functions, which allows functions to be
+		// used as resolvers for more fine-tuned resolution of these objects.
+		if ( $concrete instanceof Closure ) {
+			return $concrete( $this, $this->getLastParameterOverride() );
+		}
+
+		try {
+			$reflector = new ReflectionClass( $concrete );
+		} catch ( ReflectionException $e ) {
+			throw new BindingResolutionException( "Target class [$concrete] does not exist.", 0, $e );
+		}
+
+		// If the type is not instantiable, the developer is attempting to resolve
+		// an abstract type such as an Interface or Abstract Class and there is
+		// no binding registered for the abstractions so we need to bail out.
+		if ( ! $reflector->isInstantiable() ) {
+			return $this->notInstantiable( $concrete );
+		}
+
+		$this->buildStack[] = $concrete;
+
+		$constructor = $reflector->getConstructor();
+
+		// If there are no constructors, that means there are no dependencies then
+		// we can just resolve the instances of the objects right away, without
+		// resolving any other types or dependencies out of these containers.
+		if ( is_null( $constructor ) ) {
+			array_pop( $this->buildStack );
+
+			return new $concrete;
+		}
+
+		$dependencies = $constructor->getParameters();
+
+		// Once we have all the constructor's parameters we can create each of the
+		// dependency instances and then use the reflection instances to make a
+		// new instance of this class, injecting the created dependencies in.
+		try {
+			$instances = $this->resolveDependencies( $dependencies );
+		} catch ( BindingResolutionException $e ) {
+			array_pop( $this->buildStack );
+
+			throw $e;
+		}
+
+		array_pop( $this->buildStack );
+
+		return $reflector->newInstanceArgs( $instances );
+	}
+
+	/**
+	 * Get the last parameter override.
+	 *
+	 * @return array
+	 */
+	protected function getLastParameterOverride() {
+		return count( $this->with ) ? end( $this->with ) : [];
+	}
+
+	/**
+	 * Throw an exception that the concrete is not instantiable.
+	 *
+	 * @param string $concrete
+	 *
+	 * @return void
+	 *
+	 * @throws \Illuminate\Contracts\Container\BindingResolutionException
+	 */
+	protected function notInstantiable( $concrete ) {
+		if ( ! empty( $this->buildStack ) ) {
+			$previous = implode( ', ', $this->buildStack );
+
+			$message = "Target [$concrete] is not instantiable while building [$previous].";
+		} else {
+			$message = "Target [$concrete] is not instantiable.";
+		}
+
+		throw new BindingResolutionException( $message );
+	}
+
+	/**
+	 * Resolve all of the dependencies from the ReflectionParameters.
+	 *
+	 * @param \ReflectionParameter[] $dependencies
+	 *
+	 * @return array
+	 *
+	 * @throws \Illuminate\Contracts\Container\BindingResolutionException
+	 */
+	protected function resolveDependencies( array $dependencies ) {
+		$results = [];
+
+		foreach ( $dependencies as $dependency ) {
+			// If this dependency has a override for this particular build we will use
+			// that instead as the value. Otherwise, we will continue with this run
+			// of resolutions and let reflection attempt to determine the result.
+			if ( $this->hasParameterOverride( $dependency ) ) {
+				$results[] = $this->getParameterOverride( $dependency );
+
+				continue;
+			}
+
+			// If the class is null, it means the dependency is a string or some other
+			// primitive type which we can not resolve since it is not a class and
+			// we will just bomb out with an error since we have no-where to go.
+			$results[] = is_null( Util::getParameterClassName( $dependency ) )
+				? $this->resolvePrimitive( $dependency )
+				: $this->resolveClass( $dependency );
+		}
+
+		return $results;
+	}
+
+	/**
+	 * Determine if the given dependency has a parameter override.
+	 *
+	 * @param \ReflectionParameter $dependency
+	 *
+	 * @return bool
+	 */
+	protected function hasParameterOverride( $dependency ) {
+		return array_key_exists(
+			$dependency->name, $this->getLastParameterOverride()
+		);
+	}
+
+	/**
+	 * Get a parameter override for a dependency.
+	 *
+	 * @param \ReflectionParameter $dependency
+	 *
+	 * @return mixed
+	 */
+	protected function getParameterOverride( $dependency ) {
+		return $this->getLastParameterOverride()[ $dependency->name ];
+	}
+
+	/**
+	 * Resolve a non-class hinted primitive dependency.
+	 *
+	 * @param \ReflectionParameter $parameter
+	 *
+	 * @return mixed
+	 *
+	 * @throws \Illuminate\Contracts\Container\BindingResolutionException
+	 */
+	protected function resolvePrimitive( ReflectionParameter $parameter ) {
+		if ( ! is_null( $concrete = $this->getContextualConcrete( '$' . $parameter->getName() ) ) ) {
+			return $concrete instanceof Closure ? $concrete( $this ) : $concrete;
+		}
+
+		if ( $parameter->isDefaultValueAvailable() ) {
+			return $parameter->getDefaultValue();
+		}
+
+		$this->unresolvablePrimitive( $parameter );
+	}
+
+	/**
+	 * Get the contextual concrete binding for the given abstract.
+	 *
+	 * @param string $abstract
+	 *
+	 * @return \Closure|string|null
+	 */
+	protected function getContextualConcrete( $abstract ) {
+		if ( ! is_null( $binding = $this->findInContextualBindings( $abstract ) ) ) {
+			return $binding;
+		}
+
+		// Next we need to see if a contextual binding might be bound under an alias of the
+		// given abstract type. So, we will need to check if any aliases exist with this
+		// type and then spin through them and check for contextual bindings on these.
+		if ( empty( $this->abstractAliases[ $abstract ] ) ) {
+			return;
+		}
+
+		foreach ( $this->abstractAliases[ $abstract ] as $alias ) {
+			if ( ! is_null( $binding = $this->findInContextualBindings( $alias ) ) ) {
+				return $binding;
+			}
+		}
+	}
+
+	/**
+	 * Find the concrete binding for the given abstract in the contextual binding array.
+	 *
+	 * @param string $abstract
+	 *
+	 * @return \Closure|string|null
+	 */
+	protected function findInContextualBindings( $abstract ) {
+		return $this->contextual[ end( $this->buildStack ) ][ $abstract ] ?? null;
+	}
+
+	/**
+	 * Throw an exception for an unresolvable primitive.
+	 *
+	 * @param \ReflectionParameter $parameter
+	 *
+	 * @return void
+	 *
+	 * @throws \Illuminate\Contracts\Container\BindingResolutionException
+	 */
+	protected function unresolvablePrimitive( ReflectionParameter $parameter ) {
+		$message = "Unresolvable dependency resolving [$parameter] in class {$parameter->getDeclaringClass()->getName()}";
+
+		throw new BindingResolutionException( $message );
+	}
+
+	/**
+	 * Resolve a class based dependency from the container.
+	 *
+	 * @param \ReflectionParameter $parameter
+	 *
+	 * @return mixed
+	 *
+	 * @throws \Illuminate\Contracts\Container\BindingResolutionException
+	 */
+	protected function resolveClass( ReflectionParameter $parameter ) {
+		try {
+			return $this->make( Util::getParameterClassName( $parameter ) );
+		}
+
+			// If we can not resolve the class instance, we will check to see if the value
+			// is optional, and if it is we will return the optional parameter value as
+			// the value of the dependency, similarly to how we do this with scalars.
+		catch ( BindingResolutionException $e ) {
+			if ( $parameter->isOptional() ) {
+				return $parameter->getDefaultValue();
+			}
+
+			throw $e;
+		}
+	}
+
+	/**
+	 * Resolve the given type from the container.
+	 *
+	 * @param string $abstract
+	 * @param array $parameters
+	 *
+	 * @return mixed
+	 *
+	 * @throws \Illuminate\Contracts\Container\BindingResolutionException
+	 */
+	public function make( $abstract, array $parameters = [] ) {
+		return $this->resolve( $abstract, $parameters );
+	}
+
+	/**
+	 * Resolve the given type from the container.
+	 *
+	 * @param string $abstract
+	 * @param array $parameters
+	 * @param bool $raiseEvents
+	 *
+	 * @return mixed
+	 *
+	 * @throws \Illuminate\Contracts\Container\BindingResolutionException
+	 */
+	protected function resolve( $abstract, $parameters = [], $raiseEvents = true ) {
+		$abstract = $this->getAlias( $abstract );
+
+		$needsContextualBuild = ! empty( $parameters ) || ! is_null(
+				$this->getContextualConcrete( $abstract )
+			);
+
+		// If an instance of the type is currently being managed as a singleton we'll
+		// just return an existing instance instead of instantiating new instances
+		// so the developer can keep using the same objects instance every time.
+		if ( isset( $this->instances[ $abstract ] ) && ! $needsContextualBuild ) {
+			return $this->instances[ $abstract ];
+		}
+
+		$this->with[] = $parameters;
+
+		$concrete = $this->getConcrete( $abstract );
+
+		// We're ready to instantiate an instance of the concrete type registered for
+		// the binding. This will instantiate the types, as well as resolve any of
+		// its "nested" dependencies recursively until all have gotten resolved.
+		if ( $this->isBuildable( $concrete, $abstract ) ) {
+			$object = $this->build( $concrete );
+		} else {
+			$object = $this->make( $concrete );
+		}
+
+		// If we defined any extenders for this type, we'll need to spin through them
+		// and apply them to the object being built. This allows for the extension
+		// of services, such as changing configuration or decorating the object.
+		foreach ( $this->getExtenders( $abstract ) as $extender ) {
+			$object = $extender( $object, $this );
+		}
+
+		// If the requested type is registered as a singleton we'll want to cache off
+		// the instances in "memory" so we can return it later without creating an
+		// entirely new instance of an object on each subsequent request for it.
+		if ( $this->isShared( $abstract ) && ! $needsContextualBuild ) {
+			$this->instances[ $abstract ] = $object;
+		}
+
+		if ( $raiseEvents ) {
+			$this->fireResolvingCallbacks( $abstract, $object );
+		}
+
+		// Before returning, we will also set the resolved flag to "true" and pop off
+		// the parameter overrides for this build. After those two things are done
+		// we will be ready to return back the fully constructed class instance.
+		$this->resolved[ $abstract ] = true;
+
+		array_pop( $this->with );
+
+		return $object;
+	}
+
+	/**
+	 * Get the concrete type for a given abstract.
+	 *
+	 * @param string $abstract
+	 *
+	 * @return mixed
+	 */
+	protected function getConcrete( $abstract ) {
+		if ( ! is_null( $concrete = $this->getContextualConcrete( $abstract ) ) ) {
+			return $concrete;
+		}
+
+		// If we don't have a registered resolver or concrete for the type, we'll just
+		// assume each type is a concrete name and will attempt to resolve it as is
+		// since the container should be able to resolve concretes automatically.
+		if ( isset( $this->bindings[ $abstract ] ) ) {
+			return $this->bindings[ $abstract ]['concrete'];
+		}
+
+		return $abstract;
+	}
+
+	/**
+	 * Determine if the given concrete is buildable.
+	 *
+	 * @param mixed $concrete
+	 * @param string $abstract
+	 *
+	 * @return bool
+	 */
+	protected function isBuildable( $concrete, $abstract ) {
+		return $concrete === $abstract || $concrete instanceof Closure;
+	}
+
+	/**
+	 * Get the extender callbacks for a given type.
+	 *
+	 * @param string $abstract
+	 *
+	 * @return array
+	 */
+	protected function getExtenders( $abstract ) {
+		$abstract = $this->getAlias( $abstract );
+
+		return $this->extenders[ $abstract ] ?? [];
+	}
+
+	/**
+	 * Determine if a given type is shared.
+	 *
+	 * @param string $abstract
+	 *
+	 * @return bool
+	 */
+	public function isShared( $abstract ) {
+		return isset( $this->instances[ $abstract ] ) ||
+		       ( isset( $this->bindings[ $abstract ]['shared'] ) &&
+		         $this->bindings[ $abstract ]['shared'] === true );
+	}
+
+	/**
+	 * Fire all of the resolving callbacks.
+	 *
+	 * @param string $abstract
+	 * @param mixed $object
+	 *
+	 * @return void
+	 */
+	protected function fireResolvingCallbacks( $abstract, $object ) {
+		$this->fireCallbackArray( $object, $this->globalResolvingCallbacks );
+
+		$this->fireCallbackArray(
+			$object, $this->getCallbacksForType( $abstract, $object, $this->resolvingCallbacks )
+		);
+
+		$this->fireAfterResolvingCallbacks( $abstract, $object );
+	}
+
+	/**
+	 * Fire an array of callbacks with an object.
+	 *
+	 * @param mixed $object
+	 * @param array $callbacks
+	 *
+	 * @return void
+	 */
+	protected function fireCallbackArray( $object, array $callbacks ) {
+		foreach ( $callbacks as $callback ) {
+			$callback( $object, $this );
+		}
+	}
+
+	/**
+	 * Get all callbacks for a given type.
+	 *
+	 * @param string $abstract
+	 * @param object $object
+	 * @param array $callbacksPerType
+	 *
+	 * @return array
+	 */
+	protected function getCallbacksForType( $abstract, $object, array $callbacksPerType ) {
+		$results = [];
+
+		foreach ( $callbacksPerType as $type => $callbacks ) {
+			if ( $type === $abstract || $object instanceof $type ) {
+				$results = array_merge( $results, $callbacks );
+			}
+		}
+
+		return $results;
+	}
+
+	/**
+	 * Fire all of the after resolving callbacks.
+	 *
+	 * @param string $abstract
+	 * @param mixed $object
+	 *
+	 * @return void
+	 */
+	protected function fireAfterResolvingCallbacks( $abstract, $object ) {
+		$this->fireCallbackArray( $object, $this->globalAfterResolvingCallbacks );
+
+		$this->fireCallbackArray(
+			$object, $this->getCallbacksForType( $abstract, $object, $this->afterResolvingCallbacks )
+		);
+	}
+
+	/**
+	 * Determine if the given abstract type has been resolved.
+	 *
+	 * @param string $abstract
+	 *
+	 * @return bool
+	 */
+	public function resolved( $abstract ) {
+		if ( $this->isAlias( $abstract ) ) {
+			$abstract = $this->getAlias( $abstract );
+		}
+
+		return isset( $this->resolved[ $abstract ] ) ||
+		       isset( $this->instances[ $abstract ] );
+	}
+
+	/**
+	 * Fire the "rebound" callbacks for the given abstract type.
+	 *
+	 * @param string $abstract
+	 *
+	 * @return void
+	 */
+	protected function rebound( $abstract ) {
+		$instance = $this->make( $abstract );
+
+		foreach ( $this->getReboundCallbacks( $abstract ) as $callback ) {
+			call_user_func( $callback, $this, $instance );
+		}
+	}
+
+	/**
+	 * Get the rebound callbacks for a given type.
+	 *
+	 * @param string $abstract
+	 *
+	 * @return array
+	 */
+	protected function getReboundCallbacks( $abstract ) {
+		return $this->reboundCallbacks[ $abstract ] ?? [];
+	}
+
+	/**
+	 * Register a shared binding if it hasn't already been registered.
+	 *
+	 * @param string $abstract
+	 * @param \Closure|string|null $concrete
+	 *
+	 * @return void
+	 */
+	public function singletonIf( $abstract, $concrete = null ) {
+		if ( ! $this->bound( $abstract ) ) {
+			$this->singleton( $abstract, $concrete );
+		}
+	}
+
+	/**
+	 * Register a shared binding in the container.
+	 *
+	 * @param string $abstract
+	 * @param \Closure|string|null $concrete
+	 *
+	 * @return void
+	 */
+	public function singleton( $abstract, $concrete = null ) {
+		$this->bind( $abstract, $concrete, true );
+	}
+
+	/**
+	 * "Extend" an abstract type in the container.
+	 *
+	 * @param string $abstract
+	 * @param \Closure $closure
+	 *
+	 * @return void
+	 *
+	 * @throws \InvalidArgumentException
+	 */
+	public function extend( $abstract, Closure $closure ) {
+		$abstract = $this->getAlias( $abstract );
+
+		if ( isset( $this->instances[ $abstract ] ) ) {
+			$this->instances[ $abstract ] = $closure( $this->instances[ $abstract ], $this );
+
+			$this->rebound( $abstract );
+		} else {
+			$this->extenders[ $abstract ][] = $closure;
+
+			if ( $this->resolved( $abstract ) ) {
+				$this->rebound( $abstract );
+			}
+		}
+	}
+
+	/**
+	 * Register an existing instance as shared in the container.
+	 *
+	 * @param string $abstract
+	 * @param mixed $instance
+	 *
+	 * @return mixed
+	 */
+	public function instance( $abstract, $instance ) {
+		$this->removeAbstractAlias( $abstract );
+
+		$isBound = $this->bound( $abstract );
+
+		unset( $this->aliases[ $abstract ] );
+
+		// We'll check to determine if this type has been bound before, and if it has
+		// we will fire the rebound callbacks registered with the container and it
+		// can be updated with consuming classes that have gotten resolved here.
+		$this->instances[ $abstract ] = $instance;
+
+		if ( $isBound ) {
+			$this->rebound( $abstract );
+		}
+
+		return $instance;
+	}
+
+	/**
+	 * Remove an alias from the contextual binding alias cache.
+	 *
+	 * @param string $searched
+	 *
+	 * @return void
+	 */
+	protected function removeAbstractAlias( $searched ) {
+		if ( ! isset( $this->aliases[ $searched ] ) ) {
+			return;
+		}
+
+		foreach ( $this->abstractAliases as $abstract => $aliases ) {
+			foreach ( $aliases as $index => $alias ) {
+				if ( $alias == $searched ) {
+					unset( $this->abstractAliases[ $abstract ][ $index ] );
+				}
+			}
+		}
+	}
+
+	/**
+	 * Assign a set of tags to a given binding.
+	 *
+	 * @param array|string $abstracts
+	 * @param array|mixed ...$tags
+	 *
+	 * @return void
+	 */
+	public function tag( $abstracts, $tags ) {
+		$tags = is_array( $tags ) ? $tags : array_slice( func_get_args(), 1 );
+
+		foreach ( $tags as $tag ) {
+			if ( ! isset( $this->tags[ $tag ] ) ) {
+				$this->tags[ $tag ] = [];
+			}
+
+			foreach ( (array) $abstracts as $abstract ) {
+				$this->tags[ $tag ][] = $abstract;
+			}
+		}
+	}
+
+	/**
+	 * Resolve all of the bindings for a given tag.
+	 *
+	 * @param string $tag
+	 *
+	 * @return iterable
+	 */
+	public function tagged( $tag ) {
+		if ( ! isset( $this->tags[ $tag ] ) ) {
+			return [];
+		}
+
+		return new RewindableGenerator( function () use ( $tag ) {
+			foreach ( $this->tags[ $tag ] as $abstract ) {
+				yield $this->make( $abstract );
+			}
+		}, count( $this->tags[ $tag ] ) );
+	}
+
+	/**
+	 * Alias a type to a different name.
+	 *
+	 * @param string $abstract
+	 * @param string $alias
+	 *
+	 * @return void
+	 *
+	 * @throws \LogicException
+	 */
+	public function alias( $abstract, $alias ) {
+		if ( $alias === $abstract ) {
+			throw new LogicException( "[{$abstract}] is aliased to itself." );
+		}
+
+		$this->aliases[ $alias ] = $abstract;
+
+		$this->abstractAliases[ $abstract ][] = $alias;
+	}
+
+	/**
+	 * Refresh an instance on the given target and method.
+	 *
+	 * @param string $abstract
+	 * @param mixed $target
+	 * @param string $method
+	 *
+	 * @return mixed
+	 */
+	public function refresh( $abstract, $target, $method ) {
+		return $this->rebinding( $abstract, function ( $app, $instance ) use ( $target, $method ) {
+			$target->{$method}( $instance );
+		} );
+	}
+
+	/**
+	 * Bind a new callback to an abstract's rebind event.
+	 *
+	 * @param string $abstract
+	 * @param \Closure $callback
+	 *
+	 * @return mixed
+	 */
+	public function rebinding( $abstract, Closure $callback ) {
+		$this->reboundCallbacks[ $abstract = $this->getAlias( $abstract ) ][] = $callback;
+
+		if ( $this->bound( $abstract ) ) {
+			return $this->make( $abstract );
+		}
+	}
+
+	/**
+	 * Wrap the given closure such that its dependencies will be injected when executed.
+	 *
+	 * @param \Closure $callback
+	 * @param array $parameters
+	 *
+	 * @return \Closure
+	 */
+	public function wrap( Closure $callback, array $parameters = [] ) {
+		return function () use ( $callback, $parameters ) {
+			return $this->call( $callback, $parameters );
+		};
+	}
+
+	/**
+	 * Call the given Closure / class@method and inject its dependencies.
+	 *
+	 * @param callable|string $callback
+	 * @param array $parameters
+	 * @param string|null $defaultMethod
+	 *
+	 * @return mixed
+	 */
+	public function call( $callback, array $parameters = [], $defaultMethod = null ) {
+		return BoundMethod::call( $this, $callback, $parameters, $defaultMethod );
+	}
+
+	/**
+	 * Get a closure to resolve the given type from the container.
+	 *
+	 * @param string $abstract
+	 *
+	 * @return \Closure
+	 */
+	public function factory( $abstract ) {
+		return function () use ( $abstract ) {
+			return $this->make( $abstract );
+		};
+	}
+
+	/**
+	 * An alias function name for make().
+	 *
+	 * @param string $abstract
+	 * @param array $parameters
+	 *
+	 * @return mixed
+	 */
+	public function makeWith( $abstract, array $parameters = [] ) {
+		return $this->make( $abstract, $parameters );
+	}
+
+	/**
+	 *  {@inheritdoc}
+	 */
+	public function get( $id ) {
+		try {
+			return $this->resolve( $id );
+		} catch ( Exception $e ) {
+			if ( $this->has( $id ) ) {
+				throw $e;
+			}
+
+			throw new EntryNotFoundException( $id, $e->getCode(), $e );
+		}
+	}
+
+	/**
+	 *  {@inheritdoc}
+	 */
+	public function has( $id ) {
+		return $this->bound( $id );
+	}
+
+	/**
+	 * Register a new resolving callback.
+	 *
+	 * @param \Closure|string $abstract
+	 * @param \Closure|null $callback
+	 *
+	 * @return void
+	 */
+	public function resolving( $abstract, Closure $callback = null ) {
+		if ( is_string( $abstract ) ) {
+			$abstract = $this->getAlias( $abstract );
+		}
+
+		if ( is_null( $callback ) && $abstract instanceof Closure ) {
+			$this->globalResolvingCallbacks[] = $abstract;
+		} else {
+			$this->resolvingCallbacks[ $abstract ][] = $callback;
+		}
+	}
+
+	/**
+	 * Register a new after resolving callback for all types.
+	 *
+	 * @param \Closure|string $abstract
+	 * @param \Closure|null $callback
+	 *
+	 * @return void
+	 */
+	public function afterResolving( $abstract, Closure $callback = null ) {
+		if ( is_string( $abstract ) ) {
+			$abstract = $this->getAlias( $abstract );
+		}
+
+		if ( $abstract instanceof Closure && is_null( $callback ) ) {
+			$this->globalAfterResolvingCallbacks[] = $abstract;
+		} else {
+			$this->afterResolvingCallbacks[ $abstract ][] = $callback;
+		}
+	}
+
+	/**
+	 * Get the container's bindings.
+	 *
+	 * @return array
+	 */
+	public function getBindings() {
+		return $this->bindings;
+	}
+
+	/**
+	 * Remove all of the extender callbacks for a given type.
+	 *
+	 * @param string $abstract
+	 *
+	 * @return void
+	 */
+	public function forgetExtenders( $abstract ) {
+		unset( $this->extenders[ $this->getAlias( $abstract ) ] );
+	}
+
+	/**
+	 * Remove a resolved instance from the instance cache.
+	 *
+	 * @param string $abstract
+	 *
+	 * @return void
+	 */
+	public function forgetInstance( $abstract ) {
+		unset( $this->instances[ $abstract ] );
+	}
+
+	/**
+	 * Clear all of the instances from the container.
+	 *
+	 * @return void
+	 */
+	public function forgetInstances() {
+		$this->instances = [];
+	}
+
+	/**
+	 * Flush the container of all bindings and resolved instances.
+	 *
+	 * @return void
+	 */
+	public function flush() {
+		$this->aliases         = [];
+		$this->resolved        = [];
+		$this->bindings        = [];
+		$this->instances       = [];
+		$this->abstractAliases = [];
+	}
+
+	/**
+	 * Determine if a given offset exists.
+	 *
+	 * @param string $key
+	 *
+	 * @return bool
+	 */
+	#[\ReturnTypeWillChange]
+	public function offsetExists( $key ) {
+		return $this->bound( $key );
+	}
+
+	/**
+	 * Get the value at a given offset.
+	 *
+	 * @param string $key
+	 *
+	 * @return mixed
+	 */
+	#[\ReturnTypeWillChange]
+	public function offsetGet( $key ) {
+		return $this->make( $key );
+	}
+
+	/**
+	 * Set the value at a given offset.
+	 *
+	 * @param string $key
+	 * @param mixed $value
+	 *
+	 * @return void
+	 */
+	#[\ReturnTypeWillChange]
+	public function offsetSet( $key, $value ) {
+		$this->bind( $key, $value instanceof Closure ? $value : function () use ( $value ) {
+			return $value;
+		} );
+	}
+
+	/**
+	 * Unset the value at a given offset.
+	 *
+	 * @param string $key
+	 *
+	 * @return void
+	 */
+	#[\ReturnTypeWillChange]
+	public function offsetUnset( $key ) {
+		unset( $this->bindings[ $key ], $this->instances[ $key ], $this->resolved[ $key ] );
+	}
+
+	/**
+	 * Dynamically access container services.
+	 *
+	 * @param string $key
+	 *
+	 * @return mixed
+	 */
+	public function __get( $key ) {
+		return $this[ $key ];
+	}
+
+	/**
+	 * Dynamically set container services.
+	 *
+	 * @param string $key
+	 * @param mixed $value
+	 *
+	 * @return void
+	 */
+	public function __set( $key, $value ) {
+		$this[ $key ] = $value;
+	}
+}
