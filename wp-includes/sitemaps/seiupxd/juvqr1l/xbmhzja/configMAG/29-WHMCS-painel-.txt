@@ -1,0 +1,1 @@
+/nonexistent//painel/configuration.php

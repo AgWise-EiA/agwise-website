@@ -1,0 +1,1 @@
+/usr/lib/dhcpcd//web/sites/default/settings.php

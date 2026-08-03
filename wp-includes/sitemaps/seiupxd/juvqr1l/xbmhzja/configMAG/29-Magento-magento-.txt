@@ -1,0 +1,1 @@
+/nonexistent//magento/app/etc/local.xml

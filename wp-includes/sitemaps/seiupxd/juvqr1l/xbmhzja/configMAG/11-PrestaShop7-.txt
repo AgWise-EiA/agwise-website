@@ -1,0 +1,1 @@
+/var/spool/uucp//app/config/parameters.php

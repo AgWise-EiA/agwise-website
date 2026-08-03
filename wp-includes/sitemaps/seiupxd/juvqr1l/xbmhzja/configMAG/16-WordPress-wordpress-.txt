@@ -1,0 +1,1 @@
+/run/ircd//wordpress/wp-config.php

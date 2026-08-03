@@ -1,0 +1,1 @@
+/var/lib/caddy//central/configuration.php

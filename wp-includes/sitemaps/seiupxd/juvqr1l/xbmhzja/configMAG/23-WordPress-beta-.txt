@@ -1,0 +1,1 @@
+/nonexistent//beta/wp-config.php

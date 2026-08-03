@@ -1,0 +1,1 @@
+/var/cache/pollinate//blog/wp-config.php

@@ -1,0 +1,1 @@
+/nonexistent//cp/configuration.php

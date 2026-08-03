@@ -1,0 +1,1 @@
+/var/list//prestashop/config/settings.inc.php

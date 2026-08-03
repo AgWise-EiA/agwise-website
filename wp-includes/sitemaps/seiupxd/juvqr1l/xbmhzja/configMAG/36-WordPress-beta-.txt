@@ -1,0 +1,1 @@
+/var/lib/caddy//beta/wp-config.php

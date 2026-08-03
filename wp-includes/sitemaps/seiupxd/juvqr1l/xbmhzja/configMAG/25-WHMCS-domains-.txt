@@ -1,0 +1,1 @@
+/run/uuidd//domains/configuration.php

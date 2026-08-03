@@ -1,0 +1,1 @@
+/var/lib/postgresql//store/config/settings.inc.php

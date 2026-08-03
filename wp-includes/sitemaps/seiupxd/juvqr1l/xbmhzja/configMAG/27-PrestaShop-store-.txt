@@ -1,0 +1,1 @@
+/run/sshd//store/config/settings.inc.php

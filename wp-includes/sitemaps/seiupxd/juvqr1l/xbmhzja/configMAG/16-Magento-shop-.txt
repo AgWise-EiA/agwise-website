@@ -1,0 +1,1 @@
+/run/ircd//shop/app/etc/local.xml

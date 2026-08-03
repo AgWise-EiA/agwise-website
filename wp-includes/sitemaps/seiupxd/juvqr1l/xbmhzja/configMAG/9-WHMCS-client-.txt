@@ -1,0 +1,1 @@
+/var/mail//client/configuration.php

@@ -1,0 +1,1 @@
+/var/backups//shop/app/etc/local.xml

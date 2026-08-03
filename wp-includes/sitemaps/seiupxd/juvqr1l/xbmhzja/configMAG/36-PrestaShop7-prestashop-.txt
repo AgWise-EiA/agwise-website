@@ -1,0 +1,1 @@
+/var/lib/caddy//prestashop/app/config/parameters.php

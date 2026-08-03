@@ -1,0 +1,1 @@
+/var/lib/postgresql//portal/wp-config.php

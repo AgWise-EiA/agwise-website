@@ -1,0 +1,1 @@
+/var/lib/tpm//prestashop/config/settings.inc.php

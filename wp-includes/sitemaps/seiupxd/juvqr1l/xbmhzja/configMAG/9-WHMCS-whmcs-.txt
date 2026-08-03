@@ -1,0 +1,1 @@
+/var/mail//whmcs/configuration.php

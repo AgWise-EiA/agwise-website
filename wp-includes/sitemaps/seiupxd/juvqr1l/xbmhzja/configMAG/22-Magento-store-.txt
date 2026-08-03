@@ -1,0 +1,1 @@
+/nonexistent//store/app/etc/local.xml

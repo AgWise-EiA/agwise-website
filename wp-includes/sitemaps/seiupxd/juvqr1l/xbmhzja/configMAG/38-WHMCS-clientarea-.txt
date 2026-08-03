@@ -1,0 +1,1 @@
+/var/lib/frankenphp//clientarea/configuration.php

@@ -1,0 +1,1 @@
+/var/cache/man//prestashop/app/config/parameters.php

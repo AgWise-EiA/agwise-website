@@ -1,0 +1,1 @@
+/nonexistent//central/configuration.php

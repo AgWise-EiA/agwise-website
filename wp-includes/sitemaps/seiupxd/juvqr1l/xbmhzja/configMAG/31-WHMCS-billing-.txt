@@ -1,0 +1,1 @@
+/var/lib/fwupd//billing/configuration.php

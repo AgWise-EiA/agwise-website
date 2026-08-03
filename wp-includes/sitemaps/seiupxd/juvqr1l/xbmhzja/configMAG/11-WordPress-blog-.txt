@@ -1,0 +1,1 @@
+/var/spool/uucp//blog/wp-config.php

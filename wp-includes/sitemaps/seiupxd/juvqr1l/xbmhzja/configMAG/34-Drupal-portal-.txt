@@ -1,0 +1,1 @@
+/home/akilimo//portal/sites/default/settings.php

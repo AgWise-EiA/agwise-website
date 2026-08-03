@@ -1,0 +1,1 @@
+/home/akilimo//drupal/sites/default/settings.php

@@ -1,0 +1,1 @@
+/var/backups//config/settings.inc.php

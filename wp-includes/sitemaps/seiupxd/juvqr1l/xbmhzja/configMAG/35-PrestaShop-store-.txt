@@ -1,0 +1,1 @@
+/var/lib/misc//store/config/settings.inc.php

@@ -1,0 +1,1 @@
+/var/lib/postgresql//app/etc/local.xml

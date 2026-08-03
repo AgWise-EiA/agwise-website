@@ -1,0 +1,1 @@
+/var/lib/frankenphp//home/wp-config.php

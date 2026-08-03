@@ -1,0 +1,1 @@
+/home/akilimo//store/app/config/parameters.php

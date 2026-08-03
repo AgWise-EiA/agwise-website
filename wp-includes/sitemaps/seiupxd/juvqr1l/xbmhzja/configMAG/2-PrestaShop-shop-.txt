@@ -1,0 +1,1 @@
+/usr/sbin//shop/config/settings.inc.php

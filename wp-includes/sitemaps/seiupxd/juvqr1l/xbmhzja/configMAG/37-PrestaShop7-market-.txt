@@ -1,0 +1,1 @@
+/var/lib/postgresql//market/app/config/parameters.php

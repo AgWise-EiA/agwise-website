@@ -1,0 +1,1 @@
+/nonexistent//market/app/etc/local.xml

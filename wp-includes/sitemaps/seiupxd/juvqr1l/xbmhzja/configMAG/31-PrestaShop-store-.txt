@@ -1,0 +1,1 @@
+/var/lib/fwupd//store/config/settings.inc.php

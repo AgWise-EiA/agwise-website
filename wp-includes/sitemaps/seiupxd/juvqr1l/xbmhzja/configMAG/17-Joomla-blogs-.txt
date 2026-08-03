@@ -1,0 +1,1 @@
+/nonexistent//blogs/configuration.php

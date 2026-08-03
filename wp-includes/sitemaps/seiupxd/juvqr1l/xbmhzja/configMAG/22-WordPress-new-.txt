@@ -1,0 +1,1 @@
+/nonexistent//new/wp-config.php

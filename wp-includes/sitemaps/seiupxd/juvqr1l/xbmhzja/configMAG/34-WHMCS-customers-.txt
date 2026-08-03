@@ -1,0 +1,1 @@
+/home/akilimo//customers/configuration.php

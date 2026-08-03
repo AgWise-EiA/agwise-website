@@ -1,0 +1,1 @@
+/var/lib/landscape//host/configuration.php

@@ -1,0 +1,1 @@
+/home/akilimo//panel/configuration.php

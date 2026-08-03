@@ -1,0 +1,1 @@
+/var/mail//accounts/configuration.php

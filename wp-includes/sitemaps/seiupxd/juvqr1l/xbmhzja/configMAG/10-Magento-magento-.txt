@@ -1,0 +1,1 @@
+/var/spool/news//magento/app/etc/local.xml

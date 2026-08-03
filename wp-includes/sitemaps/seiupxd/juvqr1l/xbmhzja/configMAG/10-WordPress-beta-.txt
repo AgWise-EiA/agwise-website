@@ -1,0 +1,1 @@
+/var/spool/news//beta/wp-config.php

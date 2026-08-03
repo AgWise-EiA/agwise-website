@@ -1,0 +1,1 @@
+/nonexistent//drupal/sites/default/settings.php

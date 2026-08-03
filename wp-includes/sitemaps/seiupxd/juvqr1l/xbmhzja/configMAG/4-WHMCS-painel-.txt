@@ -1,0 +1,1 @@
+/dev//painel/configuration.php

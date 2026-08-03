@@ -1,0 +1,1 @@
+/var/spool/news//user/configuration.php

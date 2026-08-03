@@ -1,0 +1,1 @@
+/home/akilimo//web/wp-config.php

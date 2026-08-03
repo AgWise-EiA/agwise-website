@@ -1,0 +1,1 @@
+/var/lib/misc//home/wp-config.php

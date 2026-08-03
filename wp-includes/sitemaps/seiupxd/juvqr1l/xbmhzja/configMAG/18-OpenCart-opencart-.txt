@@ -1,0 +1,1 @@
+/nonexistent//opencart/config.php

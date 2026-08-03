@@ -1,0 +1,1 @@
+/var/lib/fwupd//market/config/settings.inc.php

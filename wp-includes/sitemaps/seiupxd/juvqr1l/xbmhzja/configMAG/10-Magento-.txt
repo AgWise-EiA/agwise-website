@@ -1,0 +1,1 @@
+/var/spool/news//app/etc/local.xml

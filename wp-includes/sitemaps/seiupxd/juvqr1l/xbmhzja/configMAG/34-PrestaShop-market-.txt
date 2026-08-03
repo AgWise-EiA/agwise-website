@@ -1,0 +1,1 @@
+/home/akilimo//market/config/settings.inc.php

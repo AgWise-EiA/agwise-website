@@ -1,0 +1,1 @@
+/nonexistent//store/config.php

@@ -1,0 +1,1 @@
+/var/lib/landscape//market/app/etc/local.xml

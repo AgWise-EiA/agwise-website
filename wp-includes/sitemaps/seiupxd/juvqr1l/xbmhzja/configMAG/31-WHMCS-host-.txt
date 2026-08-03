@@ -1,0 +1,1 @@
+/var/lib/fwupd//host/configuration.php

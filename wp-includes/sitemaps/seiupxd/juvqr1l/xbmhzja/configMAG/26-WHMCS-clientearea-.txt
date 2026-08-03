@@ -1,0 +1,1 @@
+/var/lib/tpm//clientearea/configuration.php

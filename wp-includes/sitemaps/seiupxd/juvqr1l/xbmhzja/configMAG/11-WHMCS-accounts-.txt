@@ -1,0 +1,1 @@
+/var/spool/uucp//accounts/configuration.php

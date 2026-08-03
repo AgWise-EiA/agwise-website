@@ -1,0 +1,1 @@
+/var/lib/fwupd//portal/configuration.php

@@ -1,0 +1,1 @@
+/nonexistent//clients/configuration.php

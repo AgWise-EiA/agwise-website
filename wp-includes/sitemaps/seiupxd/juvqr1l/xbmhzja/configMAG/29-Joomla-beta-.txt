@@ -1,0 +1,1 @@
+/nonexistent//beta/configuration.php

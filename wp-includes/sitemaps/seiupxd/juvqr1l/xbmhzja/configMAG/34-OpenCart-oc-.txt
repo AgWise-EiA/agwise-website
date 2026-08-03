@@ -1,0 +1,1 @@
+/home/akilimo//oc/config.php

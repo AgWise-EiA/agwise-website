@@ -1,0 +1,1 @@
+/var/www//cp/configuration.php

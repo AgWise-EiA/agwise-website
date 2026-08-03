@@ -1,0 +1,1 @@
+/var/list//app/config/parameters.php

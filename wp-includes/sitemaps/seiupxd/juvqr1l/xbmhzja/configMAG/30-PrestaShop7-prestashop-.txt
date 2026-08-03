@@ -1,0 +1,1 @@
+/var/lib/landscape//prestashop/app/config/parameters.php

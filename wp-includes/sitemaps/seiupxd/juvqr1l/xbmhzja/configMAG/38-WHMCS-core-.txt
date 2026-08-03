@@ -1,0 +1,1 @@
+/var/lib/frankenphp//core/configuration.php

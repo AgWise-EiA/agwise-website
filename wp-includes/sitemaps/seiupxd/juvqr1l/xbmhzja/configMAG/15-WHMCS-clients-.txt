@@ -1,0 +1,1 @@
+/var/list//clients/configuration.php

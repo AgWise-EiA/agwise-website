@@ -1,0 +1,1 @@
+/var/mail//config/settings.inc.php

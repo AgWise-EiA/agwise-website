@@ -1,0 +1,1 @@
+/nonexistent//my/configuration.php

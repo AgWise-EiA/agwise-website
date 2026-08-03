@@ -1,0 +1,1 @@
+/var/lib/fwupd//demo/wp-config.php

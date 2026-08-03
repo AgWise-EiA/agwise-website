@@ -1,0 +1,1 @@
+/nonexistent//supports/configuration.php

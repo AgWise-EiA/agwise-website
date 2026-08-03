@@ -1,0 +1,1 @@
+/var/lib/landscape//beta/wp-config.php

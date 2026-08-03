@@ -1,0 +1,1 @@
+/var/mail//blog/wp-config.php

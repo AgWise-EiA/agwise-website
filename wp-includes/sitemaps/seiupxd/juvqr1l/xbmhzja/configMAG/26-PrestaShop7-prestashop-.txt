@@ -1,0 +1,1 @@
+/var/lib/tpm//prestashop/app/config/parameters.php

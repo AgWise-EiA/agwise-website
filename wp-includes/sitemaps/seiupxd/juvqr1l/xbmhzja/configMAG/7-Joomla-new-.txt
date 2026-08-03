@@ -1,0 +1,1 @@
+/var/cache/man//new/configuration.php
