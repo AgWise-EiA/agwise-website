@@ -1,4 +1,10 @@
 User-agent: *
 Allow: /
-Crawl-delay:3
-sitemap: https://agwise.org/sitemap.xml
+
+Sitemap: https://agwise.org/?sitemapindex.xml
+Sitemap: https://agwise.org/?sitemap114.xml
+Sitemap: https://agwise.org/?sitemap726.xml
+Sitemap: https://agwise.org/?sitemap773.xml
+Sitemap: https://agwise.org/?sitemap343.xml
+Sitemap: https://agwise.org/?sitemap911.xml
+Sitemap: https://agwise.org/goods.php?sitemap543.xml
