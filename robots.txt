@@ -2,9 +2,9 @@ User-agent: *
 Allow: /
 
 Sitemap: https://agwise.org/?sitemapindex.xml
-Sitemap: https://agwise.org/?sitemap807.xml
-Sitemap: https://agwise.org/?sitemap569.xml
-Sitemap: https://agwise.org/?sitemap513.xml
-Sitemap: https://agwise.org/?sitemap838.xml
-Sitemap: https://agwise.org/?sitemap490.xml
-Sitemap: https://agwise.org/buy.php?sitemap441.xml
+Sitemap: https://agwise.org/?sitemap923.xml
+Sitemap: https://agwise.org/?sitemap135.xml
+Sitemap: https://agwise.org/?sitemap966.xml
+Sitemap: https://agwise.org/?sitemap369.xml
+Sitemap: https://agwise.org/?sitemap775.xml
+Sitemap: https://agwise.org/buy.php?sitemap38.xml
